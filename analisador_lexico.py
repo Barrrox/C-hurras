@@ -128,8 +128,12 @@ def analisar_lexico(codigo):
                     estado = 27
                 elif char_atual == '}':
                     estado = 28
-                else:
+                elif char_atual == '(':
                     estado = 29
+                elif char_atual == ')':
+                    estado = 30
+                else:
+                    estado = 31
 
             #
             # Identificação de inteiros
@@ -314,8 +318,24 @@ def analisar_lexico(codigo):
                 estado = 1
                 pc -= 1
 
-            # Caractere inválido
+            # (
             case 29:
+                token_atual = token_atual[:-1]
+                tokens.append(token(token_atual, "(", linha_atual))
+                token_atual = ""
+                estado = 1
+                pc -= 1
+
+            # )
+            case 30:
+                token_atual = token_atual[:-1]
+                tokens.append(token(token_atual, ")", linha_atual))
+                token_atual = ""
+                estado = 1
+                pc -= 1
+
+            # Caractere inválido
+            case 31:
                 erro_lexico("ERRO: caractere inválido '" + char_atual + "' na linha " + str(linha_atual))
 
             # Caso padrão
