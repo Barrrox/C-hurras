@@ -4,14 +4,17 @@ Este documento explica como executar e manter os testes do analisador léxico.
 
 ## 🚀 Como Rodar os Testes
 
-Para rodar todos os testes (estando na raiz do projeto) com a melhor visualização e mensagens de erro curtas, utilize:
+Fácil.
 
-```powershell
-pytest --tb=short
-```
+Instala com ```pip install pytest```.
 
-### Comandos Úteis:
-*   **Rodar apenas os testes do lexer:** `pytest --tb=short Testes/teste_analisador_lexico.py`
+Executa ```pytest``` na raiz pelo terminal. 
+
+```pytest --tb=short``` para uma melhor visualização.
+
+
+### Útil:
+*   **Rodar apenas os testes de certo arquivo ou pasta:** `pytest Caminho/para/arquivo`
 *   **Modo Detalhado (Verbose):** `pytest -v`
 *   **Parar na primeira falha:** `pytest -x`
 
@@ -42,12 +45,25 @@ def test_palavras_reservadas(entrada):
 
 ## 📊 Entendendo a Saída
 
-Com o `pytest-sugar` instalado:
+Exemplo de saída:
 
-*   **Barra de Progresso:** Indica o avanço total dos testes em tempo real.
-*   **✓ (Passed):** O teste passou conforme o esperado.
-*   **⨯ (Failed):** O teste falhou e o erro será exibido imediatamente abaixo.
-*   **s (Skipped):** O teste foi ignorado.
+```python
+========= FAILURES =========
+_________ test_soma[1-1] _________
 
+teste_a = 1, teste_b = 1 // valores dos parametros escolhidos
+
+    # Função testada
+    @pytest.mark.parametrize("teste_a, teste_b", [(1,1)])
+    def test_soma(teste_a, teste_b):
+    
+        resultado = soma(teste_a, teste_b)
+    
+>       assert resultado == teste_a + teste_b # teste feito
+E       assert 3 == (1 + 1)                   # parâmetros
+
+temp.py:12: AssertionError
+========= short test summary info =========
+FAILED temp.py::test_soma[1-1] - assert 3 == (1 + 1)
+```
 ---
-*Nota: Recomenda-se adicionar um espaço " " ao final da string de entrada nos testes manuais para garantir que o lookahead do lexer processe corretamente o último token.*
