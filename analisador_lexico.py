@@ -1,3 +1,6 @@
+# a única biblioteca externa pra receber argumento de linha de comando
+import sys
+
 # variaveis globais
 reservadas = ["vaca", "frango", "porco", "rodizio", "grelhar", "ta_no_ponto?", "queimou", "ponto_certo", "queimado", "espetar", "servir", "servido"]
 
@@ -350,8 +353,10 @@ def analisar_lexico(codigo):
 
 
 if __name__ == "__main__":
-    # TESTE RAPIDO
-    codigo = abrir_codigo("BalancearParenteses.churras")
-    tks = analisar_lexico(codigo)
-    for tk in tks:
-        tk.tkprint()
+    if len(sys.argv) != 2:
+        print("ERRO: arquivo não informado, use o analisador como:\n\tpython analisador_lexico.py codigo.churras")
+    else:
+        codigo = abrir_codigo(sys.argv[1])
+        tks = analisar_lexico(codigo)
+        for tk in tks:
+            tk.tkprint()
