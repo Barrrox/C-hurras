@@ -1,0 +1,33 @@
+--<Programa que checa balanceamento de parenteses!>-
+--<lê string até quebra de linha>-
+
+--<variaveis>-
+vaca contador;
+frango token;
+token = 'a';
+
+--<loop para ler string e computar ao mesmo tempo>-
+rodizio token != servido {
+	espetar token;
+	
+	ta_no_ponto? token == '(' {
+		contador = contador + 1;
+	}
+	
+	ta_no_ponto? token == ')' {
+		contador = contador - 1;
+	}
+}
+
+--<mostrar resultados>-
+ta_no_ponto? contador == 0 {
+	servir "Ta balanceado meu chapa!", servido;
+}
+
+ta_no_ponto? contador < 0 {
+	servir "Fechou algo que não abriu...", servido;
+}
+
+ta_no_ponto? contador > 0 {
+	servir "Esqueceu de fechar algo parceiro?", servido;
+}

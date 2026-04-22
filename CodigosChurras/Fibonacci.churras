@@ -1,0 +1,20 @@
+--<variaveis>-
+vaca a;
+vaca b;
+vaca soma;
+vaca repeticoes;
+
+--<definir valores>-
+b = 1;
+espetar repeticoes;
+
+--<loop principal>-
+grelhar i repeticoes {
+	--<calcular valor da iteracao e servir>-
+	soma = a + b;
+	servir "Fibo(", i, ") = ", soma, servido;
+	
+	--<atualizar a e b>-
+	a = b;
+	b = soma;
+}
