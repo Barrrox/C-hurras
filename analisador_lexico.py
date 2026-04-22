@@ -4,12 +4,13 @@ reservadas = ["vaca", "frango", "porco", "rodizio", "grelhar", "ta_no_ponto?", "
 # classe para representar token
 class token:
     def __init__(self, texto, tipo, linha):
-        self.texto = texto # string do token
-        self.tipo = tipo # tipo do token (se eh operação, delimitador, etc)
-        self.linha = linha # numero da linha (para escrever as mensagens de erro)
-    
+        self.texto = texto  # string do token
+        self.tipo = tipo    # tipo do token (se eh operação, delimitador, etc)
+        self.linha = linha  # numero da linha (para escrever as mensagens de erro)
+
     def tkprint(self):
         print("token:", self.texto, "| tipo:", self.tipo, "| linha:", self.linha)
+
 
 # 1. le o arquivo de código e retorna como um vetor de caracteres
 def abrir_codigo(filename):
@@ -18,25 +19,53 @@ def abrir_codigo(filename):
     return codigo
 
 
-# 
+#
 # Analisador léxico
 #
+
+# retorna verdadeiro se char é digito
 def eh_digito(caractere):
     if caractere >= '0' and caractere <= '9':
         return True
     else:
         return False
 
+
+# retorna verdadeiro se char é letra maiuscula ou minuscula
 def eh_letra(caractere):
     if (caractere >= 'a' and caractere <= 'z') or (caractere >= 'A' and caractere <= 'Z'):
         return True
     else:
         return False
 
+
+# imprime mensagem de erro e sai do programa
 def erro_lexico(msg):
     print(msg)
     exit(0)
-    
+
+
+# retorna vetor com a relação entre char atual e linha de código
+def relacao_linha_char(codigo):
+    relacao = []
+    for i in range(len(codigo)):
+        if codigo[i] == '\n':
+            relacao.append(i)
+    return relacao
+
+
+# define em qual linha do código está um char
+def linha_char(posicao, relacao):
+    linha = 0
+    for idx in relacao:
+        if idx < posicao:
+            linha += 1
+        else:
+            break
+    return linha
+
+
+# função do analisador léxico, se bem sucedida, retorna lista de tokens
 def analisar_lexico(codigo):
     # você não viu nada aqui....
     codigo += "  "
@@ -44,7 +73,9 @@ def analisar_lexico(codigo):
     # representa token sendo lendo atualmente
     char_atual = ''
     token_atual = ""
-    linha_atual = 0
+
+    # utilidades para identificar em qual linha o programa está
+    relacao = relacao_linha_char(codigo)
 
     # token gerados
     tokens = []
@@ -60,9 +91,7 @@ def analisar_lexico(codigo):
         char_atual = codigo[pc]
         token_atual += char_atual
 
-        # aumentar contagem de linhas se quebrar linha
-        if char_atual == '\n':
-            linha_atual += 1
+        linha_atual = linha_char(pc, relacao) + 1
 
         match estado:
             # estado inicial
@@ -78,7 +107,6 @@ def analisar_lexico(codigo):
                 elif char_atual == '\t':
                     estado = 11
                 elif char_atual == '\n':
-                    linha_atual -= 1
                     estado = 11
                 elif char_atual == '\'':
                     estado = 12
@@ -116,11 +144,10 @@ def analisar_lexico(codigo):
                 token_atual = ""
                 pc -= 2
                 estado = 1
-             
+
             #
             # Identificação de ID ou reservadas
             #
-
             case 4:
                 # Se é diferente de digito, letra ou _ então passa de estado
                 if not (eh_digito(char_atual) or eh_letra(char_atual) or char_atual == "_" or char_atual == "?"):
@@ -129,17 +156,17 @@ def analisar_lexico(codigo):
                 # falta lidar com erro aqui
 
             case 5:
-                token_atual = token_atual[:-2] #
+                token_atual = token_atual[:-2]  #
 
                 if token_atual in reservadas:
                     tokens.append(token(token_atual, token_atual, linha_atual))
                 else:
                     tokens.append(token(token_atual, "id", linha_atual))
-                
+
                 token_atual = ""
                 pc -= 2
                 estado = 1
-            
+
             #
             # Comentários
             #
@@ -149,7 +176,7 @@ def analisar_lexico(codigo):
                 elif char_atual == "-":
                     estado = 8
             #
-            # Operador "-"      
+            # Operador "-"
             #
             case 7:
                 token_atual = token_atual[:-2]
@@ -157,8 +184,8 @@ def analisar_lexico(codigo):
 
                 token_atual = ""
                 pc -= 2
-                estado = 1 
-            
+                estado = 1
+
             case 8:
                 if char_atual == "<":
                     estado = 9
@@ -176,7 +203,6 @@ def analisar_lexico(codigo):
                 token_atual = ""
                 pc -= 1
                 estado = 1
-
 
             # Caractere
             case 12:
@@ -200,8 +226,7 @@ def analisar_lexico(codigo):
                 token_atual = ""
                 estado = 1
                 pc -= 1
-                
-                
+
             # String
             case 16:
                 if char_atual == '\"':
@@ -230,14 +255,14 @@ def analisar_lexico(codigo):
                     estado = 23
                 else:
                     erro_lexico("ERRO: Operador AND é: && na linha " + str(linha_atual))
-            #Operador "||"
+            # Operador "||"
             case 21:
                 if char_atual == '|':
                     estado = 23
                 else:
                     erro_lexico("ERRO: Operador OR é: || na linha " + str(linha_atual))
 
-            #Operadores "==", "!=", "<", ">", "<=", ">="
+            # Operadores "==", "!=", "<", ">", "<=", ">="
             case 22:
                 if char_atual == '=':
                     estado = 23
@@ -246,16 +271,16 @@ def analisar_lexico(codigo):
             case 23:
                 token_atual = token_atual[:-1]
                 tokens.append(token(token_atual, "op", linha_atual))
-
                 token_atual = ""
                 estado = 1
+                pc -= 1
             case 24:
                 token_atual = token_atual[:-2]
                 tokens.append(token(token_atual, "op", linha_atual))
 
                 token_atual = ""
                 pc -= 2
-                estado = 1 
+                estado = 1
 
             # Separador
             case 25:
@@ -277,7 +302,7 @@ def analisar_lexico(codigo):
                 tokens.append(token(token_atual, "{", linha_atual))
                 token_atual = ""
                 estado = 1
-                
+
             # Fim de bloco
             case 28:
                 token_atual = token_atual[:-1]
@@ -288,15 +313,13 @@ def analisar_lexico(codigo):
             # Caractere inválido
             case 29:
                 erro_lexico("ERRO: caractere inválido '" + char_atual + "' na linha " + str(linha_atual))
-        
 
             # Caso padrão
             case _:
                 erro_lexico("ERRO: meu amigo, tem alguma coisa de errado aqui")
-              
 
         # Incrementa o ponteiro
-        pc+=1
+        pc += 1
 
     # encerrou analise de forma correta, retornar tokens
     return tokens
@@ -304,7 +327,7 @@ def analisar_lexico(codigo):
 
 if __name__ == "__main__":
     # TESTE RAPIDO
-    codigo = abrir_codigo("codigo_teste.txt")
+    codigo = abrir_codigo("BalancearParenteses.churras")
     tks = analisar_lexico(codigo)
     for tk in tks:
         tk.tkprint()
