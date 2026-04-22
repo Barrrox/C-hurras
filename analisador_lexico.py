@@ -288,6 +288,7 @@ def analisar_lexico(codigo):
                 tokens.append(token(token_atual, ",", linha_atual))
                 token_atual = ""
                 estado = 1
+                pc -= 1
 
             # Fim de linha
             case 26:
@@ -295,6 +296,7 @@ def analisar_lexico(codigo):
                 tokens.append(token(token_atual, ";", linha_atual))
                 token_atual = ""
                 estado = 1
+                pc -= 1
 
             # Inicio de bloco
             case 27:
@@ -302,6 +304,7 @@ def analisar_lexico(codigo):
                 tokens.append(token(token_atual, "{", linha_atual))
                 token_atual = ""
                 estado = 1
+                pc -= 1
 
             # Fim de bloco
             case 28:
@@ -309,6 +312,7 @@ def analisar_lexico(codigo):
                 tokens.append(token(token_atual, "}", linha_atual))
                 token_atual = ""
                 estado = 1
+                pc -= 1
 
             # Caractere inválido
             case 29:
