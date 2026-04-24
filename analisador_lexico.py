@@ -6,13 +6,13 @@ reservadas = ["vaca", "frango", "porco", "rodizio", "grelhar", "ta_no_ponto?", "
 
 # classe para representar token
 class token:
-    def __init__(self, texto, tipo, linha):
+    def __init__(self, texto, categoria, linha):
         self.texto = texto  # string do token
-        self.tipo = tipo    # tipo do token (se eh operação, delimitador, etc)
+        self.categoria = categoria    # categoria/tipo do token (se eh operação, delimitador, etc)
         self.linha = linha  # numero da linha (para escrever as mensagens de erro)
 
     def tkprint(self):
-        print("token:", self.texto, "| tipo:", self.tipo, "| linha:", self.linha)
+        print("token:", self.texto, "| categoria:", self.categoria, "| linha:", self.linha)
 
 
 # 1. le o arquivo de código e retorna como um vetor de caracteres
