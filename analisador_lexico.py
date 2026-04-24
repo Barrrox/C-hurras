@@ -11,7 +11,7 @@ tipos_variaveis = ["vaca", "frango", "porco"]
 
 
 # classe para representar token
-class token:
+class Token:
     def __init__(self, texto, categoria, linha):
         self.texto = texto  # string do token
         self.categoria = categoria    # categoria/tipo do token (se eh operação, delimitador, etc)
@@ -151,7 +151,7 @@ def analisar_lexico(codigo):
                     estado = 3
             case 3:
                 token_atual = token_atual[:-2]
-                tokens.append(token(token_atual, "int", linha_atual))
+                tokens.append(Token(token_atual, "int", linha_atual))
 
                 token_atual = ""
                 pc -= 2
@@ -170,11 +170,11 @@ def analisar_lexico(codigo):
 
                 if token_atual in reservadas:
                     if token_atual in tipos_variaveis:
-                        tokens.append(token(token_atual, "tipo", linha_atual))
+                        tokens.append(Token(token_atual, "tipo", linha_atual))
                     else:
-                        tokens.append(token(token_atual, token_atual, linha_atual))
+                        tokens.append(Token(token_atual, token_atual, linha_atual))
                 else:
-                    tokens.append(token(token_atual, "id", linha_atual))
+                    tokens.append(Token(token_atual, "id", linha_atual))
 
                 token_atual = ""
                 pc -= 2
@@ -193,7 +193,7 @@ def analisar_lexico(codigo):
             #
             case 7:
                 token_atual = token_atual[:-2]
-                tokens.append(token(token_atual, "op", linha_atual))
+                tokens.append(Token(token_atual, "op", linha_atual))
 
                 token_atual = ""
                 pc -= 2
@@ -235,7 +235,7 @@ def analisar_lexico(codigo):
                     estado = 15
             case 15:
                 token_atual = token_atual[:-1]
-                tokens.append(token(token_atual, "char", linha_atual))
+                tokens.append(Token(token_atual, "char", linha_atual))
                 token_atual = ""
                 estado = 1
                 pc -= 1
@@ -257,7 +257,7 @@ def analisar_lexico(codigo):
                     estado = 17
             case 19:
                 token_atual = token_atual[:-1]
-                tokens.append(token(token_atual, "string", linha_atual))
+                tokens.append(Token(token_atual, "string", linha_atual))
                 token_atual = ""
                 estado = 1
                 pc -= 1
@@ -283,13 +283,13 @@ def analisar_lexico(codigo):
                     estado = 24
             case 23:
                 token_atual = token_atual[:-1]
-                tokens.append(token(token_atual, "op", linha_atual))
+                tokens.append(Token(token_atual, "op", linha_atual))
                 token_atual = ""
                 estado = 1
                 pc -= 1
             case 24:
                 token_atual = token_atual[:-2]
-                tokens.append(token(token_atual, "op", linha_atual))
+                tokens.append(Token(token_atual, "op", linha_atual))
 
                 token_atual = ""
                 pc -= 2
@@ -298,7 +298,7 @@ def analisar_lexico(codigo):
             # Separador
             case 25:
                 token_atual = token_atual[:-1]
-                tokens.append(token(token_atual, ",", linha_atual))
+                tokens.append(Token(token_atual, ",", linha_atual))
                 token_atual = ""
                 estado = 1
                 pc -= 1
@@ -306,7 +306,7 @@ def analisar_lexico(codigo):
             # Fim de linha
             case 26:
                 token_atual = token_atual[:-1]
-                tokens.append(token(token_atual, ";", linha_atual))
+                tokens.append(Token(token_atual, ";", linha_atual))
                 token_atual = ""
                 estado = 1
                 pc -= 1
@@ -314,7 +314,7 @@ def analisar_lexico(codigo):
             # Inicio de bloco
             case 27:
                 token_atual = token_atual[:-1]
-                tokens.append(token(token_atual, "{", linha_atual))
+                tokens.append(Token(token_atual, "{", linha_atual))
                 token_atual = ""
                 estado = 1
                 pc -= 1
@@ -322,7 +322,7 @@ def analisar_lexico(codigo):
             # Fim de bloco
             case 28:
                 token_atual = token_atual[:-1]
-                tokens.append(token(token_atual, "}", linha_atual))
+                tokens.append(Token(token_atual, "}", linha_atual))
                 token_atual = ""
                 estado = 1
                 pc -= 1
@@ -330,7 +330,7 @@ def analisar_lexico(codigo):
             # (
             case 29:
                 token_atual = token_atual[:-1]
-                tokens.append(token(token_atual, "(", linha_atual))
+                tokens.append(Token(token_atual, "(", linha_atual))
                 token_atual = ""
                 estado = 1
                 pc -= 1
@@ -338,7 +338,7 @@ def analisar_lexico(codigo):
             # )
             case 30:
                 token_atual = token_atual[:-1]
-                tokens.append(token(token_atual, ")", linha_atual))
+                tokens.append(Token(token_atual, ")", linha_atual))
                 token_atual = ""
                 estado = 1
                 pc -= 1
