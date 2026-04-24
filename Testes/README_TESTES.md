@@ -1,69 +1,43 @@
-# Manual de Testes
+# Manual de Testes - C-Hurras
 
 Este documento explica como executar e manter os testes do analisador léxico.
 
 ## 🚀 Como Rodar os Testes
 
-Fácil.
+Certifique-se de ter o `pytest` instalado:
+```bash
+pip install pytest
+```
 
-Instala com ```pip install pytest```.
-
-Executa ```pytest``` na raiz pelo terminal. 
-
-```pytest --tb=short``` para uma melhor visualização.
-
-
-### Útil:
-*   **Rodar apenas os testes de certo arquivo ou pasta:** `pytest Caminho/para/arquivo`
-*   **Modo Detalhado (Verbose):** `pytest -v`
-*   **Parar na primeira falha:** `pytest -x`
+Execute na raiz do projeto:
+```bash
+pytest --tb=short
+```
 
 ---
 
 ## ✍️ Como Escrever Novos Testes
 
-Os testes utilizam o framework **pytest**. Para adicionar novos casos:
+Para evitar retrabalho e acoplamento, utilize as funções utilitárias em `testes/utils.py`.
 
-1.  **Padronização:** Todo arquivo de teste deve começar com `test_` (ex: `test_operadores.py`).
-2.  **Parametrização:** Use o `@pytest.mark.parametrize` para testar vários inputs com a mesma lógica sem repetir código.
+### Funções Disponíveis:
+*   `executar_lexico(codigo)`: Chama o analisador léxico.
+*   `validar_token(token, texto, categoria)`: Valida se o token tem o conteúdo esperado.
+*   `verificar_erro_lexico(codigo)`: Garante que um código inválido dispara um erro.
 
-### Exemplo de Estrutura:
+### Exemplo de Estrutura Ideal:
 ```python
-# Testando se o texto lido foi tokenizado corretamente
-@pytest.mark.parametrize("entrada", ["vaca", "frango"])
-def test_palavras_reservadas(entrada):
-    tokens = analisar_lexico(entrada)
-    
-    assert len(tokens) == 1 # Lista de tokens só pode ter 1 token
-    assert tokens[0].texto == entrada # O texto do token deve ser o mesmo que foi lido
-    assert tokens[0].tipo == "id" # O tipo do token de vaca e frango será id nessa situação
-    assert tokens[0].linha == 0 # O token foi lido na linha 0
-    
+from testes.utils import executar_lexico, validar_token
+
+def test_exemplo_id():
+    tokens = executar_lexico("vaca")
+    assert len(tokens) == 1
+    validar_token(tokens[0], "vaca", "vaca") # 'vaca' é categoria e texto
 ```
 
 ---
 
-## 📊 Entendendo a Saída
-
-Exemplo de saída:
-
-```python
-========= FAILURES =========
-_________ test_soma[1-1] _________
-
-teste_a = 1, teste_b = 1 // valores dos parametros escolhidos
-
-    # Função testada
-    @pytest.mark.parametrize("teste_a, teste_b", [(1,1)])
-    def test_soma(teste_a, teste_b):
-    
-        resultado = soma(teste_a, teste_b)
-    
->       assert resultado == teste_a + teste_b # teste feito
-E       assert 3 == (1 + 1)                   # parâmetros
-
-temp.py:12: AssertionError
-========= short test summary info =========
-FAILED temp.py::test_soma[1-1] - assert 3 == (1 + 1)
-```
----
+## 🏗️ Estrutura de Pastas
+*   `unitarios/`: Testes de tokens isolados (números, strings, IDs).
+*   `integracao/`: Testes de múltiplos tokens e interações sem espaço ("colados").
+*   `utils.py`: Camada de abstração para evitar acoplamento.
