@@ -70,6 +70,17 @@ def test_id_ponto_virgula_numero():
     validar_token(tokens[1], ";", ";")
     validar_token(tokens[2], "123", "int")
 
+def test_sequencia_complexa_sem_espaco():
+    """Garante que +123+vaca gera 4 tokens."""
+    codigo = "+123+vaca"
+    tokens = executar_lexico(codigo)
+    
+    assert len(tokens) == 4
+    validar_token(tokens[0], "+", "op")
+    validar_token(tokens[1], "123", "int")
+    validar_token(tokens[2], "+", "op")
+    validar_token(tokens[3], "vaca", "vaca")
+
 def test_delimitadores_aninhados():
     """Garante que (()) gera 4 tokens de parênteses."""
     codigo = "(())"
