@@ -32,7 +32,7 @@ from testes.utils import executar_lexico, validar_token
 def test_exemplo_id():
     tokens = executar_lexico("vaca")
     assert len(tokens) == 1
-    validar_token(tokens[0], "vaca", "vaca") # 'vaca' é categoria e texto
+    validar_token(tokens[0], "vaca", "tipo") # 'vaca' é da categoria 'tipo' (variável)
 ```
 
 ---

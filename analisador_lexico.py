@@ -1,8 +1,14 @@
 # a única biblioteca externa pra receber argumento de linha de comando
 import sys
 
+
 # variaveis globais
-reservadas = ["vaca", "frango", "porco", "rodizio", "grelhar", "ta_no_ponto?", "queimou", "ponto_certo", "queimado", "espetar", "servir", "servido"]
+reservadas = [
+    "vaca", "frango", "porco", "rodizio", "grelhar", "ta_no_ponto?",
+    "queimou", "ponto_certo", "queimado", "espetar", "servir", "servido"
+]
+tipos_variaveis = ["vaca", "frango", "porco"]
+
 
 # classe para representar token
 class token:
@@ -70,7 +76,6 @@ def linha_char(posicao, relacao):
 
 # função do analisador léxico, se bem sucedida, retorna lista de tokens
 def analisar_lexico(codigo):
-    # você não viu nada aqui....
     codigo += "  "
 
     # representa token sendo lendo atualmente
@@ -160,13 +165,14 @@ def analisar_lexico(codigo):
                 if not (eh_digito(char_atual) or eh_letra(char_atual) or char_atual == "_" or char_atual == "?"):
                     estado = 5
 
-                # falta lidar com erro aqui
-
             case 5:
-                token_atual = token_atual[:-2]  #
+                token_atual = token_atual[:-2]
 
                 if token_atual in reservadas:
-                    tokens.append(token(token_atual, token_atual, linha_atual))
+                    if token_atual in tipos_variaveis:
+                        tokens.append(token(token_atual, "tipo", linha_atual))
+                    else:
+                        tokens.append(token(token_atual, token_atual, linha_atual))
                 else:
                     tokens.append(token(token_atual, "id", linha_atual))
 
