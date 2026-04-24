@@ -1,12 +1,13 @@
 import pytest
-from analisador_lexico import analisar_lexico
+import analisador_lexico
+from testes.utils import executar_lexico, verificar_erro_lexico
 
 def test_ignora_espacos_e_quebras():
-    tokens = analisar_lexico(" \n \t \n")
+    tokens = executar_lexico(" \n \t \n")
     assert len(tokens) == 0
 
 def test_ignora_comentarios():
-    tokens = analisar_lexico("--< isso é um comentario \n multilinhas >-")
+    tokens = executar_lexico("--< isso é um comentario \n multilinhas >-")
     assert len(tokens) == 0
 
 @pytest.mark.parametrize("entrada_invalida", [
@@ -22,5 +23,4 @@ def test_ignora_comentarios():
 ])
 def test_erros_lexicos_encerram_programa(entrada_invalida):
     # Verifica se o programa chama exit(0) ao encontrar erro
-    with pytest.raises(SystemExit):
-        analisar_lexico(entrada_invalida)
+    verificar_erro_lexico(entrada_invalida)

@@ -1,7 +1,7 @@
 import pytest
 import itertools
-from analisador_lexico import analisar_lexico
-from testes.utils import validar_token
+import analisador_lexico
+from testes.utils import executar_lexico, validar_token
 
 # Amostras de tokens para as combinações
 TOKENS_TESTE = [
@@ -19,7 +19,7 @@ def test_interacao_com_espaco(tk1, tk2):
     txt2, tipo2 = tk2
     
     codigo = f"{txt1} {txt2}"
-    tokens = analisar_lexico(codigo)
+    tokens = executar_lexico(codigo)
     
     assert len(tokens) == 2
     validar_token(tokens[0], txt1, tipo1)
@@ -37,7 +37,7 @@ def test_interacao_sem_espaco(tk1, tk2):
     txt2, tipo2 = tk2
     
     codigo = f"{txt1}{txt2}"
-    tokens = analisar_lexico(codigo)
+    tokens = executar_lexico(codigo)
     
     assert len(tokens) == 2
     validar_token(tokens[0], txt1, tipo1)
@@ -45,6 +45,6 @@ def test_interacao_sem_espaco(tk1, tk2):
 
 def test_id_colado_com_numero():
     """vaca123 deve ser um único ID, não 'vaca' + '123'"""
-    tokens = analisar_lexico("vaca123")
+    tokens = executar_lexico("vaca123")
     assert len(tokens) == 1
     validar_token(tokens[0], "vaca123", "id")

@@ -1,3 +1,20 @@
+import pytest
+import analisador_lexico
+
+def executar_lexico(codigo):
+    """
+    Centraliza a chamada ao analisador léxico.
+    Facilita a refatoração futura para Lexer().tokenizar().
+    """
+    return analisador_lexico.analisar_lexico(codigo)
+
+def verificar_erro_lexico(codigo):
+    """
+    Abstrai a verificação de erro léxico (atualmente via SystemExit).
+    """
+    with pytest.raises(SystemExit):
+        executar_lexico(codigo)
+
 def validar_token(token, texto_esperado, categoria_esperada, linha_esperada=None):
     """
     Função auxiliar para validar um token.
