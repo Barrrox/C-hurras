@@ -29,22 +29,7 @@ class Lexer():
         self.caminho_codigo = caminho_codigo
         self.codigo = "" # Guardará a string do código bruto todo
         self.pc = 0 # Ponteiro de char para a leitura do código
-        self.linha_atual = 1 # Guarda a linha do token lido
         self.tokens : list[Token] = []  # Lista com os tokens
-
-    # retorna verdadeiro se char é digito
-    def _eh_digito(self, caractere):
-        if caractere >= '0' and caractere <= '9':
-            return True
-        else:
-            return False
-
-    # retorna verdadeiro se char é letra maiuscula ou minuscula
-    def _eh_letra(self, caractere):
-        if (caractere >= 'a' and caractere <= 'z') or (caractere >= 'A' and caractere <= 'Z'):
-            return True
-        else:
-            return False
 
     # imprime mensagem de erro e sai do programa
     def _erro_lexico(self, msg):
@@ -99,9 +84,9 @@ class Lexer():
             match estado:
                 # estado inicial
                 case 1:
-                    if self._eh_digito(char_atual):
+                    if char_atual.isdigit():
                         estado = 2
-                    elif self._eh_letra(char_atual) or char_atual == '_':
+                    elif char_atual.isalpha() or char_atual == '_':
                         estado = 4
                     elif char_atual == '-':
                         estado = 6
@@ -142,7 +127,7 @@ class Lexer():
                 # Identificação de inteiros
                 #
                 case 2:
-                    if not self._eh_digito(char_atual):
+                    if not char_atual.isdigit():
                         estado = 3
                 case 3:
                     token_atual = token_atual[:-2]
@@ -157,7 +142,7 @@ class Lexer():
                 #
                 case 4:
                     # Se é diferente de digito, letra ou _ então passa de estado
-                    if not (self._eh_digito(char_atual) or self._eh_letra(char_atual) or char_atual == "_" or char_atual == "?"):
+                    if not (char_atual.isdigit() or char_atual.isalpha() or char_atual == "_" or char_atual == "?"):
                         estado = 5
 
                 case 5:
