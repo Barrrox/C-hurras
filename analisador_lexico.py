@@ -356,6 +356,15 @@ class Lexer():
         for tk in self.tokens:
             tk.tkprint()
 
+    def salvar_tokens(self, caminho_saida="tokens_saida.txt"):
+        """Salva a lista de tokens formatada em um arquivo."""
+        try:
+            with open(caminho_saida, "w") as f:
+                for tk in self.tokens:
+                    f.write(f"token: {tk.texto} | categoria: {tk.categoria} | linha: {tk.linha}\n")
+            print(f"Tokens salvos com sucesso em: {caminho_saida}")
+        except Exception as e:
+            print(f"ERRO ao salvar tokens: {e}")
 
 
 def main():
@@ -366,7 +375,8 @@ def main():
     lexer = Lexer(sys.argv[1])
     lexer.ler_arquivo()
     lexer.analisar_lexico()
-
+    lexer.print_tokens()
+    lexer.salvar_tokens()
 
 if __name__ == "__main__":
     main()
