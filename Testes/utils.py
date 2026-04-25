@@ -1,12 +1,14 @@
 import pytest
-import analisador_lexico
+from analisador_lexico import Lexer
 
 def executar_lexico(codigo):
     """
     Centraliza a chamada ao analisador léxico.
-    Facilita a refatoração futura para Lexer().tokenizar().
+    Cria uma instância da classe Lexer para processar o código fornecido como string.
     """
-    return analisador_lexico.analisar_lexico(codigo)
+    lexer = Lexer(None) # Passamos None pois o código será injetado diretamente
+    lexer.codigo = codigo
+    return lexer.analisar_lexico()
 
 def verificar_erro_lexico(codigo):
     """
