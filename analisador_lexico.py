@@ -62,6 +62,14 @@ class Lexer():
 
     # função do analisador léxico, se bem sucedida, retorna lista de tokens
     def analisar_lexico(self):
+        """Executa a análise léxica do código fonte utilizando um autômato de estados finito.
+
+        O método percorre o código caractere por caractere, realizando transições entre estados
+        nomeados para identificar tokens como identificadores, números, strings e operadores.
+
+        Returns:
+            list[Token]: Uma lista de objetos Token.
+        """
         self.codigo += "  "
 
         # representa token sendo lendo atualmente
@@ -190,7 +198,7 @@ class Lexer():
                     estado = ESTADO_INICIAL
 
                 #
-                # Comentários
+                # Comentários (--< ... >--)
                 #
                 case "LEU_MENOS":
                     if not char_atual == "-":
@@ -201,7 +209,8 @@ class Lexer():
                 #
                 # Operador "-"
                 #
-                case "ACEITA_OP_MENOS": # Estado mantido por compatibilidade se necessário, mas lógica unificada no ACEITA_OPERADOR
+                case "ACEITA_OP_MENOS": 
+                    
                     token_atual = token_atual[:-2]
                     self.tokens.append(Token(token_atual, "op", linha_atual))
 
@@ -227,7 +236,7 @@ class Lexer():
                     self.pc -= 1
                     estado = ESTADO_INICIAL
 
-                # Caractere
+                # Caracteres ('a')
                 case "LEU_ASPAS_SIMPLES":
                     if char_atual == '\'':
                         estado = ERRO_CARACTERE_VAZIO
@@ -250,7 +259,7 @@ class Lexer():
                     estado = ESTADO_INICIAL
                     self.pc -= 1
 
-                # String
+                # Strings ("churrasco")
                 case "LEU_ASPAS_DUPLAS":
                     if char_atual == '\"':
                         estado = ERRO_STRING_VAZIA
@@ -285,7 +294,7 @@ class Lexer():
                     else:
                         self._erro_lexico("ERRO: Operador OR é: || na linha " + str(linha_atual))
 
-                # Operadores "==", "!=", "<", ">", "<=", ">="
+                # Lógica de Atribuição e Operadores Relacionais (==, !=, <, >, <=, >=)
                 case "LEU_OP_SIMPLES":
                     if char_atual == '=':
                         estado = ACEITA_OPERADOR
@@ -305,7 +314,7 @@ class Lexer():
                     self.pc -= 2
                     estado = ESTADO_INICIAL
 
-                # Separador
+                # Lógica de Delimitadores: Vírgula
                 case "ACEITA_VIRGULA":
                     token_atual = token_atual[:-1]
                     self.tokens.append(Token(token_atual, ",", linha_atual))
@@ -313,7 +322,7 @@ class Lexer():
                     estado = ESTADO_INICIAL
                     self.pc -= 1
 
-                # Fim de linha
+                # Lógica de Delimitadores: Ponto e Vírgula
                 case "ACEITA_PONTO_VIRGULA":
                     token_atual = token_atual[:-1]
                     self.tokens.append(Token(token_atual, ";", linha_atual))
@@ -321,7 +330,7 @@ class Lexer():
                     estado = ESTADO_INICIAL
                     self.pc -= 1
 
-                # Inicio de bloco
+                # Início de bloco: Abre Chave
                 case "ACEITA_ABRE_CHAVE":
                     token_atual = token_atual[:-1]
                     self.tokens.append(Token(token_atual, "{", linha_atual))
@@ -329,7 +338,7 @@ class Lexer():
                     estado = ESTADO_INICIAL
                     self.pc -= 1
 
-                # Fim de bloco
+                # Fim de bloco: Fecha Chave
                 case "ACEITA_FECHA_CHAVE":
                     token_atual = token_atual[:-1]
                     self.tokens.append(Token(token_atual, "}", linha_atual))
@@ -353,11 +362,11 @@ class Lexer():
                     estado = ESTADO_INICIAL
                     self.pc -= 1
 
-                # Caractere inválido
+                # Erro: Caractere Inválido
                 case "ERRO_CARACTERE_INV":
                     self._erro_lexico("ERRO: caractere inválido '" + char_atual + "' na linha " + str(linha_atual))
 
-                # Caso padrão
+                # Estado Desconhecido: se chegou aqui é porque deu muuuuito ruim
                 case _:
                     self._erro_lexico("ERRO: meu amigo, tem alguma coisa de errado aqui")
 
