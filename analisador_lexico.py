@@ -71,8 +71,41 @@ class Lexer():
         # utilidades para identificar em qual linha o programa está
         relacao = self._relacao_linha_char()
 
-        # variaveis do automatão
-        estado = 1
+        # mapeamento de estados
+        ESTADO_INICIAL = "ESTADO_INICIAL"
+        LENDO_NUMERO = "LENDO_NUMERO"
+        ACEITA_NUMERO = "ACEITA_NUMERO"
+        LENDO_ID_RESERV = "LENDO_ID_RESERV"
+        ACEITA_ID_RESERV = "ACEITA_ID_RESERV"
+        LEU_MENOS = "LEU_MENOS"
+        ACEITA_OP_MENOS = "ACEITA_OP_MENOS"
+        LEU_DOIS_MENOS = "LEU_DOIS_MENOS"
+        LENDO_COMENTARIO = "LENDO_COMENTARIO"
+        LEU_FECHA_COMENTARIO = "LEU_FECHA_COMENTARIO"
+        ACEITA_ESPACO = "ACEITA_ESPACO"
+        LEU_ASPAS_SIMPLES = "LEU_ASPAS_SIMPLES"
+        ERRO_CARACTERE_VAZIO = "ERRO_CARACTERE_VAZIO"
+        LENDO_CARACTERE = "LENDO_CARACTERE"
+        ACEITA_CARACTERE = "ACEITA_CARACTERE"
+        LEU_ASPAS_DUPLAS = "LEU_ASPAS_DUPLAS"
+        ERRO_STRING_VAZIA = "ERRO_STRING_VAZIA"
+        LENDO_STRING = "LENDO_STRING"
+        ACEITA_STRING = "ACEITA_STRING"
+        LEU_E_COMERCIAL = "LEU_E_COMERCIAL"
+        LEU_BARRA_VERTICAL = "LEU_BARRA_VERTICAL"
+        LEU_OP_SIMPLES = "LEU_OP_SIMPLES"
+        ACEITA_OPERADOR = "ACEITA_OPERADOR"
+        ACEITA_IGUAL = "ACEITA_IGUAL"
+        ACEITA_VIRGULA = "ACEITA_VIRGULA"
+        ACEITA_PONTO_VIRGULA = "ACEITA_PONTO_VIRGULA"
+        ACEITA_ABRE_CHAVE = "ACEITA_ABRE_CHAVE"
+        ACEITA_FECHA_CHAVE = "ACEITA_FECHA_CHAVE"
+        ACEITA_ABRE_PAR = "ACEITA_ABRE_PAR"
+        ACEITA_FECHA_PAR = "ACEITA_FECHA_PAR"
+        ERRO_CARACTERE_INV = "ERRO_CARACTERE_INV"
+
+        # variavel do automatão
+        estado = ESTADO_INICIAL
 
         # E QUE COMECEM OS JOGOS!
         while self.pc < len(self.codigo):
@@ -83,69 +116,65 @@ class Lexer():
 
             match estado:
                 # estado inicial
-                case 1:
+                case "ESTADO_INICIAL":
                     if char_atual.isdigit():
-                        estado = 2
+                        estado = LENDO_NUMERO
                     elif char_atual.isalpha() or char_atual == '_':
-                        estado = 4
+                        estado = LENDO_ID_RESERV
                     elif char_atual == '-':
-                        estado = 6
-                    elif char_atual == ' ':
-                        estado = 11
-                    elif char_atual == '\t':
-                        estado = 11
-                    elif char_atual == '\n':
-                        estado = 11
+                        estado = LEU_MENOS
+                    elif char_atual in [' ', '\t', '\n']:
+                        estado = ACEITA_ESPACO
                     elif char_atual == '\'':
-                        estado = 12
+                        estado = LEU_ASPAS_SIMPLES
                     elif char_atual == '\"':
-                        estado = 16
-                    elif char_atual == '+' or char_atual == '/' or char_atual == '%' or char_atual == '*':
-                        estado = 23
+                        estado = LEU_ASPAS_DUPLAS
+                    elif char_atual in ['+', '/', '%', '*']:
+                        estado = ACEITA_OPERADOR
                     elif char_atual == '&':
-                        estado = 20
+                        estado = LEU_E_COMERCIAL
                     elif char_atual == '|':
-                        estado = 21
-                    elif char_atual == '=' or char_atual == '!' or char_atual == '<' or char_atual == '>':
-                        estado = 22
+                        estado = LEU_BARRA_VERTICAL
+                    elif char_atual in ['=', '!', '<', '>']:
+                        estado = LEU_OP_SIMPLES
                     elif char_atual == ',':
-                        estado = 25
+                        estado = ACEITA_VIRGULA
                     elif char_atual == ';':
-                        estado = 26
+                        estado = ACEITA_PONTO_VIRGULA
                     elif char_atual == '{':
-                        estado = 27
+                        estado = ACEITA_ABRE_CHAVE
                     elif char_atual == '}':
-                        estado = 28
+                        estado = ACEITA_FECHA_CHAVE
                     elif char_atual == '(':
-                        estado = 29
+                        estado = ACEITA_ABRE_PAR
                     elif char_atual == ')':
-                        estado = 30
+                        estado = ACEITA_FECHA_PAR
                     else:
-                        estado = 31
+                        estado = ERRO_CARACTERE_INV
 
                 #
                 # Identificação de inteiros
                 #
-                case 2:
+                case "LENDO_NUMERO":
                     if not char_atual.isdigit():
-                        estado = 3
-                case 3:
+                        estado = ACEITA_NUMERO
+                case "ACEITA_NUMERO":
                     token_atual = token_atual[:-2]
                     self.tokens.append(Token(token_atual, "int", linha_atual))
 
                     token_atual = ""
                     self.pc -= 2
-                    estado = 1
+                    estado = ESTADO_INICIAL
 
                 #
                 # Identificação de ID ou reservadas
                 #
-                case 4:
+                case "LENDO_ID_RESERV":
                     # Se é diferente de digito, letra ou _ então passa de estado
                     if not (char_atual.isdigit() or char_atual.isalpha() or char_atual == "_" or char_atual == "?"):
-                        estado = 5
+                        estado = ACEITA_ID_RESERV
 
-                case 5:
+                case "ACEITA_ID_RESERV":
                     token_atual = token_atual[:-2]
 
                     if token_atual in self.RESERVADAS:
@@ -158,173 +187,174 @@ class Lexer():
 
                     token_atual = ""
                     self.pc -= 2
-                    estado = 1
+                    estado = ESTADO_INICIAL
 
                 #
                 # Comentários
                 #
-                case 6:
+                case "LEU_MENOS":
                     if not char_atual == "-":
-                        estado = 7
+                        estado = ACEITA_OP_MENOS
                     elif char_atual == "-":
-                        estado = 8
+                        estado = LEU_DOIS_MENOS
+
                 #
                 # Operador "-"
                 #
-                case 7:
+                case "ACEITA_OP_MENOS": # Estado mantido por compatibilidade se necessário, mas lógica unificada no ACEITA_OPERADOR
                     token_atual = token_atual[:-2]
                     self.tokens.append(Token(token_atual, "op", linha_atual))
 
                     token_atual = ""
                     self.pc -= 2
-                    estado = 1
+                    estado = ESTADO_INICIAL
 
-                case 8:
+                case "LEU_DOIS_MENOS":
                     if char_atual == "<":
-                        estado = 9
+                        estado = LENDO_COMENTARIO
                     else:
                         self._erro_lexico("ERRO:\n\tComentário mal aberto na linha " + str(linha_atual) + ". Você quis dizer:\n\t\t--<")
-                case 9:
+                case "LENDO_COMENTARIO":
                     if char_atual == ">":
-                        estado = 10
-                case 10:
+                        estado = LEU_FECHA_COMENTARIO
+                case "LEU_FECHA_COMENTARIO":
                     if not char_atual == "-":
-                        estado = 9
+                        estado = LENDO_COMENTARIO
                     else:
-                        estado = 11
-                case 11:
+                        estado = ACEITA_ESPACO
+                case "ACEITA_ESPACO":
                     token_atual = ""
                     self.pc -= 1
-                    estado = 1
+                    estado = ESTADO_INICIAL
 
                 # Caractere
-                case 12:
+                case "LEU_ASPAS_SIMPLES":
                     if char_atual == '\'':
-                        estado = 13
+                        estado = ERRO_CARACTERE_VAZIO
                     elif char_atual == '\n':
-                        estado = 13
+                        estado = ERRO_CARACTERE_VAZIO
                     else:
-                        estado = 14
-                case 13:
+                        estado = LENDO_CARACTERE
+                case "ERRO_CARACTERE_VAZIO":
                     self._erro_lexico("ERRO: caractere vazio na linha " + str(linha_atual))
-                case 14:
+                case "LENDO_CARACTERE":
                     if not char_atual == '\'':
                         token_atual = token_atual[:-1]
                         self._erro_lexico("ERRO: caractere não fechado na linha " + str(linha_atual) + ". Você quis dizer:\n\t" + str(token_atual) + "\'")
                     else:
-                        estado = 15
-                case 15:
+                        estado = ACEITA_CARACTERE
+                case "ACEITA_CARACTERE":
                     token_atual = token_atual[:-1]
                     self.tokens.append(Token(token_atual, "char", linha_atual))
                     token_atual = ""
-                    estado = 1
+                    estado = ESTADO_INICIAL
                     self.pc -= 1
 
                 # String
-                case 16:
+                case "LEU_ASPAS_DUPLAS":
                     if char_atual == '\"':
-                        estado = 17
+                        estado = ERRO_STRING_VAZIA
                     elif char_atual == '\n':
-                        estado = 17
+                        estado = ERRO_STRING_VAZIA
                     else:
-                        estado = 18
-                case 17:
+                        estado = LENDO_STRING
+                case "ERRO_STRING_VAZIA":
                     self._erro_lexico("ERRO: string vazia ou inválida na linha " + str(linha_atual))
-                case 18:
+                case "LENDO_STRING":
                     if char_atual == '\"':
-                        estado = 19
+                        estado = ACEITA_STRING
                     elif char_atual == '\n':
-                        estado = 17
-                case 19:
+                        estado = ERRO_STRING_VAZIA
+                case "ACEITA_STRING":
                     token_atual = token_atual[:-1]
                     self.tokens.append(Token(token_atual, "string", linha_atual))
                     token_atual = ""
-                    estado = 1
+                    estado = ESTADO_INICIAL
                     self.pc -= 1
 
                 # Operador "&&"
-                case 20:
+                case "LEU_E_COMERCIAL":
                     if char_atual == '&':
-                        estado = 23
+                        estado = ACEITA_OPERADOR
                     else:
                         self._erro_lexico("ERRO: Operador AND é: && na linha " + str(linha_atual))
                 # Operador "||"
-                case 21:
+                case "LEU_BARRA_VERTICAL":
                     if char_atual == '|':
-                        estado = 23
+                        estado = ACEITA_OPERADOR
                     else:
                         self._erro_lexico("ERRO: Operador OR é: || na linha " + str(linha_atual))
 
                 # Operadores "==", "!=", "<", ">", "<=", ">="
-                case 22:
+                case "LEU_OP_SIMPLES":
                     if char_atual == '=':
-                        estado = 23
+                        estado = ACEITA_OPERADOR
                     else:
-                        estado = 24
-                case 23:
+                        estado = ACEITA_IGUAL
+                case "ACEITA_OPERADOR":
                     token_atual = token_atual[:-1]
                     self.tokens.append(Token(token_atual, "op", linha_atual))
                     token_atual = ""
-                    estado = 1
+                    estado = ESTADO_INICIAL
                     self.pc -= 1
-                case 24:
+                case "ACEITA_IGUAL":
                     token_atual = token_atual[:-2]
                     self.tokens.append(Token(token_atual, "op", linha_atual))
 
                     token_atual = ""
                     self.pc -= 2
-                    estado = 1
+                    estado = ESTADO_INICIAL
 
                 # Separador
-                case 25:
+                case "ACEITA_VIRGULA":
                     token_atual = token_atual[:-1]
                     self.tokens.append(Token(token_atual, ",", linha_atual))
                     token_atual = ""
-                    estado = 1
+                    estado = ESTADO_INICIAL
                     self.pc -= 1
 
                 # Fim de linha
-                case 26:
+                case "ACEITA_PONTO_VIRGULA":
                     token_atual = token_atual[:-1]
                     self.tokens.append(Token(token_atual, ";", linha_atual))
                     token_atual = ""
-                    estado = 1
+                    estado = ESTADO_INICIAL
                     self.pc -= 1
 
                 # Inicio de bloco
-                case 27:
+                case "ACEITA_ABRE_CHAVE":
                     token_atual = token_atual[:-1]
                     self.tokens.append(Token(token_atual, "{", linha_atual))
                     token_atual = ""
-                    estado = 1
+                    estado = ESTADO_INICIAL
                     self.pc -= 1
 
                 # Fim de bloco
-                case 28:
+                case "ACEITA_FECHA_CHAVE":
                     token_atual = token_atual[:-1]
                     self.tokens.append(Token(token_atual, "}", linha_atual))
                     token_atual = ""
-                    estado = 1
+                    estado = ESTADO_INICIAL
                     self.pc -= 1
 
                 # (
-                case 29:
+                case "ACEITA_ABRE_PAR":
                     token_atual = token_atual[:-1]
                     self.tokens.append(Token(token_atual, "(", linha_atual))
                     token_atual = ""
-                    estado = 1
+                    estado = ESTADO_INICIAL
                     self.pc -= 1
 
                 # )
-                case 30:
+                case "ACEITA_FECHA_PAR":
                     token_atual = token_atual[:-1]
                     self.tokens.append(Token(token_atual, ")", linha_atual))
                     token_atual = ""
-                    estado = 1
+                    estado = ESTADO_INICIAL
                     self.pc -= 1
 
                 # Caractere inválido
-                case 31:
+                case "ERRO_CARACTERE_INV":
                     self._erro_lexico("ERRO: caractere inválido '" + char_atual + "' na linha " + str(linha_atual))
 
                 # Caso padrão
