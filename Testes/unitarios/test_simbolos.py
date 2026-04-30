@@ -1,22 +1,17 @@
 import pytest
-from analisador_lexico import analisar_lexico
+import analisador_lexico
+from testes.utils import executar_lexico, validar_token
 
 
-@pytest.mark.parametrize("entrada", [
-    "-", "+", "*", "/", "%",  # Aritméticos
-    "&&", "||",               # Lógicos
-    "==", "!=", "<=", ">=", "=", "<", ">" # Relacionais e Atribuição
-])
-def test_tipo_operador(entrada):
-    tokens = analisar_lexico(entrada)
+@pytest.mark.parametrize("entrada", ["+", "-", "*", "/", "%", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "="])
+def test_operadores(entrada):
+    tokens = executar_lexico(entrada)
     assert len(tokens) == 1
-    assert tokens[0].tipo == "op"
-    assert tokens[0].texto == entrada
+    validar_token(tokens[0], entrada, "op")
 
-@pytest.mark.parametrize("entrada", [",", ";", "{", "}"])
-def test_tipo_delimitador(entrada):
-    tokens = analisar_lexico(entrada)
+
+@pytest.mark.parametrize("entrada", [",", ";", "{", "}", "(", ")"])
+def test_delimitadores(entrada):
+    tokens = executar_lexico(entrada)
     assert len(tokens) == 1
-    # O tipo do delimitador é o próprio caractere
-    assert tokens[0].tipo == entrada 
-    assert tokens[0].texto == entrada
+    validar_token(tokens[0], entrada, entrada)

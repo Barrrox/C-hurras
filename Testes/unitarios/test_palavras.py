@@ -1,21 +1,22 @@
 import pytest
-from analisador_lexico import analisar_lexico
+import analisador_lexico
+from testes.utils import executar_lexico, validar_token
 
-@pytest.mark.parametrize("entrada", ["minha_var", "_var2", "variavel_123"])
-def test_tipo_identificador(entrada):
-    tokens = analisar_lexico(entrada)
-    assert len(tokens) == 1
-    assert tokens[0].tipo == "id"
-    assert tokens[0].texto == entrada
 
-@pytest.mark.parametrize("entrada", [
-    "vaca", "frango", "porco", "rodizio", "grelhar", 
-    "ta_no_ponto?", "queimou", "ponto_certo", "queimado", 
-    "espetar", "servir", "servido"
-])
-def test_tipo_palavra_reservada(entrada):
-    tokens = analisar_lexico(entrada)
+@pytest.mark.parametrize("entrada", ["vaca123", "picanha", "_carne", "espeto_"])
+def test_identificadores(entrada):
+    tokens = executar_lexico(entrada)
     assert len(tokens) == 1
-    # O tipo da palavra reservada é o próprio texto dela
-    assert tokens[0].tipo == entrada 
-    assert tokens[0].texto == entrada
+    validar_token(tokens[0], entrada, "id")
+
+@pytest.mark.parametrize("entrada", ["rodizio", "grelhar", "ta_no_ponto?", "queimou", "ponto_certo", "queimado", "espetar", "servir", "servido"])
+def test_reservadas(entrada):
+    tokens = executar_lexico(entrada)
+    assert len(tokens) == 1
+    validar_token(tokens[0], entrada, entrada)
+
+@pytest.mark.parametrize("entrada", ["vaca", "frango", "porco"])
+def test_tipos(entrada):
+    tokens = executar_lexico(entrada)
+    assert len(tokens) == 1
+    validar_token(tokens[0], entrada, "tipo")
