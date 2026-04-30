@@ -160,8 +160,6 @@ def analisar_lexico(codigo):
                 if not (eh_digito(char_atual) or eh_letra(char_atual) or char_atual == "_" or char_atual == "?"):
                     estado = 5
 
-                # falta lidar com erro aqui
-
             case 5:
                 token_atual = token_atual[:-2]  #
 
