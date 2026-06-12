@@ -7,7 +7,7 @@ TOKENS_TESTE = [
     ("123", "int"),
     ("vaca", "tipo"),
     ("id_teste", "id"),
-    ("+", "op"),
+    ("+", "+"),
     (";", ";")
 ]
 
@@ -25,12 +25,12 @@ def test_interacao_com_espaco(tk1, tk2):
     validar_token(tokens[1], txt2, tipo2)
 
 @pytest.mark.parametrize("tk1, tk2", [
-    (("+", "op"), ("123", "int")),      # Operator + Number (+123)
-    (("123", "int"), ("+", "op")),      # Number + Operator (123+)
+    (("+", "+"), ("123", "int")),      # Operator + Number (+123)
+    (("123", "int"), ("+", "+")),      # Number + Operator (123+)
     (("vaca", "tipo"), (";", ";")),     # ID + Semicolon (vaca;)
     ((";", ";"), ("vaca", "tipo")),     # Semicolon + ID (;vaca)
-    (("+", "op"), ("vaca", "tipo")),    # Operator + ID (+vaca)
-    (("vaca", "tipo"), ("+", "op")),    # ID + Operator (vaca+)
+    (("+", "+"), ("vaca", "tipo")),    # Operator + ID (+vaca)
+    (("vaca", "tipo"), ("+", "+")),    # ID + Operator (vaca+)
     (("{", "{"), ("123", "int")),       # Delimiter + Number ({123)
     (("123", "int"), ("}", "}")),       # Number + Delimiter (123})
     (("id_teste", "id"), (";", ";")),   # ID + Semicolon (id_teste;)
@@ -57,7 +57,7 @@ def test_tres_tokens_colados():
     
     assert len(tokens) == 3
     validar_token(tokens[0], "123", "int")
-    validar_token(tokens[1], "+", "op")
+    validar_token(tokens[1], "+", "+")
     validar_token(tokens[2], "vaca", "tipo")
 
 def test_id_ponto_virgula_numero():
@@ -76,9 +76,9 @@ def test_sequencia_complexa_sem_espaco():
     tokens = executar_lexico(codigo)
     
     assert len(tokens) == 4
-    validar_token(tokens[0], "+", "op")
+    validar_token(tokens[0], "+", "+")
     validar_token(tokens[1], "123", "int")
-    validar_token(tokens[2], "+", "op")
+    validar_token(tokens[2], "+", "+")
     validar_token(tokens[3], "vaca", "tipo")
 
 def test_delimitadores_aninhados():

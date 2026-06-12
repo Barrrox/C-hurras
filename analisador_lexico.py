@@ -212,7 +212,7 @@ class Lexer():
                 case "ACEITA_OP_MENOS": 
                     
                     token_atual = token_atual[:-2]
-                    self.tokens.append(Token(token_atual, "op", linha_atual))
+                    self.tokens.append(Token(token_atual, token_atual, linha_atual))
 
                     token_atual = ""
                     self.pc -= 2
@@ -302,13 +302,13 @@ class Lexer():
                         estado = ACEITA_IGUAL
                 case "ACEITA_OPERADOR":
                     token_atual = token_atual[:-1]
-                    self.tokens.append(Token(token_atual, "op", linha_atual))
+                    self.tokens.append(Token(token_atual, token_atual, linha_atual))
                     token_atual = ""
                     estado = ESTADO_INICIAL
                     self.pc -= 1
                 case "ACEITA_IGUAL":
                     token_atual = token_atual[:-2]
-                    self.tokens.append(Token(token_atual, "op", linha_atual))
+                    self.tokens.append(Token(token_atual, token_atual, linha_atual))
 
                     token_atual = ""
                     self.pc -= 2
