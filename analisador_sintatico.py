@@ -88,7 +88,7 @@ def analisador_sintatico(tokens, tabela):
             if ptop == simbolo:
                 pilha.pop()
                 tpointer += 1
-            else
+            else:
                 pass #ERRO
         else:
             if tabela[nao_terminal(ptop)][terminal(simbolo)] != []:
@@ -99,3 +99,50 @@ def analisador_sintatico(tokens, tabela):
             else:
                 pass #ERRO
                 
+class ParserSLR():
+
+
+    def __init__(self, tabela_action, tabela_goto, gramatica):
+        """O ParserSLR tem os métodos para realizar a analise sintática do código.
+
+        Deve receber na sua inicialização as tabelas ACTION e GOTO e a gramática (regras de produção)
+
+        Args:
+            tabela_action (_type_): _description_
+            tabela_goto (_type_): _description_
+            gramatica (_type_): _description_
+        """
+
+        self.tabela_action = tabela_action
+        self.tabela_goto = tabela_goto
+        self.regras = gramatica
+        self.pilha = []
+        self.tokens = []
+        self.tpointer = 0
+
+    def analisar_sintaxe(lista_tokens : list[Token]) -> bool:
+        """Realiaza a analise sintática a partir da lista de tokens. Aceita (True) se o código estiver sintaticamente correto, caso contrário rejeita (False). Quando célula vazia na tabela ACTION, ativa o modo pânico.
+
+        Args:
+            lista_tokens (list[Token]): Lista de tokens vinda do analisador léxico.
+
+        Returns:
+            bool: True se aceitou, False se encontrou erros sintáticos, mesmo que recupere no modo pânico.
+        """
+
+        pass
+
+    def modo_panico(self) -> None:
+        """ Ativa o modo pânico, alterando o estado interno da analise. Segue o processo:
+            1. Identifica falha: Lê token atual via self.tokens[self.tpointer].
+            2. Alerta: Imprime mensagem de erro usando linha e texto do token atual.
+            3. Descarta fita: Avança self.tpointer iterativamente até achar token de sincronização.
+            4. Limpa pilha: Executa self.pilha.pop() até topo da pilha possuir transição válida na tabela ACTION para o token de sincronização.
+        """
+
+        pass
+
+
+
+
+
