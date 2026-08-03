@@ -1,0 +1,35 @@
+--<
+Sistema de RNG pra usar
+	Para obter valor aleatorio, use como:
+		D6 = rand%6 + 1;
+		rand = (rand*13+7)%256;
+>-
+vaca rand;
+rand = 42; --<Insira a SEED aqui!>-
+rand = (rand*13+7)%256;
+
+--<Variaveis>-
+vaca numero_faces;
+vaca numero_dados;
+
+--<Ler dados do usuario>-
+servir "Insira quantas faces o dado possui: ";
+espetar numero_faces;
+
+servir "Insira o numero de dados jogados: ";
+espetar numero_dados;
+
+--<Realizar processo>-
+vaca somatorio;
+vaca dado;
+
+grelhar i numero_dados 
+{
+	dado = rand%numero_faces + 1;
+	rand = (rand*13+7)%256;
+	somatorio = somatorio + dado;
+	
+	servir dado, ", ";
+}
+
+servir servido , "Total: ", somatorio, servido;

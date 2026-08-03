@@ -1,0 +1,19 @@
+--<Programa que imprime uma arvore de natal no terminal com altura definida pelo usuario>-
+vaca altura_arvore;
+vaca blanks;
+
+espetar altura_arvore;
+blanks = altura_arvore;
+
+grelhar i altura_arvore
+{
+	grelhar j blanks {servir " ";}
+	grelhar j altura_arvore-blanks {servir "*";}
+	
+	ta_no_ponto? i == 0 {servir "$";}
+	queimou {servir "|";}
+	
+	grelhar j altura_arvore-blanks {servir "*";}
+	servir servido;
+	blanks = blanks - 1;
+}

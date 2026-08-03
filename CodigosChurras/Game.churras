@@ -1,0 +1,84 @@
+--<Flappy Bird em churras, é complicado sem função e vetor, mas vamo nessa>-
+
+--<Codigo ASCII do ESC, usado pelo ANSI>-
+frango ESC;
+ESC = 27;
+
+--<Sistema de RNG pros canos>-
+vaca rand;
+rand = 42; --<SEED>-
+rand = (rand*13+7)%256;
+
+--<Variaveis de jogo>-
+--<Resolução do jogo: 30x20 caracteres>-
+frango Input;
+vaca PlayerX;
+vaca PlayerY;
+vaca CanoX;
+vaca CanoY;
+porco JogoRodando;
+PlayerX = 10;
+PlayerY = 10;
+CanoX = 30;
+CanoY = rand%12 + 4; rand = (rand*13+7)%256;
+JogoRodando = ponto_certo;
+
+--<Executar jogo>-
+rodizio JogoRodando
+{
+	--<Ler input>-
+	espetar Input;
+	
+	--<Atualizar player>-
+	ta_no_ponto? Input == 'f'
+	{
+		PlayerY = PlayerY-2;
+	}
+	queimou
+	{
+		PlayerY = PlayerY+1;
+	}
+	
+	--<Atualizar cano>-
+	CanoX = CanoX-1;
+	ta_no_ponto? CanoX < 0
+	{
+		CanoX = 30;
+		CanoY = rand%12 + 4; rand = (rand*13+7)%256;
+	}
+	
+	--<Detectar colisao>-
+	ta_no_ponto? PlayerX == CanoX && PlayerY <= CanoY-2 && PlayerY >= CanoY+2
+	{
+		JogoRodando = queimado;
+	}
+	
+	--<Rendenizar jogo pro terminal>-
+	servir ESC, "_[H", ESC, "_[2J" --<Limpar Tela>-
+	grelhar Linha 20
+	{
+		grelhar Coluna 30
+		{
+			--<Player>-
+			ta_no_ponto? Linha == PlayerY && Coluna == PlayerX
+			{
+				servir ESC, "_[33m"; --<Amarelo>-
+				servir "O>";
+			}
+			
+			--<Canos>-
+			ta_no_ponto? Coluna == CanoY && (Linha <= CanoY-2 && Linha >= CanoY+2)
+			{
+				servir ESC, "_[32m"; --<Verde>-
+				servir "##";
+			}
+			
+			--<Céu>-
+			ta_no_ponto? !(Linha == PlayerY && Coluna == PlayerX) && !(Coluna == CanoY && (Linha <= CanoY-2 && Linha >= CanoY+2))
+			{
+				servir "  ";
+			}
+		}
+		servir servido;
+	}
+}
