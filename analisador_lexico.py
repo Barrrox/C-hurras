@@ -1,5 +1,6 @@
 # a única biblioteca externa pra receber argumento de linha de comando
 import sys
+import os
 
 # classe para representar token
 class Token:
@@ -380,9 +381,10 @@ class Lexer():
         for tk in self.tokens:
             tk.tkprint()
 
-    def salvar_tokens(self, caminho_saida="tokens_saida.txt"):
+    def salvar_tokens(self, caminho_saida="output/tokens_saida.txt"):
         """Salva a lista de tokens formatada em um arquivo."""
         try:
+            os.makedirs(os.path.dirname(caminho_saida), exist_ok=True)
             with open(caminho_saida, "w") as f:
                 for tk in self.tokens:
                     f.write(f"token: {tk.texto} | categoria: {tk.categoria} | linha: {tk.linha}\n")
