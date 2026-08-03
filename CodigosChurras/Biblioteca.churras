@@ -1,0 +1,66 @@
+--<
+Sistema de RNG pra usar
+	Para obter valor aleatorio, use como:
+		D6 = rand%6 + 1;
+		rand = (rand*13+7)%256;
+>-
+vaca rand;
+rand = 42; --<Insira a SEED aqui!>-
+rand = (rand*13+7)%256;
+
+--<Exemplo de uso>-
+vaca dado;
+dado = rand%6 + 1;
+rand = (rand*13+7)%256;
+
+--<
+Sistema para criar imagens
+	Para obter uma imagem, copie o bloco de código, e implemente as condições onde indicado
+>-
+vaca WID;
+vaca HEI;
+WID = 854; HEI = 480; --<Defina a resolucao de saida aqui!>-
+
+
+
+vaca R;
+vaca G;
+vaca B;
+servir "P3", servido , WID, " ", HEI, servido , "255", servido;
+grelhar rY HEI
+{
+	grelhar rX WID
+	{
+		--<
+		Defina as condicoes do render aqui!
+		
+		Exemplo:
+		ta_no_ponto? playerX == 3 && playerY == 4
+		{R = 32;G = 125;B = 255;}
+		
+		>-
+		
+		servir R, " ", G, " ", B, " ";
+		R = 0;
+		G = 0;
+		B = 0;
+	}
+	servir servido;
+}
+
+--<
+Sistema para ANSI, quer ter um terminal com corzinha bonita?, usa isso daqui!
+	Para usar, apenas copie e cole o bloco especifico quando quiser mudar de corzinha na saida
+>-
+frango ESC;
+ESC = 27; --<Codigo ASCII do ESC, usado pelo ANSI>-
+
+servir ESC, "_[30m"; --<Preto>-
+servir ESC, "_[31m"; --<Vermelho>-
+servir ESC, "_[32m"; --<Verde>-
+servir ESC, "_[33m"; --<Amarelo>-
+servir ESC, "_[34m"; --<Azul>-
+servir ESC, "_[35m"; --<Magenta>-
+servir ESC, "_[36m"; --<Ciano>-
+servir ESC, "_[37m"; --<Branco>-
+servir ESC, "_[H", ESC, "_[2J" --<Limpar Tela>-
