@@ -102,26 +102,29 @@ def analisador_sintatico(tokens, tabela):
 class ParserSLR():
 
 
-    def __init__(self, tabela_action, tabela_goto, gramatica):
+    def __init__(self):
         """O ParserSLR tem os métodos para realizar a analise sintática do código.
-
-        Deve receber na sua inicialização as tabelas ACTION e GOTO e a gramática (regras de produção)
-
-        Args:
-            tabela_action (_type_): _description_
-            tabela_goto (_type_): _description_
-            gramatica (_type_): _description_
         """
 
-        self.tabela_action = tabela_action
-        self.tabela_goto = tabela_goto
-        self.regras = gramatica
         self.pilha = []
         self.tokens = []
         self.tpointer = 0
 
+    def get_tabelaSLR():
+        """Função para pegar a tabela SLR. Carrega do disco se a tabela já foi salva e a gramática não sofreu alteração, caso contrário, cria a tabela SLR. 
+
+        Returns:
+            _type_: _description_
+        """
+
+        # Se a tabela SLR já existe (salva no disco) a gramática não foi alterada, da load.
+
+        # Se a tabela SLR não existe ou a gramática foi alterada, chama a função para gerar uma nova tabelaSLR.
+
+        return tabelaSLR
+
     def analisar_sintaxe(self, lista_tokens : list[Token]) -> bool:
-        """Realiaza a analise sintática a partir da lista de tokens. Aceita (True) se o código estiver sintaticamente correto, caso contrário rejeita (False). Quando célula vazia na tabela ACTION, ativa o modo pânico.
+        """Interface para realizar a analise sintática Bottom-up a partir da lista de tokens. Aceita (True) se o código estiver sintaticamente correto, caso contrário rejeita (False). Quando célula vazia na tabela ACTION, ativa o modo pânico.
 
         Args:
             lista_tokens (list[Token]): Lista de tokens vinda do analisador léxico.
@@ -130,7 +133,17 @@ class ParserSLR():
             bool: True se aceitou, False se encontrou erros sintáticos, mesmo que recupere no modo pânico.
         """
 
+        # Verificar se tabelaSLR existe e gramática não foi alterada
+        tabelaSLR = self.get_tabelaSLR()
+
+        return self.analisar_sintaxeAUX(lista_tokens, tabelaSLR)
+
         pass
+
+    def analisar_sintaxeAUX(self, lista_tokens : list[Token], tabelaSLR) -> bool:
+
+
+        return True
 
     def modo_panico(self) -> None:
         """ Ativa o modo pânico, alterando o estado interno da analise. Segue o processo:
@@ -142,7 +155,38 @@ class ParserSLR():
 
         pass
 
+def bottomUpParse(tokens, ACTION, GOTO, productions):
+    # tokens: list of terminals, last element is "$"
+    # productions: list of rules A → β (used for output and length lookup)
 
+    stack = empty stack
+    push state 0 onto stack
 
+    ip = 0                     // points to current input symbol
 
-
+    while true:
+        s = top of stack       // current state
+        a = tokens[ip]         // current input symbol
+        
+        if ACTION[s, a] == "shift t":
+            push a             // push the terminal (optional)
+            push t             // push the new state
+            ip = ip + 1
+        
+        else if ACTION[s, a] == "reduce A → β":
+            // pop 2 * |β| items: for each symbol in β, pop state and symbol
+            for i = 1 to length(β):
+                pop()          // pop state
+                pop()          // pop grammar symbol
+            s_prime = top of stack   // exposed state after popping
+            push A                     // push the nonterminal (optional)
+            push GOTO[s_prime, A]      // push the new state
+            output "reduce by A → β"   // build parse tree / AST node here
+        
+        else if ACTION[s, a] == "accept":
+            output "parsing successful"
+            break
+        
+        else:
+            // error entry in table
+            report syntax error and attempt recovery (or halt)
