@@ -19,14 +19,9 @@ class Lexer():
     ]
     TIPOS_VARIAVEIS = ["vaca", "frango", "porco"]
 
-    def __init__(self, caminho_codigo):
+    def __init__(self):
         """Classe Lexer gerencia o processo de análise léxica.
-
-        Args:
-            caminho_codigo (str): caminho relativo ou absoluto para o arquivo contendo o código .churras
         """
-        self.caminho_codigo = caminho_codigo
-        self.codigo = "" # Guardará a string do código bruto todo
         self.pc = 0 # Ponteiro de char para a leitura do código
         self.tokens : list[Token] = []  # Lista com os tokens
 
@@ -36,10 +31,10 @@ class Lexer():
         exit(0)
 
     # retorna vetor com a relação entre char atual e linha de código
-    def _relacao_linha_char(self):
+    def _relacao_linha_char(self, codigo):
         relacao = []
-        for i in range(len(self.codigo)):
-            if self.codigo[i] == '\n':
+        for i in range(len(codigo)):
+            if codigo[i] == '\n':
                 relacao.append(i)
         return relacao
 
@@ -53,14 +48,24 @@ class Lexer():
                 break
         return linha
 
-    # 1. le o arquivo de código e retorna como um vetor de caracteres
-    def ler_arquivo(self):
-        with open(self.caminho_codigo, "r") as arquivo:
-            self.codigo = arquivo.read()
-        return self.codigo
+    def analisar_lexico(self, codigo):
+        """Interface para executar o verdadeiro analisador lexico. Retorna a lista de tokens
+
+        Args:
+            codigo (string): string de caracteres 
+
+        Returns:
+            list[Token]: Lista com os tokens
+        """
+
+        lista_tokens = self.analisar_lexico_aux(codigo)
+        self.print_tokens()
+        self.salvar_tokens()
+
+        return lista_tokens
 
     # função do analisador léxico, se bem sucedida, retorna lista de tokens
-    def analisar_lexico(self):
+    def analisar_lexico_aux(self, codigo):
         """Executa a análise léxica do código fonte utilizando um autômato de estados finito.
 
         O método percorre o código caractere por caractere, realizando transições entre estados
@@ -69,14 +74,14 @@ class Lexer():
         Returns:
             list[Token]: Uma lista de objetos Token.
         """
-        self.codigo += "  "
+        codigo += "  "
 
         # representa token sendo lendo atualmente
         char_atual = ''
         token_atual = ""
 
         # utilidades para identificar em qual linha o programa está
-        relacao = self._relacao_linha_char()
+        relacao = self._relacao_linha_char(codigo)
 
         # mapeamento de estados
         ESTADO_INICIAL = "ESTADO_INICIAL"
@@ -115,8 +120,8 @@ class Lexer():
         estado = ESTADO_INICIAL
 
         # E QUE COMECEM OS JOGOS!
-        while self.pc < len(self.codigo):
-            char_atual = self.codigo[self.pc]
+        while self.pc < len(codigo):
+            char_atual = codigo[self.pc]
             token_atual += char_atual
 
             linha_atual = self._linha_char(self.pc, relacao) + 1

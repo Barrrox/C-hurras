@@ -8,23 +8,15 @@ class compilador(): # Classe compilador
     def __init__(self):
         """Classe que instância as outras classes e orquestra a compilação
         """
-        self.Lexer = Lexer(sys.argv[1])
+        self.lexer = Lexer()
+        self.parser = ParserSLR(None, None, None)
         pass
 
-    def compilar(self):
+    def compilar(self, codigo):
 
-        if len(sys.argv) != 2:
-            print("ERRO: arquivo não informado, use o analisador como:\n\tpython analisador_lexico.py codigo.churras")
-            return
-            
-        self.Lexer.ler_arquivo()
-        self.Lexer.analisar_lexico()
-        self.Lexer.print_tokens()
-        self.Lexer.salvar_tokens()
+        lista_tokens = self.lexer.analisar_lexico(codigo)
 
-if __name__ == "__main__":
+        self.parser.analisar_sintaxe(lista_tokens)
 
-    churras = compilador()
-    churras.compilar()
     
 

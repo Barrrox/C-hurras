@@ -120,7 +120,7 @@ class ParserSLR():
         self.tokens = []
         self.tpointer = 0
 
-    def analisar_sintaxe(lista_tokens : list[Token]) -> bool:
+    def analisar_sintaxe(self, lista_tokens : list[Token]) -> bool:
         """Realiaza a analise sintática a partir da lista de tokens. Aceita (True) se o código estiver sintaticamente correto, caso contrário rejeita (False). Quando célula vazia na tabela ACTION, ativa o modo pânico.
 
         Args:
