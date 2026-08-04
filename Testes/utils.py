@@ -6,9 +6,8 @@ def executar_lexico(codigo):
     Centraliza a chamada ao analisador léxico.
     Cria uma instância da classe Lexer para processar o código fornecido como string.
     """
-    lexer = Lexer(None) # Passamos None pois o código será injetado diretamente
-    lexer.codigo = codigo
-    return lexer.analisar_lexico()
+    lexer = Lexer() # Passamos None pois o código será injetado diretamente
+    return lexer.analisar_lexico(codigo)
 
 def verificar_erro_lexico(codigo):
     """
