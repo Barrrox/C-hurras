@@ -1,5 +1,3 @@
-# a única biblioteca externa pra receber argumento de linha de comando
-import sys
 import os
 
 # classe para representar token
@@ -393,16 +391,4 @@ class Lexer():
             print(f"ERRO ao salvar tokens: {e}")
 
 
-def main():
-    if len(sys.argv) != 2:
-        print("ERRO: arquivo não informado, use o analisador como:\n\tpython analisador_lexico.py codigo.churras")
-        return
-    
-    lexer = Lexer(sys.argv[1])
-    lexer.ler_arquivo()
-    lexer.analisar_lexico()
-    lexer.print_tokens()
-    lexer.salvar_tokens()
 
-if __name__ == "__main__":
-    main()
