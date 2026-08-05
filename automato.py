@@ -1,5 +1,19 @@
 from gramatica import Gramatica
 
+class Estado:
+    id
+    transições [
+        ['<exp>', 3],
+        ['<tail>', 8]
+        ]
+    fechamento [
+        ['T', ['T', '', '~', 'F']], 
+        ['T', ['T', '', '~', 'F']]
+        ]
+
+
+
+
 class AutomatoLR0:
     def __init__(self, gramatica: Gramatica):
         """ Recebe a gramatica já lida e processada """
