@@ -1,4 +1,4 @@
-# 🏗️ Rascunho de Arquitetura: Analisador Sintático SLR(1)
+# Rascunho de Arquitetura: Analisador Sintático SLR(1)
 
 Classes, divisão de responsabilidades das classes e ideia para o fluxo de processamento. Alguns nomes/labels podem estar diferentes no código, na imagem e nos textos abaixo. 
 

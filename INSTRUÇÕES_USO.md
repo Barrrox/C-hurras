@@ -2,14 +2,14 @@
 
 **Bah, o C-hurras é uma linguagem barril dobrado, pensada praquela gurizada tri bagual que gosta de assar uma costela e tomar um tchopssinho enquanto paleia com os códigos**
 
-## Instruções de uso do Analisador Léxico:
+## Instruções de uso do Compilador:
 
-Rode o comando ```python analisador_lexico.py <arquivo_codigo>```, em que arquivo_codigo é um arquivo de texto formatado em UTF-8. 
+Rode o comando ```python main.py <arquivo_codigo>```, em que arquivo_codigo é um arquivo de texto formatado em UTF-8. 
 
 Em caso de uma leitura léxica bem-sucedida, a saída será mostrada no terminal como no exemplo a seguir:
 
 ```terminal 
-python.exe .\analisador_lexico.py .\codigo_teste.txt
+python.exe .\main.py .\codigo_teste.txt
 token: vaca | categoria: tipo | linha: 1
 token: variavel1 | categoria: id | linha: 1
 token: ; | categoria: ; | linha: 1
