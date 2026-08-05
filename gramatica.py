@@ -1,4 +1,4 @@
-productions = [
+producoes : list[list[str, list[str]]] = [
     # 0: <chs> → <churras>
     ['<chs>', ['<churras>']],
 
@@ -149,7 +149,7 @@ productions = [
 ]
 
 class Gramatica:
-        def __init__(self, caminho_arquivo: str):
+        def __init__(self, producoes: list[list[str, list[str]]] = producoes):
             """Classe que:
                 1. Lê o arquivo bruto da gramática
                 2. Contém as regras de produção
@@ -159,21 +159,22 @@ class Gramatica:
             Args:
                 caminho_arquivo (str): Caminho relativo para o arquivo da gramática
             """
-            self.caminho = caminho_arquivo
+            self.producoes = producoes
             self.regras = {}       # Ex: { 1: ["lado esquerdo", ["lado direito", ...]] }
             self.terminais = set()
             self.nao_terminais = set()
             self.first = {}
             self.follow = {}
 
-        def ler_arquivo(self) -> None:
-            """
-            O que faz: Abre txt bruto. Extrai regras. Popula terminais e não-terminais.
-            """
-            pass
+        def calcular_first_follow(self) -> tuple[dict[producoes], list[str]]:
+            """Roda algoritmo para criar e retornar conjuntos First e Follow.
+            
 
-        def calcular_first_follow(self) -> None:
+            Returns:
+                tuple[list[str], list[str]]: Conjuntos First e Follow
             """
-            O que faz: Roda algoritmo para conjuntos FIRST e FOLLOW e salva em self.first e self.follow
-            """
-            pass
+
+            first = {producoes[i] : list[str]}
+            first = {gramatica[i] : [a,b,c]}
+
+            return first, follow
