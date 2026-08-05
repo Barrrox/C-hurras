@@ -8,38 +8,14 @@ class Token:
     def tkprint(self):
         print("token:", self.texto, "| categoria:", self.categoria, "| linha:", self.linha)
 
-"""
-Uma produção pode ser definida como um vetor, tipo
+class ACTIONcell:
+    def __init__(self, tipo, valor):
+        self.tipo = tipo   # empilha, reduz, aceita, errovazio, erroreduz -> 0, 1, 2, 3, 4
+        self.valor = valor # valor numerico referente a acao
 
-    opcoes = ['A', 'A-', '%']
-    
-Depois essa opção pode ser convertida em um inteiro pra referencia na tabela com um dicionario, tipo:
 
-    nao_terminais = {
-        'A': 0,
-        'A-': 1,
-        '%': 2
-    }
-
-E para acessar, da pra usar uma função, tipo
-
-    def nao_terminal(nterm):
-        return nao_terminais.get(nterm, 'ERRO')
-        
-    def terminal(term):
-        return terminais.get(term, 'ERRO')
-
-Para representar a gramática em código, um dicionario também seria interessante:
-
-    gramática = {
-        'A': ['%', ['%', 'A-']],
-        'A-': ['%']
-    }
-
-"""
-
-# Símbolos terminais
-terminais = {
+# Símbolos (terminais seguidos de não terminais, ordem da tabela SLR)
+simbolos = {
     ',': 0,
     ';': 1,
     '{': 2,
@@ -64,40 +40,9 @@ terminais = {
     'servido': 21,
     'EOF': 22
 }
-def terminal(term):
-    return terminais.get(term, 'ERRO')
+def simbolo(term):
+    return simbolos.get(term, 'ERRO')
 
-# Realiza analise sintatica topdown
-def analisador_sintatico(tokens, tabela):
-    # Criar pilha
-    pilha = []
-    pilha.append('$')
-    
-    # Ponteiro de token
-    tpointer = 0
-    
-    # Topo da pilha
-    ptop = ' '
-    
-    # Algoritmo principal (derivação de árvore a esquerda com pilha)
-    while ptop != '$':
-        ptop = pilha[-1]
-        simbolo = tokens[tpointer].categoria
-        
-        if eh_terminal(simbolo):
-            if ptop == simbolo:
-                pilha.pop()
-                tpointer += 1
-            else:
-                pass #ERRO
-        else:
-            if tabela[nao_terminal(ptop)][terminal(simbolo)] != []:
-                pilha.pop()
-                for prod in reversed(tabela[nao_terminal(ptop)][terminal(simbolo)]):
-                    pilha.append(prod)
-                # print(tabela[nao_terminal(ptop)][terminal(simbolo)])
-            else:
-                pass #ERRO
                 
 class ParserSLR():
 
@@ -136,12 +81,57 @@ class ParserSLR():
         # Verificar se tabelaSLR existe e gramática não foi alterada
         tabelaSLR = self.get_tabelaSLR()
 
-        return self.analisar_sintaxeAUX(lista_tokens, tabelaSLR)
+        return self.analisar_sintaxeAUX(lista_tokens, tabelaSLR, productions)
 
         pass
 
-    def analisar_sintaxeAUX(self, lista_tokens : list[Token], tabelaSLR) -> bool:
+    def analisar_sintaxeAUX(self, tokens, tabelaSLR, productions) -> bool:
+        # tokens: list of terminals, last element is "$"
+        # productions: list of rules A → β (used for output and length lookup)
 
+        stack = ["$", 0]
+
+        ip = 0 # points to current input symbol
+
+        while true:
+            s = stack[-1] # current state
+            a = tokens[ip] # current input symbol
+            act = tabelaSLR[s, simbolo(a.categoria)]
+            
+            if act.tipo == 0: # empilha
+                stack.append(a.categoria) # push the terminal
+                stack.append(act.valor) # push the new state
+                ip += 1
+            
+            else if act.tipo == 1: # reduz
+                # redução: ['T', ['T', '*', 'F']]
+                for i in productions[act.valor][1]:
+                    stack.pop()
+                    stack.pop()
+
+                s_prime = stack[-1] # exposed state after popping
+                stack.append(productions[act.valor][0]) # push the nonterminal
+                stack.append(tabelaSLR[s_prime, simbolo(productions[act.valor][0])].valor) # push the new state
+            
+            else if act.tipo == 2: # aceita
+                print("churras ta no ponto certo")
+                break
+            
+            else:
+                print("ERRO: token não esperado \"", a.texto, "\" na linha", a.linha)
+                
+                # attempt recovery
+                if act.tipo == 3: # erro de estado vazio
+                    ip += 1
+                else: # erro de redução
+                    # redução: ['T', ['T', '*', 'F']]
+                    for i in productions[act.valor][1]:
+                        stack.pop()
+                        stack.pop()
+
+                    s_prime = stack[-1] # exposed state after popping
+                    stack.append(productions[act.valor][0]) # push the nonterminal
+                    stack.append(tabelaSLR[s_prime, simbolo(productions[act.valor][0])].valor) # push the new state
 
         return True
 
@@ -154,39 +144,3 @@ class ParserSLR():
         """
 
         pass
-
-def bottomUpParse(tokens, ACTION, GOTO, productions):
-    # tokens: list of terminals, last element is "$"
-    # productions: list of rules A → β (used for output and length lookup)
-
-    stack = empty stack
-    push state 0 onto stack
-
-    ip = 0                     // points to current input symbol
-
-    while true:
-        s = top of stack       // current state
-        a = tokens[ip]         // current input symbol
-        
-        if ACTION[s, a] == "shift t":
-            push a             // push the terminal (optional)
-            push t             // push the new state
-            ip = ip + 1
-        
-        else if ACTION[s, a] == "reduce A → β":
-            // pop 2 * |β| items: for each symbol in β, pop state and symbol
-            for i = 1 to length(β):
-                pop()          // pop state
-                pop()          // pop grammar symbol
-            s_prime = top of stack   // exposed state after popping
-            push A                     // push the nonterminal (optional)
-            push GOTO[s_prime, A]      // push the new state
-            output "reduce by A → β"   // build parse tree / AST node here
-        
-        else if ACTION[s, a] == "accept":
-            output "parsing successful"
-            break
-        
-        else:
-            // error entry in table
-            report syntax error and attempt recovery (or halt)
