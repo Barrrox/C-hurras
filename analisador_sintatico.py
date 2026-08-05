@@ -1,12 +1,4 @@
-# classe para representar token
-class Token:
-    def __init__(self, texto, categoria, linha):
-        self.texto = texto  # string do token
-        self.categoria = categoria    # categoria/tipo do token (se eh operação, delimitador, etc)
-        self.linha = linha  # numero da linha (para escrever as mensagens de erro)
-
-    def tkprint(self):
-        print("token:", self.texto, "| categoria:", self.categoria, "| linha:", self.linha)
+from Token import Token
 
 class ACTIONcell:
     def __init__(self, tipo, valor):
@@ -71,7 +63,7 @@ simbolos = {
     '<primary>': 49
 }
 
-def simbolo(term):
+def simbolo(term : str) -> int:
     return simbolos.get(term, 'ERRO')
 
                 
@@ -116,11 +108,13 @@ class ParserSLR():
 
         pass
 
-    def analisar_sintaxeAUX(self, tokens, tabelaSLR, producoes) -> bool:
+    def analisar_sintaxeAUX(self, tokens : list[Token], 
+                            tabelaSLR : dict[str | int, int], 
+                            producoes) -> bool:
         # tokens: list of terminals, last element is "$"
         # producoes: list of rules A → β (used for output and length lookup)
 
-        stack = ["$", 0]
+        stack: list[str | int] = ["$", 0]
 
         ip = 0 # points to current input symbol
 
@@ -128,6 +122,8 @@ class ParserSLR():
             s = stack[-1] # current state
             a = tokens[ip] # current input symbol
             act = tabelaSLR[s, simbolo(a.categoria)]
+
+
             
             if act.tipo == 0: # empilha
                 stack.append(a.categoria) # push the terminal
