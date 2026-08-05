@@ -16,6 +16,7 @@ class ACTIONcell:
 
 # Símbolos (terminais seguidos de não terminais, ordem da tabela SLR)
 simbolos = {
+    # Terminais (0 – 22)
     ',': 0,
     ';': 1,
     '{': 2,
@@ -38,8 +39,38 @@ simbolos = {
     'espetar': 19,
     'servir': 20,
     'servido': 21,
-    'EOF': 22
+    'EOF': 22,
+
+    # Não‑terminais (23 – 49)
+    '<chs>': 23,
+    '<churras>': 24,
+    '<declaracao>': 25,
+    '<while>': 26,
+    '<for>': 27,
+    '<if>': 28,
+    '<if_comp>': 29,
+    '<entrada>': 30,
+    '<saida>': 31,
+    '<saida_comp>': 32,
+    '<out>': 33,
+    '<atribuicao>': 34,
+    '<exp>': 35,
+    '<logical-or>': 36,
+    '<or-tail>': 37,
+    '<logical-and>': 38,
+    '<and-tail>': 39,
+    '<comparison>': 40,
+    '<comp-tail>': 41,
+    '<additive>': 42,
+    '<add-tail>': 43,
+    '<term>': 44,
+    '<term-tail>': 45,
+    '<factor>': 46,
+    '<factor-tail>': 47,
+    '<unary>': 48,
+    '<primary>': 49
 }
+
 def simbolo(term):
     return simbolos.get(term, 'ERRO')
 
