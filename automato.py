@@ -1,15 +1,35 @@
 from gramatica import Gramatica
 
+
+class ItemLR:
+    def __init__(self, esquerda_producao: str, direita_producao: list[str], ponto: int = 0):
+        self.esq = esquerda_producao
+        self.dir = direita_producao
+        self.ponto = ponto # Começa em 0
+
+        # Deixar alocado o simbolo apos o ponto. Talvez nem precise guardar dir e ponto separados dai:
+        self.ponto_dir = self.dir[self.ponto]
+
+        # Como aloca:
+            #  T → • T * F: ItemLR(esquerda, direita, 0)
+            #  T → T * • F: ItemLR(T, [T,*,F], 2)
+
+        # Operações:
+            # Símbolo após o ponto: dir[ponto] -> da pra deixar alocado já que os itens são estáticos
+            # É item de redução? ponto == len(direita)
+            # Desvio (avançar o ponto): ItemLR(esquerda, direita, ponto + 1)
+
 class Estado:
-    id
-    transições [
-        ['<exp>', 3],
-        ['<tail>', 8]
-        ]
-    fechamento [
-        ['T', ['T', '', '~', 'F']], 
-        ['T', ['T', '', '~', 'F']]
-        ]
+
+    def __init__(self, id : int,
+                 fechamento : list['ItemLR']):
+        self.id = id
+        self.fechamento = fechamento
+
+
+
+
+
 
 
 
