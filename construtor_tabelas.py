@@ -3,7 +3,7 @@
 class ConstrutorTabelaSLR:
 
     def __init__(self):
-        """Classe responsável pela construção das tabelas ACTION e GOTO a partir da gramática e do automato LR(0)
+        """Classe responsável pela construção da tabela SLR a partir da gramática e do automato LR(0)
 
         Args:
                 gramatica (_type_): Instância da classe Gramatica. Fornece conjuntos FOLLOW e terminais.
@@ -24,7 +24,7 @@ class ConstrutorTabelaSLR:
         pass
 
     def construir_tabelaSLR(self, gramatica, automato) -> None:
-        """Constrói as tabelas ACTION e GOTO
+        """Constrói a tabela SLR
         """
 
         """

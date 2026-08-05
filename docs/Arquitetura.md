@@ -21,7 +21,7 @@ Roda apenas quando a linguagem/gramática sofrer alterações para recalcular o 
     *   **Métodos Principais**: `closure(item)`, `goto(estado, simbolo)`. Gera todos os estados possíveis.
 *   **`ConstrutorTabelas`**:
     *   **Responsabilidade**: Unir o Autômato e os conjuntos Follow para gerar a tabela.
-    *   **Métodos Principais**: `construir_action()`, `construir_goto()`, `exportar_tabelas()` (salva a matriz final em um arquivo `.json`).
+    *   **Métodos Principais**: `construir_tabelaSLR()`, `exportar_tabelas()` (salva a matriz final em um arquivo `.json`).
 
 ### Ecossistema 2: O Compilador Principal (Orquestrador)
 É a esteira principal que roda quando queremos compilar um código da linguagem `C-Hurras`.
@@ -57,9 +57,9 @@ O fluxo de dados ao compilar um código fonte (ex: `codigo.churras`):
     *   O Parser inicia a Pilha de Estados colocando `[ 0 ]`.
     *   Para cada token na `lista_tokens`:
         *   `estado_topo = pilha[-1]`
-        *   Consulta na tabela: `acao = ACTION[estado_topo][token.categoria]`.
+        *   Consulta na tabela: `acao = tabelaSLR[estado_topo][token.categoria]`.
         *   Se `acao` == **Shift(N)**: Coloca o token e o Estado **N** na pilha. Avança a fita de tokens.
-        *   Se `acao` == **Reduce(Regra)**: Desempilha instâncias da pilha baseado no tamanho da regra. Consulta a tabela `GOTO` usando o estado remanescente no topo e o Não-Terminal reduzido. Empilha o novo estado. *A fita do token **não** avança nesta operação.*
+        *   Se `acao` == **Reduce(Regra)**: Desempilha instâncias da pilha baseado no tamanho da regra. Consulta a tabela SLR usando o estado remanescente no topo e o Não-Terminal reduzido. Empilha o novo estado. *A fita do token **não** avança nesta operação.*
         *   Se `acao` == **Accept**: Sucesso! O código está sintaticamente correto. Fim do laço.
         *   Se `acao` == **Erro**: Aciona `modo_panico(token)`.
 6.  **Recuperação de Erros (Modo Pânico)**:
