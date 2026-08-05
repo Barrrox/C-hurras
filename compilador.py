@@ -9,7 +9,7 @@ class compilador(): # Classe compilador
         """Classe que instância as outras classes e orquestra a compilação
         """
         self.lexer = Lexer()
-        self.parser = ParserSLR(None, None, None)
+        self.parser = ParserSLR()
         pass
 
     def compilar(self, codigo):

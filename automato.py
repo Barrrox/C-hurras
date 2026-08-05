@@ -27,21 +27,15 @@ class Estado:
         self.fechamento = fechamento
 
 
-
-
-
-
-
-
-
 class AutomatoLR0:
     def __init__(self, gramatica: Gramatica):
         """ Recebe a gramatica já lida e processada """
-        self.gramatica = gramatica
         self.estados = []    # Lista contendo os conjuntos de Itens LR(0)
         self.transicoes = {} # Mapeia: (estado_origem, simbolo) -> estado_destino
 
-    def gerar_automato(self) -> None:
+        self.gerar_automato(gramatica) # Gera o automato
+
+    def gerar_automato(self, gramatica) -> None:
         """
         O que faz:
         1. Inicia estado 0 com regra aumentada (ex: S' -> . S)

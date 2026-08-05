@@ -1,4 +1,7 @@
-
+class SLRcell:
+    def __init__(self, tipo, valor):
+        self.tipo = tipo   # empilha, reduz, aceita, errovazio, erroreduz -> 0, 1, 2, 3, 4
+        self.valor = valor # valor numerico referente a acao
 
 class ConstrutorTabelaSLR:
 

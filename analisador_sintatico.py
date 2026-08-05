@@ -1,9 +1,5 @@
 from Token import Token
-
-class SLRcell:
-    def __init__(self, tipo, valor):
-        self.tipo = tipo   # empilha, reduz, aceita, errovazio, erroreduz -> 0, 1, 2, 3, 4
-        self.valor = valor # valor numerico referente a acao
+from automato import AutomatoLR0
 
 
 # Símbolos (terminais seguidos de não terminais, ordem da tabela SLR)
@@ -69,7 +65,6 @@ def simbolo(term : str) -> int:
                 
 class ParserSLR():
 
-
     def __init__(self):
         """O ParserSLR tem os métodos para realizar a analise sintática do código.
         """
@@ -78,16 +73,7 @@ class ParserSLR():
         self.tokens = []
         self.tpointer = 0
 
-    def get_tabelaSLR():
-        """Função para pegar a tabela SLR. Carrega do disco se a tabela já foi salva e a gramática não sofreu alteração, caso contrário, cria a tabela SLR. 
-
-        Returns:
-            _type_: _description_
-        """
-
-        # Se a tabela SLR já existe (salva no disco) a gramática não foi alterada, da load.
-
-        # Se a tabela SLR não existe ou a gramática foi alterada, chama a função para gerar uma nova tabelaSLR.
+    def criar_tabelaSLR(self):
 
         return tabelaSLR
 
@@ -102,7 +88,7 @@ class ParserSLR():
         """
 
         # Verificar se tabelaSLR existe e gramática não foi alterada
-        tabelaSLR = self.get_tabelaSLR()
+        tabelaSLR = self.criar_tabelaSLR()
 
         return self.analisar_sintaxeAUX(lista_tokens, tabelaSLR, producoes)
 
