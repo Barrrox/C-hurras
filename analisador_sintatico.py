@@ -112,19 +112,19 @@ class ParserSLR():
         # Verificar se tabelaSLR existe e gramática não foi alterada
         tabelaSLR = self.get_tabelaSLR()
 
-        return self.analisar_sintaxeAUX(lista_tokens, tabelaSLR, productions)
+        return self.analisar_sintaxeAUX(lista_tokens, tabelaSLR, producoes)
 
         pass
 
-    def analisar_sintaxeAUX(self, tokens, tabelaSLR, productions) -> bool:
+    def analisar_sintaxeAUX(self, tokens, tabelaSLR, producoes) -> bool:
         # tokens: list of terminals, last element is "$"
-        # productions: list of rules A → β (used for output and length lookup)
+        # producoes: list of rules A → β (used for output and length lookup)
 
         stack = ["$", 0]
 
         ip = 0 # points to current input symbol
 
-        while true:
+        while True:
             s = stack[-1] # current state
             a = tokens[ip] # current input symbol
             act = tabelaSLR[s, simbolo(a.categoria)]
@@ -134,17 +134,17 @@ class ParserSLR():
                 stack.append(act.valor) # push the new state
                 ip += 1
             
-            else if act.tipo == 1: # reduz
+            elif act.tipo == 1: # reduz
                 # redução: ['T', ['T', '*', 'F']]
-                for i in productions[act.valor][1]:
+                for i in producoes[act.valor][1]:
                     stack.pop()
                     stack.pop()
 
                 s_prime = stack[-1] # exposed state after popping
-                stack.append(productions[act.valor][0]) # push the nonterminal
-                stack.append(tabelaSLR[s_prime, simbolo(productions[act.valor][0])].valor) # push the new state
+                stack.append(producoes[act.valor][0]) # push the nonterminal
+                stack.append(tabelaSLR[s_prime, simbolo(producoes[act.valor][0])].valor) # push the new state
             
-            else if act.tipo == 2: # aceita
+            elif act.tipo == 2: # aceita
                 print("churras ta no ponto certo")
                 break
             
@@ -156,13 +156,13 @@ class ParserSLR():
                     ip += 1
                 else: # erro de redução
                     # redução: ['T', ['T', '*', 'F']]
-                    for i in productions[act.valor][1]:
+                    for i in producoes[act.valor][1]:
                         stack.pop()
                         stack.pop()
 
                     s_prime = stack[-1] # exposed state after popping
-                    stack.append(productions[act.valor][0]) # push the nonterminal
-                    stack.append(tabelaSLR[s_prime, simbolo(productions[act.valor][0])].valor) # push the new state
+                    stack.append(producoes[act.valor][0]) # push the nonterminal
+                    stack.append(tabelaSLR[s_prime, simbolo(producoes[act.valor][0])].valor) # push the new state
 
         return True
 
