@@ -1,11 +1,13 @@
-producoes : list[list[str, list[str]]] = (
+
+
+producoes : tuple[tuple[str, tuple[str]]] = (
     # 0: <chs> → <churras>
-    ('<chs>', ('<churras>')),
+    ('<chs>', ('<churras>',)),
 
     # 1: <churras> → <if> <churras>
     ('<churras>', ('<if>', '<churras>')),
     # 2: <churras> → <churras>
-    ('<churras>', ('<churras>')),
+    ('<churras>', ('<churras>',)),
     # 3: <churras> → <for> <churras>
     ('<churras>', ('<for>', '<churras>')),
     # 4: <churras> → <declaracao> <churras>
@@ -49,25 +51,25 @@ producoes : list[list[str, list[str]]] = (
     # 19: <saida_comp> → , <out> <saida_comp>
     ('<saida_comp>', (',', '<out>', '<saida_comp>')),
     # 20: <saida_comp> → ;
-    ('<saida_comp>', (';')),
+    ('<saida_comp>', (';',)),
 
     # 21: <out> → char
-    ('<out>', ('char')),
+    ('<out>', ('char',)),
     # 22: <out> → string
-    ('<out>', ('string')),
+    ('<out>', ('string',)),
     # 23: <out> → id
-    ('<out>', ('id')),
+    ('<out>', ('id',)),
     # 24: <out> → servido
-    ('<out>', ('servido')),
+    ('<out>', ('servido',)),
     # 25: <out> → <exp>
-    ('<out>', ('<exp>')),
+    ('<out>', ('<exp>',)),
 
     # 26: <atribuicao> → id = <exp> ;
     ('<atribuicao>', ('id', '=', '<exp>', ';')),
 
     # Expressões
     # 27: <exp> → <logical-or>
-    ('<exp>', ('<logical-or>')),
+    ('<exp>', ('<logical-or>',)),
 
     # 28: <logical-or> → <logical-and> <or-tail>
     ('<logical-or>', ('<logical-and>', '<or-tail>')),
@@ -138,12 +140,12 @@ producoes : list[list[str, list[str]]] = (
     # 55: <unary> → ! <unary>
     ('<unary>', ('!', '<unary>')),
     # 56: <unary> → <primary>
-    ('<unary>', ('<primary>')),
+    ('<unary>', ('<primary>',)),
 
     # 57: <primary> → id
-    ('<primary>', ('id')),
+    ('<primary>', ('id',)),
     # 58: <primary> → int
-    ('<primary>', ('int')),
+    ('<primary>', ('int',)),
     # 59: <primary> → ( <exp> )
     ('<primary>', ('(', '<exp>', ')')),
 )
