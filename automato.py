@@ -9,6 +9,10 @@ class ItemLR:
 
         # Deixar alocado o simbolo apos o ponto. Talvez nem precise guardar dir e ponto separados dai:
         self.ponto_dir = self.dir[self.ponto]
+        
+    # Método para printar Item no terminal para debug manual
+    def imprimir(self):
+        print(self.esq, "->", self.dir)
 
         # Como aloca:
             #  T → • T * F: ItemLR(esquerda, direita, 0)
@@ -99,29 +103,40 @@ class AutomatoLR0:
         # 1) Cada item em I é adicionado ao fechamento(I)
         # Uso um while aqui pois I vai crescer (for não funciona) e vou retirar os itens já verificados de I
         # enquanto adiciono novos itens a serem verificados. Quanto I acabar, todos os itens já foram verificados
-
         simb_adicionados_I = [] # Lista com símbolos de produções que já foram adicionados à I
+        # procurar na gramática o index de todas as produções de I
+        for i in range(len(I)):
+            item = I[i]
+            for j in range(len(producoes)):
+                prod = producoes[j]
+                if item.esq == prod[0] and item.dir == prod[1]:
+                    simb_adicionados_I.append(j)
 
         while I:
             item = I.pop(0) # Começo da fila
             fechamento.append(item)
+            #print(simb_adicionados_I)
+            #print()
+            #print()
 
-            # 2) Se A → a•Bb estiver em fechamento(I) e B → c for uma produção de gramática, adicionar o item B → •c ao conjunto I
-            for producao in producoes: # Loop para procurar produção B → c na gramática -> O(n^2), talvez precise otimizar aqui
-
-                if producao[0] in simb_adicionados_I: # SE simbolo já foi analisado completamente
+            # 2) Se A → a•Bb estiver em fechamento(I) e B → c for uma produção de I, adicionar o item B → •c ao conjunto I
+            for i in range(len(producoes)): # Loop para procurar produção B → c na gramática -> O(n^2), talvez precise otimizar aqui
+                
+                if i in simb_adicionados_I: # SE simbolo já foi analisado completamente
                     continue
-
+                
+                producao = producoes[i]
+                
                 # Produção convertida para item
                 prod_item = ItemLR(esquerda_producao=producao[0], 
                                    direita_producao=producao[1], 
                                    ponto=0)
             
                 # se (o simbolo a direita do ponto de item) é (o primeiro de alguma produção da gramática) então (adiciona à I)
-                if item.ponto_dir == prod_item.esq: # 
+                if item.ponto_dir == producao[0]: # 
                     I.append(prod_item)
+                    simb_adicionados_I.append(i)
 
-            simb_adicionados_I.append(item.esq)
 
         return fechamento
 
