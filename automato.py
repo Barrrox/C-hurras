@@ -54,7 +54,21 @@ class AutomatoLR0:
 
     def gerar_automato(self, gramatica : Gramatica) -> None:
         """
-        
+        estado inicial
+        realiza fechamento
+
+        para cada estado ainda não processado:
+            calcular todos os símbolos lidos
+            incluir diferentes produções de mesma leitura no mesmo vetor?
+            para cada leitura:
+                checar em todos os estados do autômato se produção com desvio existe
+                se existir:
+                    criar transição sob símbolo para esse estado
+                caso contrario:
+                    criar estado novo
+                    criar transição sob símbolo para esse novo estado
+                    colocar todas as produções com o símbolo lido
+                    realizar fechamento
         """
 
         # 2. Criar conjunto de itens inicial da gramatica
