@@ -100,13 +100,13 @@ class AutomatoLR0:
         # Uso um while aqui pois I vai crescer (for não funciona) e vou retirar os itens já verificados de I
         # enquanto adiciono novos itens a serem verificados. Quanto I acabar, todos os itens já foram verificados
 
-        simb_adicionados_I = [I[0].esq] # Lista com símbolos de produções que já foram adicionados à I
+        simb_adicionados_I = [] # Lista com símbolos de produções que já foram adicionados à I
 
         while I:
             item = I.pop(0) # Começo da fila
             fechamento.append(item)
 
-            # 2) Se A → a•Bb estiver em fechamento(I) e B → c for uma produção de I, adicionar o item B → •c ao conjunto I
+            # 2) Se A → a•Bb estiver em fechamento(I) e B → c for uma produção de gramática, adicionar o item B → •c ao conjunto I
             for producao in producoes: # Loop para procurar produção B → c na gramática -> O(n^2), talvez precise otimizar aqui
 
                 if producao[0] in simb_adicionados_I: # SE simbolo já foi analisado completamente
