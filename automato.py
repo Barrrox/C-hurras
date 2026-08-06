@@ -34,16 +34,7 @@ class AutomatoLR0:
         self.estados = []    # Lista contendo os conjuntos de Itens LR(0)
         self.transicoes = {} # Mapeia: (estado_origem, simbolo) -> estado_destino
 
-        # self.gerar_automato(gramatica) # Gera o automato
-
-    def aumentar_gramatica(self, producoes: tuple[tuple[str, tuple[str]]]) -> tuple[tuple[str, tuple[str]]]:
-
-        producao_inicial = producoes[0]
-        novo_simb_inicial = producao_inicial[0] + "'"
-        nova_producao_inicial = tuple([novo_simb_inicial, producao_inicial[0]])
-        gramatica_aumentada = nova_producao_inicial + producoes
-    
-        return gramatica_aumentada   
+        # self.gerar_automato(gramatica) # Gera o automato 
     
     def get_item_inicial(self, gramatica: Gramatica):
         """Pega o item inicial da gramática 
@@ -62,13 +53,8 @@ class AutomatoLR0:
         
         """
 
-        # 1. Aumenta a gramatica (S' -> S)
-        gramatica_aumentada = self.aumentar_gramatica(gramatica)
-
         # 2. Criar conjunto de itens inicial da gramatica
 
-
-        # 
 
     """
     Operação de Fechamento

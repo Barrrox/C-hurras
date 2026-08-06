@@ -20,12 +20,6 @@ class ConstrutorTabelaSLR:
         self.tabelaSLR = {}
         self.regras = {} # Regras de produção da gramática
 
-    def aumentar_gramatica(self, gramatica):
-
-        gramatica_aumentada = None
-        return gramatica_aumentada
-        pass
-
     def construir_tabelaSLR(self, gramatica, automato) -> None:
         """Constrói a tabela SLR
         """
@@ -58,9 +52,6 @@ Proc tabela(G’) {
 
 }
         """
-
-        # Passo 1
-        gramatica = self.aumentar_gramatica(gramatica) 
 
         # Inicializar tabela SLR com N linhas (N estados do automato) e com T + A colunas (T terminais + A não terminais -> Seguindo regra 4 dos slides na construção da tabela)
         tabelaSLR = {}
