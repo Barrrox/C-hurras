@@ -151,7 +151,7 @@ producoes : tuple[tuple[str, tuple[str]]] = (
 )
 
 class Gramatica:
-        def __init__(self, producoes: list[list[str, list[str]]] = producoes):
+        def __init__(self, prod: tuple[tuple[str, tuple[str]]] = producoes):
             """Classe que:
                 1. Lê o arquivo bruto da gramática (ATENÇÃO: Produções A -> a | b já estão separadas em A -> a e A -> b)
                 2. Contém as regras de produção
@@ -161,12 +161,9 @@ class Gramatica:
             Args:
                 caminho_arquivo (str): Caminho relativo para o arquivo da gramática
             """
-            self.producoes = producoes
-            self.regras = {}
+            self.prod = prod
             self.terminais = set()
             self.nao_terminais = set()
-            self.first = {}
-            self.follow = {}
 
         def calcular_first_follow(self) -> tuple[dict, dict]:
             """Roda algoritmo para criar e retornar conjuntos First e Follow.
