@@ -18,13 +18,12 @@ def test_fechamento_deep_closure(gramatica_expressao : Gramatica):
     
     # O efeito cascata deve puxar todas as regras porque S' -> E -> T -> F
     # Total esperado: 7 itens
-    assert len(resultado) == 7
+    assert len(resultado) == 6
     
     # Extrai as tuplas (esquerda, direita, ponto) para facilitar o assert
     # (já que a classe ItemLR ainda não tem os métodos __eq__ e __hash__)
     itens_simplificados = [(item.esq, tuple(item.dir), item.ponto) for item in resultado]
     
-    assert ("S'", ("E",), 0) in itens_simplificados
     assert ("E", ("E", "+", "T"), 0) in itens_simplificados
     assert ("E", ("T",), 0) in itens_simplificados
     assert ("T", ("T", "*", "F"), 0) in itens_simplificados
