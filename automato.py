@@ -30,20 +30,129 @@ class Estado:
 class AutomatoLR0:
     def __init__(self, gramatica: Gramatica):
         """ Recebe a gramatica já lida e processada """
+
         self.estados = []    # Lista contendo os conjuntos de Itens LR(0)
         self.transicoes = {} # Mapeia: (estado_origem, simbolo) -> estado_destino
 
-        self.gerar_automato(gramatica) # Gera o automato
+        # self.gerar_automato(gramatica) # Gera o automato
 
-    def gerar_automato(self, gramatica) -> None:
-        """
-        O que faz:
-        1. Inicia estado 0 com regra aumentada (ex: S' -> . S)
-        2. Roda algoritmos 'Closure' (Fechamento) e 'Goto' em loop.
-        3. Descobre matematicamente todos os estados e rotas possíveis.
+    def aumentar_gramatica(self, producoes: tuple[tuple[str, tuple[str]]]) -> tuple[tuple[str, tuple[str]]]:
 
-        O que retorna: Nada. Preenche self.estados e self.transicoes.
+        producao_inicial = producoes[0]
+        novo_simb_inicial = producao_inicial[0] + "'"
+        nova_producao_inicial = tuple([novo_simb_inicial, producao_inicial[0]])
+        gramatica_aumentada = nova_producao_inicial + producoes
+    
+        return gramatica_aumentada   
+    
+    def get_item_inicial(self, gramatica: Gramatica):
+        """Pega o item inicial da gramática 
+
+        Args:
+            gramatica (Gramatica): _description_
+
+        Returns:
+            _type_: _description_
         """
+        producao_incial = gramatica.prod[0]
+        return [ItemLR(producao_incial[0], producao_incial[1], 0)]
+
+    def gerar_automato(self, gramatica : Gramatica) -> None:
+        """
+        
+        """
+
+        # 1. Aumenta a gramatica (S' -> S)
+        gramatica_aumentada = self.aumentar_gramatica(gramatica)
+
+        # 2. Criar conjunto de itens inicial da gramatica
+
+
+        # 
+
+    """
+    Operação de Fechamento
+    - Considere I como o conjunto de itens para G
+    - O fechamento(I) é o conjunto de itens construídos a partir de I
+    - Regras:
+        1)Cada item em I é adicionado ao fechamento(I)
+        2)Se A → a•Bb estiver em fechamento(I) e B → c for uma produção, adicionar o item B → •c ao conjunto I
+    - Repete-se até que não se possa mais adicionar novos itens
+
+    Exemplo:
+    Dada a gramática:
+    E'→ E
+    E → E + T | T
+    T → T*F | F
+    F → (E) | id
+    Se I for o conjunto de um
+    item {[E' → •E]}, então
+
+    fechamento(I) = {
+    E' → E {ponto de partida - R1}
+    E → •E + T
+    E → •T
+    T → •T*•F
+    T → •F
+    F → •(E)
+    F → •id
+
+    """ 
+    def fechamento(self, I: list[ItemLR], producoes : tuple[tuple[str, tuple[str]]]) -> list[ItemLR]:
+        """Expande o fechamento de I. Trabalha um pouco diferente sobre o conjunto I de como é tratado nos slides: Torna I uma fila para auxiliar no processo. Logo, passar cópia de I como parâmetro
+
+        Args:
+            I (list[ItemLR]): conjunto de itens
+
+        Returns:
+            list[ItemLR]: fechamento de I
+        """
+
+        fechamento : list[ItemLR] = []
+        
+        # 1) Cada item em I é adicionado ao fechamento(I)
+        # Uso um while aqui pois I vai crescer (for não funciona) e vou retirar os itens já verificados de I
+        # enquanto adiciono novos itens a serem verificados. Quanto I acabar, todos os itens já foram verificados
+
+        simb_adicionados_I = [I[0].esq] # Lista com símbolos de produções que já foram adicionados à I
+
+        while I:
+            item = I.pop(0) # Começo da fila
+            fechamento.append(item)
+
+            # 2) Se A → a•Bb estiver em fechamento(I) e B → c for uma produção de I, adicionar o item B → •c ao conjunto I
+            for producao in producoes: # Loop para procurar produção B → c na gramática -> O(n^2), talvez precise otimizar aqui
+
+                if producao[0] in simb_adicionados_I: # SE simbolo já foi analisado completamente
+                    continue
+
+                # Produção convertida para item
+                prod_item = ItemLR(esquerda_producao=producao[0], 
+                                   direita_producao=producao[1], 
+                                   ponto=0)
+            
+                # se (o simbolo a direita do ponto de item) é (o primeiro de alguma produção da gramática) então (adiciona à I)
+                if item.ponto_dir == prod_item.esq: # 
+                    I.append(prod_item)
+
+            simb_adicionados_I.append(item.esq)
+
+        return fechamento
+
+
+
+    """ 4) Operação de Desvio
+    
+    - Desvio(I,X)
+        ● Conjunto de itens I e um símbolo X
+        ● Retorna um conjunto de itens
+    - Cálculo do desvio a partir do estado I ao ler X:
+        ● Mover ponto para direita em todos os itens de I onde o ponto precede X
+    - Para todas as regras A → α•Xβ em C, retorna A → αX•β
+        ● Calcular o fechamento deste conjunto de itens
+    """
+    def desvio(self, I: list[ItemLR], X: str) -> list[ItemLR]:
+        # Move o ponto dos itens que esperam 'X' e tira o fechamento do resultado
         pass
 
     def exportar_json(self, caminho="automato.json") -> None:
