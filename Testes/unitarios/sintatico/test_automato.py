@@ -2,14 +2,14 @@ import pytest
 from automato import AutomatoLR0, ItemLR
 from gramatica import Gramatica
 
-def test_fechamento_deep_closure(gramatica_expressao : Gramatica):
+def test_fechamento_deep_closure(gramatica_simples2 : Gramatica):
     # Inicializa o automato com a gramatica injetada pela fixture
-    automato = AutomatoLR0(gramatica_expressao)
+    automato = AutomatoLR0(gramatica_simples2)
     
     # O item semente que dispara o efeito cascata: S' -> • E
-    I_inicial = automato.get_item_inicial(gramatica_expressao)
+    I_inicial = automato.get_item_inicial(gramatica_simples2)
 
-    producoes = gramatica_expressao.prod
+    producoes = gramatica_simples2.prod
     
     # Roda o fechamento
     resultado = automato.fechamento(I_inicial, producoes)

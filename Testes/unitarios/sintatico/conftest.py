@@ -14,7 +14,7 @@ def gramatica_simples():
     return Gramatica(prod=producoes)
 
 @pytest.fixture
-def gramatica_expressao():
+def gramatica_simples2():
     """
     Gramática robusta para testes sintáticos:
     E  -> E + T | T
