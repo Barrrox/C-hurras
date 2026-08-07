@@ -8,11 +8,11 @@ Classes, divisão de responsabilidades das classes e ideia para o fluxo de proce
 
 O projeto é dividido em dois ecossistemas: o gerador offline (que processa a gramática) e o compilador online (que consome a tabela gerada).
 
-### Ecossistema 1: O Gerador SLR (`gerador_slr.py`)
+### Ecossistema 1: O Gerador SLR (`src/construtor_tabelas.py`)
 Roda apenas quando a linguagem/gramática sofrer alterações para recalcular o cérebro do analisador.
 
 *   **`Gramatica`**:
-    *   **Responsabilidade**: Ler o arquivo `gramatica.txt`.
+    *   **Responsabilidade**: Ler e carregar o arquivo JSON com as regras (`regras_producao.json`). Sendo a única fonte da verdade da gramática.
     *   **Métodos Principais**: `calcular_first()`, `calcular_follow()`. Identifica terminais e não-terminais.
 *   **`ItemLR`**:
     *   **Responsabilidade**: Estrutura simples para representar um item do autômato (ex: `<S'> -> . <chs>`). Guarda a regra, o lado esquerdo e a posição do "ponto" (dot) de transição.
@@ -28,13 +28,13 @@ Roda apenas quando a linguagem/gramática sofrer alterações para recalcular o 
 
 *   **`Token`**:
     *   **Responsabilidade**: Classe de modelo simples. Guarda string, categoria e linha.
-*   **`Lexer`** (em `analisador_lexico.py`):
+*   **`Lexer`** (em `src/analisador_lexico.py`):
     *   **Responsabilidade**: Fazer varredura de caracteres.
     *   **Métodos Principais**: `__init__(codigo_fonte)`, `gerar_tokens()`.
-*   **`ParserSLR`** (em `analisador_sintatico.py`):
+*   **`ParserSLR`** (em `src/analisador_sintatico.py`):
     *   **Responsabilidade**: O núcleo da Fase 2. Uma máquina orientada a pilha e tabela.
     *   **Métodos Principais**: 
-        *   `__init__(tabelas_json, regras_json)`: Recebe as tabelas já prontas e as regras para saber o tamanho de redução.
+        *   `__init__()`: Inicializa carregando a classe `Gramatica` (para saber o tamanho das reduções) e carrega as tabelas prontas.
         *   `parse(lista_tokens)`: O loop principal Shift-Reduce.
         *   `modo_panico(token_atual)`: Trata as células de erro da tabela ACTION.
 
@@ -44,7 +44,7 @@ Roda apenas quando a linguagem/gramática sofrer alterações para recalcular o 
 
 O fluxo de dados ao compilar um código fonte (ex: `codigo.churras`):
 
-1.  **Pré-requisito**: O arquivo de tabelas (`tabelas_slr.json`) já foi gerado offline por `gerador_slr.py`.
+1.  **Pré-requisito**: O arquivo de tabelas (`tabelas_slr.json`) já foi gerado offline por `src/construtor_tabelas.py`.
 2.  **Início**: O arquivo principal inicia lendo o código-fonte em texto do arquivo `.churras`.
 3.  **Chamada Léxica**:
     *   Instancia `lexer = Lexer(codigo_texto)`.
