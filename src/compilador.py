@@ -3,7 +3,7 @@ import sys
 from analisador_lexico import Lexer
 from analisador_sintatico import ParserSLR
 
-class compilador(): # Classe compilador
+class Compilador(): # Classe compilador
 
     def __init__(self) -> None:
         """Classe que instância as outras classes e orquestra a compilação
