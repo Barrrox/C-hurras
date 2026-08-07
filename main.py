@@ -4,7 +4,7 @@ import os
 # Adiciona o diretório src/ ao sys.path para que os imports funcionem
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
 
-from compilador import compilador
+from compilador import Compilador
 
 # 1. le o arquivo de código e retorna como um vetor de caracteres
 def ler_arquivo(caminho_codigo):
@@ -23,7 +23,7 @@ def main():
     # 1. le o arquivo de código e retorna como a string do código como foi lida
     codigo = ler_arquivo(sys.argv[1])
 
-    churras = compilador()
+    churras = Compilador()
     
     churras.compilar(codigo=codigo)
 
