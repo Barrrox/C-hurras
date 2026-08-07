@@ -7,8 +7,13 @@ class ItemLR:
         self.dir = direita_producao
         self.ponto = ponto # Começa em 0
 
+
         # Deixar alocado o simbolo apos o ponto. Talvez nem precise guardar dir e ponto separados dai:
-        self.ponto_dir = self.dir[self.ponto]
+        if self.ponto < len(self.dir):
+            self.ponto_dir = self.dir[self.ponto]
+        else:
+            print("Erro em ItemLR: a posição do ponto ultrapassa o index da parte direita do item")
+            exit()
         
     # Método para printar Item no terminal para debug manual
     def imprimir(self):
