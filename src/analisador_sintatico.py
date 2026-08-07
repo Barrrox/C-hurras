@@ -2,68 +2,6 @@ from Token import Token
 from automato import AutomatoLR0
 from gramatica import Gramatica
 
-
-# Símbolos (terminais seguidos de não terminais, ordem da tabela SLR)
-simbolos : dict[str, int] = {
-    # Terminais (0 – 22)
-    ',': 0,
-    ';': 1,
-    '{': 2,
-    '}': 3,
-    '(': 4,
-    ')': 5,
-    'char': 6,
-    'id': 7,
-    'int': 8,
-    'op': 9,
-    'string': 10,
-    'tipo': 11,
-    '=': 12,
-    'rodizio': 13,
-    'grelhar': 14,
-    'ta_no_ponto?': 15,
-    'queimou': 16,
-    'ponto_certo': 17,
-    'queimado': 18,
-    'espetar': 19,
-    'servir': 20,
-    'servido': 21,
-    'EOF': 22,
-
-    # Não‑terminais (23 – 49)
-    '<chs>': 23,
-    '<churras>': 24,
-    '<declaracao>': 25,
-    '<while>': 26,
-    '<for>': 27,
-    '<if>': 28,
-    '<if_comp>': 29,
-    '<entrada>': 30,
-    '<saida>': 31,
-    '<saida_comp>': 32,
-    '<out>': 33,
-    '<atribuicao>': 34,
-    '<exp>': 35,
-    '<logical-or>': 36,
-    '<or-tail>': 37,
-    '<logical-and>': 38,
-    '<and-tail>': 39,
-    '<comparison>': 40,
-    '<comp-tail>': 41,
-    '<additive>': 42,
-    '<add-tail>': 43,
-    '<term>': 44,
-    '<term-tail>': 45,
-    '<factor>': 46,
-    '<factor-tail>': 47,
-    '<unary>': 48,
-    '<primary>': 49
-}
-
-def simbolo(term : str) -> int:
-    return simbolos.get(term, 'ERRO')
-
-                
 class ParserSLR():
 
     def __init__(self) -> None:
@@ -75,7 +13,11 @@ class ParserSLR():
         self.tpointer: int = 0
 
         gramatica = Gramatica()
-        self.producoes = gramatica.producoes        
+        self.producoes = gramatica.producoes
+        self.simbolos = gramatica.simbolos
+
+    def simbolo(self, term : str) -> int:
+        return self.simbolos.get(term, 'ERRO')
 
     def criar_tabelaSLR(self) -> dict:
 
@@ -108,7 +50,7 @@ class ParserSLR():
         while True:
             s = stack[-1] # current state
             a = tokens[ip] # current input symbol
-            act = tabelaSLR[s, simbolo(a.categoria)]
+            act = tabelaSLR[s, self.simbolo(a.categoria)]
             
             if act.tipo == 0: # empilha
                 stack.append(a.categoria) # push the terminal
@@ -123,7 +65,7 @@ class ParserSLR():
 
                 s_prime = stack[-1] # exposed state after popping
                 stack.append(producoes[act.valor][0]) # push the nonterminal
-                stack.append(tabelaSLR[s_prime, simbolo(producoes[act.valor][0])].valor) # push the new state
+                stack.append(tabelaSLR[s_prime, self.simbolo(producoes[act.valor][0])].valor) # push the new state
             
             elif act.tipo == 2: # aceita
                 print("churras ta no ponto certo")
@@ -143,6 +85,6 @@ class ParserSLR():
 
                     s_prime = stack[-1] # exposed state after popping
                     stack.append(producoes[act.valor][0]) # push the nonterminal
-                    stack.append(tabelaSLR[s_prime, simbolo(producoes[act.valor][0])].valor) # push the new state
+                    stack.append(tabelaSLR[s_prime, self.simbolo(producoes[act.valor][0])].valor) # push the new state
 
         return True

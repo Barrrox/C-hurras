@@ -23,8 +23,51 @@ class Gramatica:
                 producoes = tuple(tuple([regra[0], (tuple(dir for dir in regra[1]))]) for regra in dados)
 
             self.producoes: tuple[tuple[str, tuple[str, ...]], ...] = producoes
+
             self.terminais: set[str] = set()
             self.nao_terminais: set[str] = set()
+            
+            self.simbolos = self.get_simbolos()
+
+        def get_simbolos(self) -> dict[str, int]:
+            terminais = []
+            nao_terminais = []
+
+            # Loop para iterar sobre todas as produções e capturar os terminais e n-terminais
+            # producao = (prod_esq, [prod_dir1, prod_dir2, ...])
+            for simb_esq, prod_dir in self.producoes:
+
+                if simb_esq not in nao_terminais:
+                    nao_terminais.append(simb_esq) # Pega simbolo da esquerda da produção
+
+                for simbolo in prod_dir: # Pega simbolos da direita da produção
+
+                    if simbolo[0] == "<" and simbolo[-1 == ">"]: # Se é n terminal
+                        if simbolo not in nao_terminais:
+                            nao_terminais.append(simbolo)
+
+                    else: # é terminal
+                        if simbolo not in terminais:
+                            terminais.append(simbolo)
+
+            # Montar o dicionário { 'simbolo': indice }
+            simbolos = {}
+            idx = 0
+            
+            # Adiciona Não-Terminais primeiro (Tentar garantir <chs> como 0)
+            for nt in nao_terminais:
+                simbolos[nt] = idx
+                idx += 1
+
+            # Adiciona Terminais depois
+            for t in terminais:
+                simbolos[t] = idx
+                idx += 1
+
+            self.terminais = set(terminais)
+            self.nao_terminais = set(nao_terminais) 
+
+            return simbolos
 
         def calcular_follow(self) -> dict[str, list[str]]:
             """Roda algoritmo para criar e retornar Follow. Vai precisar calcular o First antes.
