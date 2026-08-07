@@ -92,8 +92,6 @@ class ParserSLR():
 
         return self.analisar_sintaxeAUX(lista_tokens, tabelaSLR, producoes)
 
-        pass
-
     def analisar_sintaxeAUX(self, tokens : list[Token], 
                             tabelaSLR : dict[str | int, int], 
                             producoes) -> bool:
@@ -147,13 +145,3 @@ class ParserSLR():
                     stack.append(tabelaSLR[s_prime, simbolo(producoes[act.valor][0])].valor) # push the new state
 
         return True
-
-    def modo_panico(self) -> None:
-        """ Ativa o modo pânico, alterando o estado interno da analise. Segue o processo:
-            1. Identifica falha: Lê token atual via self.tokens[self.tpointer].
-            2. Alerta: Imprime mensagem de erro usando linha e texto do token atual.
-            3. Descarta fita: Avança self.tpointer iterativamente até achar token de sincronização.
-            4. Limpa pilha: Executa self.pilha.pop() até topo da pilha possuir transição válida na tabela ACTION para o token de sincronização.
-        """
-
-        pass

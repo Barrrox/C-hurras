@@ -165,15 +165,17 @@ class Gramatica:
             self.terminais = set()
             self.nao_terminais = set()
 
-        def calcular_first_follow(self) -> tuple[dict, dict]:
-            """Roda algoritmo para criar e retornar conjuntos First e Follow.
+        def calcular_follow(self) -> dict[str, list[str]]:
+            """Roda algoritmo para criar e retornar Follow. Vai precisar calcular o First antes.
             
-
             Returns:
-                tuple[list[str], list[str]]: Conjuntos First e Follow
+                dict: Conjuntos Follow
             """
 
-            first = {producoes[i] : list[str]}
+            # Calcular First
+
+            # Calcular Follow
+
             follow = {producoes[i] : [a,b,c]}
 
-            return first, follow
+            return follow
