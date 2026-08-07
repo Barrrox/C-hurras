@@ -1,5 +1,6 @@
 from Token import Token
 from automato import AutomatoLR0
+from gramatica import Gramatica
 
 
 # Símbolos (terminais seguidos de não terminais, ordem da tabela SLR)
@@ -73,11 +74,14 @@ class ParserSLR():
         self.tokens: list[Token] = []
         self.tpointer: int = 0
 
+        gramatica = Gramatica()
+        self.producoes = gramatica.producoes        
+
     def criar_tabelaSLR(self) -> dict:
 
         pass
 
-    def analisar_sintaxe(self, lista_tokens : list[Token], producoes : tuple[tuple[str, tuple[str]]]) -> bool:
+    def analisar_sintaxe(self, lista_tokens : list[Token]) -> bool:
         """Interface para realizar a analise sintática Bottom-up a partir da lista de tokens. Aceita (True) se o código estiver sintaticamente correto, caso contrário rejeita (False). Quando célula vazia na tabela ACTION, ativa o modo pânico.
 
         Args:
@@ -87,16 +91,15 @@ class ParserSLR():
             bool: True se aceitou, False se encontrou erros sintáticos, mesmo que recupere no modo pânico.
         """
 
-        # Verificar se tabelaSLR existe e gramática não foi alterada
+        # FAZER: Verificar se tabelaSLR existe no disco e gramática não foi alterada, se não criar tabelaSLR do zero
         tabelaSLR = self.criar_tabelaSLR()
 
-        return self.analisar_sintaxeAUX(lista_tokens, tabelaSLR, producoes)
+        return self.analisar_sintaxeAUX(lista_tokens, tabelaSLR)
 
     def analisar_sintaxeAUX(self, tokens : list[Token], 
-                            tabelaSLR : dict[tuple[int | str, int | str], 'Acao'], 
-                            producoes: tuple[tuple[str, tuple[str, ...]], ...]) -> bool:
-        # tokens: list of terminals, last element is "$"
-        # producoes: list of rules A → β (used for output and length lookup)
+                            tabelaSLR : dict[tuple[int | str, int | str], 'Acao']) -> bool:
+
+        producoes = self.producoes 
 
         stack: list[str | int] = ["$", 0]
 

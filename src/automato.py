@@ -54,7 +54,7 @@ class AutomatoLR0:
         Returns:
             _type_: _description_
         """
-        producao_incial = gramatica.prod[0]
+        producao_incial = gramatica.producoes[0]
         return ItemLR(producao_incial[0], producao_incial[1], 0)
 
     def gerar_automato(self, gramatica : Gramatica) -> None:
@@ -113,7 +113,7 @@ class AutomatoLR0:
         """Expande o fechamento de I. Trabalha um pouco diferente sobre o conjunto I de como é tratado nos slides: Torna I uma fila para auxiliar no processo. Logo, passar cópia de I como parâmetro
 
         Args:
-            I (list[ItemLR]): conjunto de itens
+            I (list[ItemLR]): Cópia do conjunto de itens
 
         Returns:
             list[ItemLR]: fechamento de I
