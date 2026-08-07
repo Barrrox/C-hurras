@@ -1,7 +1,10 @@
 import sys
+import os
+
+# Adiciona o diretório src/ ao sys.path para que os imports funcionem
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
 
 from compilador import compilador
-
 
 # 1. le o arquivo de código e retorna como um vetor de caracteres
 def ler_arquivo(caminho_codigo):
