@@ -9,7 +9,7 @@ def test_fechamento_deep_closure(gramatica_simples2 : Gramatica):
     # O item semente que dispara o efeito cascata: S' -> • E
     I_inicial = automato.get_item_inicial(gramatica_simples2)
 
-    producoes = gramatica_simples2.prod
+    producoes = gramatica_simples2.producoes
     
     # Roda o fechamento
     resultado = automato.fechamento([I_inicial], producoes)

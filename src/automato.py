@@ -8,9 +8,12 @@ class ItemLR:
         self.ponto: int = ponto # Começa em 0
 
 
-        # Deixar alocado o simbolo apos o ponto. Talvez nem precise guardar dir e ponto separados dai:
-        if self.ponto < len(self.dir):
+        # Deixar alocado o simbolo apos o ponto.
+        if self.ponto < len(self.dir): # Se ponto antes do fim
             self.ponto_dir = self.dir[self.ponto]
+
+        elif self.ponto == len(self.dir): # Se ponto no fim ou self.dir = [], não há nada depois do ponto
+            self.ponto_dir = None
         else:
             print("Erro em ItemLR: a posição do ponto ultrapassa o index da parte direita do item")
             exit()

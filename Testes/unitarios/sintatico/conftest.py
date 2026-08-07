@@ -1,33 +1,32 @@
 import pytest
-from automato import ItemLR # Ajuste o import conforme onde a classe estiver
+from automato import ItemLR
 from gramatica import Gramatica
 
-@pytest.fixture #  = fixed + feature
+# Classe exclusiva de teste que herda a lógica de Gramatica,
+# mas pula a abertura de arquivos para poder injetar as producoes mock
+class GramaticaMock(Gramatica):
+    def __init__(self, producoes_tupla):
+        self.producoes = producoes_tupla
+        self.terminais = set()
+        self.nao_terminais = set()
+
+@pytest.fixture
 def gramatica_simples():
-    """Retorna uma gramática mínima apenas com E -> E + T | T, etc."""
     producoes = (
         ('E', ('E', '+', 'T')),
         ('E', ('T',)),
         ('T', ('id',))
     )
-    
-    return Gramatica(prod=producoes)
+    return GramaticaMock(producoes)
 
 @pytest.fixture
 def gramatica_simples2():
-    """
-    Gramática robusta para testes sintáticos:
-    E  -> E + T | T
-    T  -> T * F | F
-    F  -> ( E ) | id
-    """
     producoes = (
         ("E", ("E", "+", "T"),),
         ("E", ("T",)),
-        # ("E", ("{",)),
         ("T", ("T", "*", "F")),
         ("T", ("F",)),
         ("F", ("(", "E", ")")),
         ("F", ("id",))
     )
-    return Gramatica(prod=producoes)
+    return GramaticaMock(producoes)
