@@ -55,7 +55,7 @@ class AutomatoLR0:
             _type_: _description_
         """
         producao_incial = gramatica.prod[0]
-        return [ItemLR(producao_incial[0], producao_incial[1], 0)]
+        return ItemLR(producao_incial[0], producao_incial[1], 0)
 
     def gerar_automato(self, gramatica : Gramatica) -> None:
         """

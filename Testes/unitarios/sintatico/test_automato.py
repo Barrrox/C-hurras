@@ -12,7 +12,7 @@ def test_fechamento_deep_closure(gramatica_simples2 : Gramatica):
     producoes = gramatica_simples2.prod
     
     # Roda o fechamento
-    resultado = automato.fechamento(I_inicial, producoes)
+    resultado = automato.fechamento([I_inicial], producoes)
     for i in resultado:
         print(i.esq,"->", i.dir)
     
