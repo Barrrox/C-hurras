@@ -51,7 +51,7 @@ O fluxo de dados ao compilar um código fonte (ex: `codigo.churras`):
     *   Chama `lista_tokens = lexer.gerar_tokens()`.
     *   O retorno é um array/lista de objetos `Token`. Erros léxicos são relatados aqui.
 4.  **Chamada Sintática**:
-    *   Instancia o parser carregando as tabelas: `parser = ParserSLR("tabelas_slr.json")`.
+    *   Instancia o parser: `parser = ParserSLR()`.
     *   Inicia a análise passando a fita léxica: `parser.parse(lista_tokens)`.
 5.  **Loop Shift-Reduce (`parse()`)**:
     *   O Parser inicia a Pilha de Estados colocando `[ 0 ]`.
