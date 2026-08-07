@@ -42,7 +42,7 @@ class Gramatica:
 
                 for simbolo in prod_dir: # Pega simbolos da direita da produção
 
-                    if simbolo[0] == "<" and simbolo[-1 == ">"]: # Se é n terminal
+                    if simbolo[0] == "<" and simbolo[-1]  == ">": # Se é n terminal
                         if simbolo not in nao_terminais:
                             nao_terminais.append(simbolo)
 
