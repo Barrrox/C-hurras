@@ -151,7 +151,7 @@ producoes : tuple[tuple[str, tuple[str]]] = (
 )
 
 class Gramatica:
-        def __init__(self, prod: tuple[tuple[str, tuple[str]]] = producoes):
+        def __init__(self, prod: tuple[tuple[str, tuple[str]]] = producoes) -> None:
             """Classe que:
                 1. Lê o arquivo bruto da gramática (ATENÇÃO: Produções A -> a | b já estão separadas em A -> a e A -> b)
                 2. Contém as regras de produção
@@ -161,9 +161,9 @@ class Gramatica:
             Args:
                 caminho_arquivo (str): Caminho relativo para o arquivo da gramática
             """
-            self.prod = prod
-            self.terminais = set()
-            self.nao_terminais = set()
+            self.prod: tuple[tuple[str, tuple[str]]] = prod
+            self.terminais: set[str] = set()
+            self.nao_terminais: set[str] = set()
 
         def calcular_follow(self) -> dict[str, list[str]]:
             """Roda algoritmo para criar e retornar Follow. Vai precisar calcular o First antes.
@@ -176,6 +176,8 @@ class Gramatica:
 
             # Calcular Follow
 
-            follow = {producoes[i] : [a,b,c]}
+            # Ideia para a estrutura do Follow: Dicionario em que cada chave é uma produção de producoes e cada valor é uma lista com os não terminais, que são o Follow
+            # 
+            # follow = {producoes[i] : [a,b,c]}
 
             return follow

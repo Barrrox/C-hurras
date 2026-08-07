@@ -3,25 +3,25 @@ import os
 
 class Lexer():
     # variaveis globais (agora como atributos de classe)
-    RESERVADAS = [
+    RESERVADAS : list[str] = [
         "vaca", "frango", "porco", "rodizio", "grelhar", "ta_no_ponto?",
         "queimou", "ponto_certo", "queimado", "espetar", "servir", "servido"
     ]
-    TIPOS_VARIAVEIS = ["vaca", "frango", "porco"]
+    TIPOS_VARIAVEIS : list[str] = ["vaca", "frango", "porco"]
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Classe Lexer gerencia o processo de análise léxica.
         """
-        self.pc = 0 # Ponteiro de char para a leitura do código
+        self.pc: int = 0 # Ponteiro de char para a leitura do código
         self.tokens : list[Token] = []  # Lista com os tokens
 
     # imprime mensagem de erro e sai do programa
-    def _erro_lexico(self, msg):
+    def _erro_lexico(self, msg: str) -> None:
         print(msg)
         exit(0)
 
     # retorna vetor com a relação entre char atual e linha de código
-    def _relacao_linha_char(self, codigo):
+    def _relacao_linha_char(self, codigo: str) -> list[int]:
         relacao = []
         for i in range(len(codigo)):
             if codigo[i] == '\n':
@@ -29,7 +29,7 @@ class Lexer():
         return relacao
 
     # define em qual linha do código está um char
-    def _linha_char(self, posicao, relacao):
+    def _linha_char(self, posicao: int, relacao: list[int]) -> int:
         linha = 0
         for idx in relacao:
             if idx < posicao:
@@ -38,7 +38,7 @@ class Lexer():
                 break
         return linha
 
-    def analisar_lexico(self, codigo):
+    def analisar_lexico(self, codigo: str) -> list[Token]:
         """Interface para executar o verdadeiro analisador lexico. Retorna a lista de tokens
 
         Args:
@@ -55,7 +55,7 @@ class Lexer():
         return lista_tokens
 
     # função do analisador léxico, se bem sucedida, retorna lista de tokens
-    def analisar_lexico_aux(self, codigo):
+    def analisar_lexico_aux(self, codigo: str) -> list[Token]:
         """Executa a análise léxica do código fonte utilizando um autômato de estados finito.
 
         O método percorre o código caractere por caractere, realizando transições entre estados
@@ -370,11 +370,11 @@ class Lexer():
         # encerrou analise de forma correta, retornar tokens
         return self.tokens
 
-    def print_tokens(self):
+    def print_tokens(self) -> None:
         for tk in self.tokens:
             tk.tkprint()
 
-    def salvar_tokens(self, caminho_saida="output/tokens_saida.txt"):
+    def salvar_tokens(self, caminho_saida: str = "output/tokens_saida.txt") -> None:
         """Salva a lista de tokens formatada em um arquivo."""
         try:
             os.makedirs(os.path.dirname(caminho_saida), exist_ok=True)

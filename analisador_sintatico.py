@@ -3,7 +3,7 @@ from automato import AutomatoLR0
 
 
 # Símbolos (terminais seguidos de não terminais, ordem da tabela SLR)
-simbolos = {
+simbolos : dict[str, int] = {
     # Terminais (0 – 22)
     ',': 0,
     ';': 1,
@@ -65,19 +65,19 @@ def simbolo(term : str) -> int:
                 
 class ParserSLR():
 
-    def __init__(self):
+    def __init__(self) -> None:
         """O ParserSLR tem os métodos para realizar a analise sintática do código.
         """
 
-        self.pilha = []
-        self.tokens = []
-        self.tpointer = 0
+        self.pilha: list[str | int] = []
+        self.tokens: list[Token] = []
+        self.tpointer: int = 0
 
-    def criar_tabelaSLR(self):
+    def criar_tabelaSLR(self) -> dict:
 
-        return tabelaSLR
+        pass
 
-    def analisar_sintaxe(self, lista_tokens : list[Token]) -> bool:
+    def analisar_sintaxe(self, lista_tokens : list[Token], producoes : tuple[tuple[str, tuple[str]]]) -> bool:
         """Interface para realizar a analise sintática Bottom-up a partir da lista de tokens. Aceita (True) se o código estiver sintaticamente correto, caso contrário rejeita (False). Quando célula vazia na tabela ACTION, ativa o modo pânico.
 
         Args:
@@ -93,8 +93,8 @@ class ParserSLR():
         return self.analisar_sintaxeAUX(lista_tokens, tabelaSLR, producoes)
 
     def analisar_sintaxeAUX(self, tokens : list[Token], 
-                            tabelaSLR : dict[str | int, int], 
-                            producoes) -> bool:
+                            tabelaSLR : dict[tuple[int | str, int | str], 'Acao'], 
+                            producoes: tuple[tuple[str, tuple[str, ...]], ...]) -> bool:
         # tokens: list of terminals, last element is "$"
         # producoes: list of rules A → β (used for output and length lookup)
 
@@ -106,8 +106,6 @@ class ParserSLR():
             s = stack[-1] # current state
             a = tokens[ip] # current input symbol
             act = tabelaSLR[s, simbolo(a.categoria)]
-
-
             
             if act.tipo == 0: # empilha
                 stack.append(a.categoria) # push the terminal

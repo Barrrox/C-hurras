@@ -2,10 +2,10 @@ from gramatica import Gramatica
 
 
 class ItemLR:
-    def __init__(self, esquerda_producao: str, direita_producao: list[str], ponto: int = 0):
-        self.esq = esquerda_producao
-        self.dir = direita_producao
-        self.ponto = ponto # Começa em 0
+    def __init__(self, esquerda_producao: str, direita_producao: list[str], ponto: int = 0) -> None:
+        self.esq: str = esquerda_producao
+        self.dir: list[str] = direita_producao
+        self.ponto: int = ponto # Começa em 0
 
 
         # Deixar alocado o simbolo apos o ponto. Talvez nem precise guardar dir e ponto separados dai:
@@ -16,7 +16,7 @@ class ItemLR:
             exit()
         
     # Método para printar Item no terminal para debug manual
-    def imprimir(self):
+    def imprimir(self) -> None:
         print(self.esq, "->", self.dir)
 
         # Como aloca:
@@ -31,21 +31,21 @@ class ItemLR:
 class Estado:
 
     def __init__(self, id : int,
-                 fechamento : list['ItemLR']):
-        self.id = id
-        self.fechamento = fechamento
+                 fechamento : list['ItemLR']) -> None:
+        self.id : int = id
+        self.fechamento : list['ItemLR'] = fechamento
 
 
 class AutomatoLR0:
-    def __init__(self, gramatica: Gramatica):
+    def __init__(self, gramatica: Gramatica) -> None:
         """ Recebe a gramatica já lida e processada """
 
-        self.estados = []    # Lista contendo os conjuntos de Itens LR(0)
-        self.transicoes = {} # Mapeia: (estado_origem, simbolo) -> estado_destino
+        self.estados : list[Estado] = []    # Lista contendo os conjuntos de Itens LR(0)
+        self.transicoes : dict[tuple[int, str], str] = {} # Mapeia: (estado_origem, simbolo) -> estado_destino
 
         # self.gerar_automato(gramatica) # Gera o automato 
     
-    def get_item_inicial(self, gramatica: Gramatica):
+    def get_item_inicial(self, gramatica: Gramatica) -> ItemLR:
         """Pega o item inicial da gramática 
 
         Args:
@@ -75,6 +75,8 @@ class AutomatoLR0:
                     colocar todas as produções com o símbolo lido
                     realizar fechamento
         """
+
+        pass
 
         # 2. Criar conjunto de itens inicial da gramatica
 
@@ -171,10 +173,11 @@ class AutomatoLR0:
     - Para todas as regras A → α•Xβ em C, retorna A → αX•β
         ● Calcular o fechamento deste conjunto de itens
     """
+    
     def desvio(self, I: list[ItemLR], X: str) -> list[ItemLR]:
         # Move o ponto dos itens que esperam 'X' e tira o fechamento do resultado
         pass
 
-    def exportar_json(self, caminho="automato.json") -> None:
+    def exportar_json(self, caminho: str = "automato.json") -> None:
         """Lê os estados e transições e salva o automato em um JSON
         """
