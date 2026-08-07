@@ -52,10 +52,10 @@ class AutomatoLR0:
         """Pega o item inicial da gramática 
 
         Args:
-            gramatica (Gramatica): _description_
+            gramatica (Gramatica): A instância da gramática lida.
 
         Returns:
-            _type_: _description_
+            ItemLR: O item inicial do autômato (com ponto 0)
         """
         producao_incial = gramatica.producoes[0]
         return ItemLR(producao_incial[0], producao_incial[1], 0)
@@ -116,7 +116,8 @@ class AutomatoLR0:
         """Expande o fechamento de I. Trabalha um pouco diferente sobre o conjunto I de como é tratado nos slides: Torna I uma fila para auxiliar no processo. Logo, passar cópia de I como parâmetro
 
         Args:
-            I (list[ItemLR]): Cópia do conjunto de itens
+            I (list[ItemLR]): Cópia do conjunto de itens iniciais.
+            producoes (tuple): As produções da gramática para verificar transições vazias.
 
         Returns:
             list[ItemLR]: fechamento de I

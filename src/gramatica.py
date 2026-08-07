@@ -4,7 +4,7 @@ import json
 class Gramatica:
         def __init__(self, arquivo_producoes = "regras_producao.json") -> None:
             """Classe que:
-                1. Lê o arquivo bruto da gramática (ATENÇÃO: Produções A -> a | b já estão separadas em A -> a e A -> b)
+                1. Lê o arquivo JSON da gramática (ATENÇÃO: Produções A -> a | b já estão separadas em A -> a e A -> b)
                 2. Contém as regras de produção
                 3. Pega terminais e não terminais
                 4. Calcula First e Follow (guarda em atributos publicos para serem usados no construtor de tabelas)
@@ -30,6 +30,11 @@ class Gramatica:
             self.simbolos = self.get_simbolos()
 
         def get_simbolos(self) -> dict[str, int]:
+            """Lê as regras de produção e retorna os símbolos da gramática para indexar os símbolos e evitar trabalhar com strings ao lidar com símbolos. Também salva separadamente os terminais e não terminais em self.terminais e self.nao_terminais. 
+
+            Returns:
+                dict[str, int]: Dicionário em que a chave é uma string e o valor é um int.
+            """
             terminais = []
             nao_terminais = []
 
@@ -70,10 +75,10 @@ class Gramatica:
             return simbolos
 
         def calcular_follow(self) -> dict[str, list[str]]:
-            """Roda algoritmo para criar e retornar Follow. Vai precisar calcular o First antes.
+            """Roda algoritmo para criar e retornar Follow. Vai precisar calcular o First antes. Só retornar follow pois não precisamos do First para o sintático.
             
             Returns:
-                dict: Conjuntos Follow
+                dict: Conjunto Follow
             """
 
             # Calcular First

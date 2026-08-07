@@ -17,6 +17,14 @@ class ParserSLR():
         self.simbolos = gramatica.simbolos
 
     def simbolo(self, term : str) -> int:
+        """Pega o símbolo 
+
+        Args:
+            term (str): _description_
+
+        Returns:
+            int: _description_
+        """
         return self.simbolos.get(term, 'ERRO')
 
     def criar_tabelaSLR(self) -> dict:

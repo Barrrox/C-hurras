@@ -6,7 +6,7 @@ from analisador_sintatico import ParserSLR
 class Compilador(): # Classe compilador
 
     def __init__(self) -> None:
-        """Classe que instância as outras classes e orquestra a compilação
+        """Classe que instancia as outras classes e orquestra a compilação
         """
         self.lexer = Lexer()
         self.parser = ParserSLR()
