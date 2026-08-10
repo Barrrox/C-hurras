@@ -8,10 +8,6 @@ class ParserSLR():
         """O ParserSLR tem os métodos para realizar a analise sintática do código.
         """
 
-        self.pilha: list[str | int] = []
-        self.tokens: list[Token] = []
-        self.tpointer: int = 0
-
         gramatica = Gramatica()
         self.producoes = gramatica.producoes
         self.simbolos = gramatica.simbolos

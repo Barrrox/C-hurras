@@ -2,9 +2,9 @@ from gramatica import Gramatica
 
 
 class ItemLR:
-    def __init__(self, esquerda_producao: str, direita_producao: list[str], ponto: int = 0) -> None:
+    def __init__(self, esquerda_producao: str, direita_producao: tuple[str], ponto: int = 0) -> None:
         self.esq: str = esquerda_producao
-        self.dir: list[str] = direita_producao
+        self.dir: tuple[str] = direita_producao
         self.ponto: int = ponto # Começa em 0
 
 
