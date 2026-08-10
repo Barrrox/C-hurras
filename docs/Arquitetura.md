@@ -8,7 +8,7 @@ Classes, divisão de responsabilidades das classes e ideia para o fluxo de proce
 
 O projeto é dividido em dois ecossistemas: o gerador offline (que processa a gramática) e o compilador online (que consome a tabela gerada).
 
-### Ecossistema 1: O Gerador SLR (`src/construtor_tabelas.py`)
+### Ecossistema 1: O Gerador SLR (`src/construtor_tabelaSLR.py`)
 Roda apenas quando a linguagem/gramática sofrer alterações para recalcular o cérebro do analisador.
 
 *   **`Gramatica`**:
@@ -19,9 +19,9 @@ Roda apenas quando a linguagem/gramática sofrer alterações para recalcular o 
 *   **`AutomatoLR0`**:
     *   **Responsabilidade**: Processar a `Gramatica` gerando todos os itens validos.
     *   **Métodos Principais**: `closure(item)`, `goto(estado, simbolo)`. Gera todos os estados possíveis.
-*   **`ConstrutorTabelas`**:
+*   **`ConstrutorTabelaSLR`**:
     *   **Responsabilidade**: Unir o Autômato e os conjuntos Follow para gerar a tabela.
-    *   **Métodos Principais**: `construir_tabelaSLR()`, `exportar_tabelas()` (salva a matriz final em um arquivo `.json`).
+    *   **Métodos Principais**: `construir_tabelaSLR()`, `exportar_json()` (salva a matriz final no arquivo `tabela_slr.json`).
 
 ### Ecossistema 2: O Compilador Principal (Orquestrador)
 É a esteira principal que roda quando queremos compilar um código da linguagem `C-Hurras`.
@@ -30,13 +30,13 @@ Roda apenas quando a linguagem/gramática sofrer alterações para recalcular o 
     *   **Responsabilidade**: Classe de modelo simples. Guarda string, categoria e linha.
 *   **`Lexer`** (em `src/analisador_lexico.py`):
     *   **Responsabilidade**: Fazer varredura de caracteres.
-    *   **Métodos Principais**: `__init__(codigo_fonte)`, `gerar_tokens()`.
+    *   **Métodos Principais**: `__init__()`, `analisar_lexico(codigo)`.
 *   **`ParserSLR`** (em `src/analisador_sintatico.py`):
     *   **Responsabilidade**: O núcleo da Fase 2. Uma máquina orientada a pilha e tabela.
     *   **Métodos Principais**: 
         *   `__init__()`: Inicializa carregando a classe `Gramatica` (para saber o tamanho das reduções) e carrega as tabelas prontas.
-        *   `parse(lista_tokens)`: O loop principal Shift-Reduce.
-        *   `modo_panico(token_atual)`: Trata as células de erro da tabela ACTION.
+        *   `analisar_sintaxe(lista_tokens)`: O loop principal Shift-Reduce.
+        *   `modo_panico(token_atual)`: (Modo Pânico)
 
 ---
 
@@ -44,16 +44,17 @@ Roda apenas quando a linguagem/gramática sofrer alterações para recalcular o 
 
 O fluxo de dados ao compilar um código fonte (ex: `codigo.churras`):
 
-1.  **Pré-requisito**: O arquivo de tabelas (`tabelas_slr.json`) já foi gerado offline por `src/construtor_tabelas.py`.
-2.  **Início**: O arquivo principal inicia lendo o código-fonte em texto do arquivo `.churras`.
-3.  **Chamada Léxica**:
-    *   Instancia `lexer = Lexer(codigo_texto)`.
-    *   Chama `lista_tokens = lexer.gerar_tokens()`.
+1.  **Pré-requisito**: O arquivo de tabelas (`tabela_slr.json`) já foi gerado offline por `src/construtor_tabelaSLR.py`.
+2.  **Início**: O arquivo principal (`main.py`) lê o código-fonte em texto do arquivo `.churras` e instancia a classe `Compilador`.
+3.  **Orquestração (`Compilador`)**:
+    *   Instancia `lexer = Lexer()` e `parser = ParserSLR()`.
+    *   Chama `compilar(codigo)`.
+4.  **Chamada Léxica**:
+    *   Chama `lista_tokens = lexer.analisar_lexico(codigo)`.
     *   O retorno é um array/lista de objetos `Token`. Erros léxicos são relatados aqui.
-4.  **Chamada Sintática**:
-    *   Instancia o parser: `parser = ParserSLR()`.
-    *   Inicia a análise passando a fita léxica: `parser.parse(lista_tokens)`.
-5.  **Loop Shift-Reduce (`parse()`)**:
+5.  **Chamada Sintática**:
+    *   Inicia a análise passando a fita léxica: `parser.analisar_sintaxe(lista_tokens)`.
+6.  **Loop Shift-Reduce (`analisar_sintaxe()`)**:
     *   O Parser inicia a Pilha de Estados colocando `[ 0 ]`.
     *   Para cada token na `lista_tokens`:
         *   `estado_topo = pilha[-1]`
@@ -61,8 +62,6 @@ O fluxo de dados ao compilar um código fonte (ex: `codigo.churras`):
         *   Se `acao` == **Shift(N)**: Coloca o token e o Estado **N** na pilha. Avança a fita de tokens.
         *   Se `acao` == **Reduce(Regra)**: Desempilha instâncias da pilha baseado no tamanho da regra. Consulta a tabela SLR usando o estado remanescente no topo e o Não-Terminal reduzido. Empilha o novo estado. *A fita do token **não** avança nesta operação.*
         *   Se `acao` == **Accept**: Sucesso! O código está sintaticamente correto. Fim do laço.
-        *   Se `acao` == **Erro**: Aciona `modo_panico(token)`.
-6.  **Recuperação de Erros (Modo Pânico)**:
-    *   A função iterativamente descarta tokens da fita e desempilha a pilha de estados até encontrar os pontos de sincronização (como um `;`).
-    *   Realinha a máquina de estados para evitar travamento em cascata e devolve o controle ao Loop.
-7.  **Fim do Programa**: Relatório de status é impresso para o usuário indicando as falhas reportadas ou o sucesso pleno.
+        *   Se `acao` == **Erro**: Aciona o Modo Pânico.
+7.  **Recuperação de Erros (Modo Pânico)**
+8.  **Fim do Programa**: Relatório de status é impresso para o usuário indicando as falhas reportadas ou o sucesso pleno.
