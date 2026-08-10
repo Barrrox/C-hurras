@@ -11,22 +11,70 @@ class GramaticaMock(Gramatica):
         self.nao_terminais = set()
 
 @pytest.fixture
-def gramatica_simples():
+def gramatica1():
     producoes = (
-        ('E', ('E', '+', 'T')),
-        ('E', ('T',)),
-        ('T', ('id',))
+        ('<E>', ('<E>', '+', '<T>')),
+        ('<E>', ('<T>',)),
+        ('<T>', ('id',))
     )
-    return GramaticaMock(producoes)
+    g = GramaticaMock(producoes)
+    g.simbolos = g.get_simbolos()
+    return g
 
 @pytest.fixture
-def gramatica_simples2():
+def gramatica2():
     producoes = (
-        ("E", ("E", "+", "T"),),
-        ("E", ("T",)),
-        ("T", ("T", "*", "F")),
-        ("T", ("F",)),
-        ("F", ("(", "E", ")")),
-        ("F", ("id",))
+        ("<E>", ("<E>", "+", "<T>"),),
+        ("<E>", ("<T>",)),
+        ("<T>", ("<T>", "*", "<F>")),
+        ("<T>", ("<F>",)),
+        ("<F>", ("(", "<E>", ")")),
+        ("<F>", ("id",))
     )
-    return GramaticaMock(producoes)
+    g = GramaticaMock(producoes)
+    g.simbolos = g.get_simbolos()
+    return g
+
+@pytest.fixture
+def gramatica3():
+    # E → T | T a | b | ε | F
+    # F → ε
+
+    producoes = (
+        ('<E>', ('<T>',)),
+        ('<E>', ('<T>', 'a')),
+        ('<E>', ('b',)),
+        ('<E>', ((),)),
+        ('<E>', ('<F>',)),
+        ('<F>', ((),)),
+    )
+    g = GramaticaMock(producoes)
+    g.simbolos = {"<E>", "<T>", "<F>", "a", "b", ()} 
+    g.nao_terminais = ['<E>', '<F>']
+    g.terminais     = ['<T>', 'a', 'b']
+    return g
+
+@pytest.fixture
+def gramatica4():
+    # E  → T E2
+    # E2 → v T E2 | ε
+    # T  → F T2
+    # T2 → a F T2
+    # F  → n F | id
+
+    
+
+    producoes = (
+        ('<E>',  ('<T>', '<E2>')),
+        ('<E2>', ('v', '<T>', '<E2>')),
+        ('<E2>', ((),)),
+        ('<T>',  ('<F>', '<T2>')),
+        ('<T2>', ('a', '<F>', '<T2>')),
+        ('<F>',  ('n', '<F>')),
+        ('<F>',  ('id',)),
+    )
+    g = GramaticaMock(producoes)
+    g.simbolos = {"<E>", "<T>", "<F>", 'v', 'a', 'n', 'id'}
+    g.nao_terminais = ['<E>', '<E2>', '<T>', '<T2>', '<F>']
+    g.terminais     = ['v', 'a', 'n', 'id']
+    return g
