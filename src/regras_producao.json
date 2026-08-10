@@ -3,6 +3,7 @@
     ["<churras>", ["<if>", "<churras>"]],
     ["<churras>", ["<churras>"]],
     ["<churras>", ["<for>", "<churras>"]],
+    ["<churras>", ["<while>", "<churras>"]],
     ["<churras>", ["<declaracao>", "<churras>"]],
     ["<churras>", ["<entrada>", "<churras>"]],
     ["<churras>", ["<saida>", "<churras>"]],
