@@ -47,7 +47,7 @@ class AutomatoLR0:
         """ Recebe a gramatica já lida e processada """
 
         self.estados : list[Estado] = []    # Lista contendo os conjuntos de Itens LR(0)
-        self.transicoes : dict[tuple[int, str], str] = {} # Mapeia: (estado_origem, simbolo) -> estado_destino
+        self.transicoes : dict[tuple[int, str], int] = {} # Mapeia: (estado_origem, simbolo) -> estado_destino
 
         # self.gerar_automato(gramatica) # Gera o automato 
     
