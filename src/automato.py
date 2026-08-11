@@ -1,3 +1,6 @@
+import json
+import os
+
 from gramatica import Gramatica
 
 
@@ -195,6 +198,56 @@ class AutomatoLR0:
         # Retorna o fechamento deste novo conjunto de itens
         return self.fechamento(novo_conjunto_itens, producoes)
 
+
+
     def exportar_json(self, caminho: str = "automato.json") -> None:
         """Lê os estados e transições e salva o automato em um JSON
         """
+
+        # Estrutura o JSON para salvar os estados e transições do autômato
+        estados_json = []
+        for estado in self.estados:
+            itens_json = []
+            
+            # Converte os objetos ItemLR para dicionários puros
+            for item in estado.fechamento:
+                itens_json.append({
+                    "esq": item.esq,
+                    "dir": list(item.dir),  # Converte tupla para lista para compatibilidade JSON
+                    "ponto": item.ponto
+                })
+                
+            estados_json.append({
+                "id": estado.id,
+                "fechamento": itens_json
+            })
+
+        # Estrutura as transições do autômato
+        # Converte o dicionário {(origem, simbolo): destino} em uma lista de transições
+        transicoes_json = []
+        for (origem, simbolo), destino in self.transicoes.items():
+            transicoes_json.append({
+                "origem": origem,
+                "simbolo": simbolo,
+                "destino": destino
+            })
+
+        # Monta o dicionário final que será salvo
+        dados_automato = {
+            "estados": estados_json,
+            "transicoes": transicoes_json
+        }
+
+        # Escreve o JSON
+        try:
+            diretorio = os.path.dirname(caminho)
+            if diretorio:
+                os.makedirs(diretorio, exist_ok=True)
+                
+            with open(caminho, "w", encoding="utf-8") as f:
+                json.dump(dados_automato, f, indent=4, ensure_ascii=False)
+                
+            print(f"Automato salvo com sucesso em: {caminho}")
+            
+        except Exception as e:
+            print(f"ERRO ao salvar o automato: {e}")
