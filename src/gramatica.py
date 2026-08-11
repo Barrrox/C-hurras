@@ -176,25 +176,66 @@ class Gramatica:
 
             first = self.calcular_conjunto_first()
 
-            def follow(X : str):
-                """Calcula o conjunto follow para o símbolo não terminal X.
+            # Inicializa o conjunto follow para todos os não-terminais com um set vazio
+            conjunto_follow = {nao_t : set() for nao_t in self.nao_terminais}
 
-                Args:
-                    X (str): Símbolo não terminal cujo conjunto follow(X) deseja-se encontrar
+            # Se S é o símbolo inicial da gramática, adicione $ a FOLLOW(S).
+            simbolo_inicial = self.producoes[0][0]
+            conjunto_follow[simbolo_inicial].add("$")
 
-                Returns:
-                    set[str]: Conjunto Follow
-                """
+            # Roda até que nenhum conjunto follow receba novos elementos
+            mudou = True
+            while mudou:
+                mudou = False
 
-            follow_x = set()
-            for producao in self.producoes:
-                
+                # Itera sobre todas as produções
+                for producao in self.producoes:
+                    A = producao[0] # lado esquerdo (A -> ...)
+                    dir_prod = producao[1] # lado direito (... -> aBb)
 
+                    # Avalia cada símbolo no lado direito da produção
+                    for i in range(len(dir_prod)):
+                        B = dir_prod[i]
 
-                # 1. Se S é o símbolo inicial da gramática, adicione $ a FOLLOW(S).
+                        # FOLLOW apenas para não terminais
+                        if B in self.nao_terminais:
+                            tamanho_anterior = len(conjunto_follow[B])
 
+                            # b é a sequência de símbolos que vem imediatamente após B
+                            b = dir_prod[i + 1:]
 
+                            if len(b) > 0:
+                                # Se A -> aBb, então tudo que está em FIRST(b), exceto ε, é adicionado a FOLLOW(B)
+                                first_b = set()
+                                deriva_vazio = True
 
+                                # Calcula o FIRST da sequência b
+                                for simb_b in b:
+                                    if simb_b in self.terminais:
+                                        first_b.add(simb_b)
+                                        deriva_vazio = False
+                                        break
+                                    else:
+                                        # É não-terminal, pega o first dele tirando vazio
+                                        first_b |= (first[simb_b] - {()})
+                                        # Se não tem vazio, a sequência para por aqui
+                                        if () not in first[simb_b]:
+                                            deriva_vazio = False
+                                            break
 
+                                # Adiciona FIRST(b) (sem vazio) em FOLLOW(B)
+                                conjunto_follow_B |= first_b
 
-            return None
+                                # Se A -> aBb onde FIRST(b) contém ε, adiciona FOLLOW(A) em FOLLOW(B) 
+                                if deriva_vazio:
+                                    conjunto_follow_B |= conjunto_follow[A]
+
+                            else:
+                                # Se A -> aB (ou seja, B é o último símbolo), adiciona FOLLOW(A) em FOLLOW(B)
+                                conjunto_follow_B |= conjunto_follow[A]
+
+                            # Se o tamanho do conjunto FOLLOW(B) aumentou, precisamos rodar o while mais uma vez
+                            if len(conjunto_follow_B) > tamanho_anterior:
+                                mudou = True
+
+            return {k: list(v) for k, v in conjunto_follow.items()}
