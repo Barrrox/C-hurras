@@ -62,6 +62,16 @@ class AutomatoLR0:
         """
         producao_incial = gramatica.producoes[0]
         return ItemLR(producao_incial[0], producao_incial[1], 0)
+    
+    def achar_producao_no_automato(self, item : ItemLR) -> int:
+        """
+            TODO: barros, enfeita esse método bem aqui <--
+        """
+        for estado in self.estados:
+            for item_do_estado in estado.fechamento:
+                if item == item_do_estado:
+                    return estado.id
+        return -1
 
     def gerar_automato(self, gramatica : Gramatica) -> None:
         """
@@ -81,8 +91,38 @@ class AutomatoLR0:
                     colocar todas as produções com o símbolo lido
                     realizar fechamento
         """
+        id_counter = 0
+        fila_estados = list[Estado(id_counter, self.fechamento([self.get_item_inicial()], gramatica))]
+        
+        # Para todos os estados
+        while fila_estados:
+            estado = fila_estados.pop(0)
+            estados.append(estado)
+            
+            # Para cada produção do fechamento do estado
+            for item in estado.fechamento:
+                # Realiza desvio do item
+                item_desviado = ItemLR(item.esq, item.dir, item.ponto+1)
+                
+                # Checa de produção desviada na existe
+                estado_alvo = achar_producao_no_automato(item_desviado)
+                
+                # Se produção existe
+                if estado_alvo >= 0 and ([(estado.id, item.ponto_dir), estado_alvo] not in self.transicoes):
+                    # Adicionar ponteiro pro novo estado
+                    self.transicoes.append([(estado.id, item.ponto_dir), estado_alvo])
 
-        pass
+                # Se produção não existe, criar estado
+                else:
+                    # Calcula desvio_estado
+                    fechamento_estado_novo = desvio_estado(estado.fechamento, item.ponto_dir)
+                    
+                    # Cria estado novo
+                    id_counter += 1
+                    self.estados.append(Estado(id_counter, fechamento_estado_novo))
+                    
+                    # Adicionar ponteiro pro novo estado
+                    self.transicoes.append([(estado.id, item.ponto_dir), id_counter])
 
         # 2. Criar conjunto de itens inicial da gramatica
 
