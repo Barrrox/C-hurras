@@ -166,26 +166,35 @@ class Gramatica:
             """
 
 
-            """Regras para o conjunto FOLLOW:
+            """
+            Sendo X um não-terminal, Follow(X) é o conjunto de terminais que podem aparecer imediatamente à direita de X em alguma forma sentencial
+
+            Regras para o conjunto FOLLOW:
             1. Se S é o símbolo inicial da gramática, adicione $ a FOLLOW(S).
-            2. Se houver uma produção A -> aBb, então tudo que está em FIRST(b), 
-               exceto ε, é adicionado a FOLLOW(B).
-            3. Se houver uma produção A -> aB, ou uma produção A -> aBb 
-               onde FIRST(b) contém ε, então tudo que está em FOLLOW(A) 
-               é adicionado a FOLLOW(B)."""
+            2. Se houver uma produção A -> aBb, então tudo que está em FIRST(b), exceto ε, é adicionado a FOLLOW(B).
+            3. Se houver uma produção A -> aB, ou uma produção A -> aBb onde FIRST(b) contém ε, então tudo que está em FOLLOW(A) é adicionado a FOLLOW(B)."""
 
             first = self.calcular_conjunto_first()
 
-            # 1. Se S é o símbolo inicial da gramática, adicione $ a FOLLOW(S).
+            def follow(X : str):
+                """Calcula o conjunto follow para o símbolo não terminal X.
+
+                Args:
+                    X (str): Símbolo não terminal cujo conjunto follow(X) deseja-se encontrar
+
+                Returns:
+                    set[str]: Conjunto Follow
+                """
+
+            follow_x = set()
+            for producao in self.producoes:
+                
+
+
+                # 1. Se S é o símbolo inicial da gramática, adicione $ a FOLLOW(S).
 
 
 
 
-
-            # Calcular Follow
-
-            # Ideia para a estrutura do Follow: Dicionario em que cada chave é uma produção de producoes e cada valor é uma lista com os não terminais, que são o Follow
-            # 
-            # follow = {producoes[i] : [a,b,c]}
 
             return None
