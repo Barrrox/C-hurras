@@ -30,10 +30,10 @@ class Gramatica:
             self.simbolos = self.get_simbolos()
 
             # Dicionário onde a chave é o não terminal X e o valor é uma lista onde cada elemento está em follow(X)
-            # self.d_follow = 
+            self.follow = self.calcular_conjunto_follow()
 
         def get_simbolos(self) -> dict[str, int]:
-            """Lê as regras de produção e retorna os símbolos da gramática para indexar os símbolos e evitar trabalhar com strings ao lidar com símbolos. Também salva separadamente os terminais e não terminais em self.terminais e self.nao_terminais. 
+            """Lê as regras de produção e retorna um dict com os símbolos indexados da gramática para e evitar trabalhar com strings. Também salva separadamente os terminais e não terminais em self.terminais e self.nao_terminais.
 
             Returns:
                 dict[str, int]: Dicionário em que a chave é uma string e o valor é um int.
@@ -77,16 +77,11 @@ class Gramatica:
 
             return simbolos
 
-        def calcular_conjunto_first(self) -> dict[str, list[str]]:
+        def calcular_conjunto_first(self) -> dict[str, list[str | tuple]]:
+            """Calcula o conjunto First para toda a gramática. Retorna em foma de dicionário onde a chave é o não terminal X e o valor é o first(X) em forma de lista. O vazio é representado por uma tupla vazia ().
 
-
-            """Regras para o conjunto FIRST:
-                1. Se X é um símbolo terminal, então FIRST(X) = {X}.
-                2. Se X for uma produção do tipo X -> ε, adicione ε a FIRST(X).
-                3. Se X for uma produção do tipo X -> Y1Y2...Yk, coloque em FIRST(X) 
-                    todos os terminais de FIRST(Y1). Adicione também os de FIRST(Y2) 
-                    se Y1 derivar ε, e assim sucessivamente até Yk ou até que algum Yi não derive ε.
-                4. Se todos os Yi (para i = 1 até k) derivam ε, adicione ε a FIRST(X).
+            Returns:
+                dict[str, list[str]]: _description_
             """
 
             # Dicionário onde a chave é o não terminal X e o valor é uma lista onde cada elemento está em first(X)
@@ -111,10 +106,6 @@ class Gramatica:
 
                 # Inicializa conjunto first de X vazio
                 firstX = set()
-
-                # Lista para guardar produçoes a analisar e as já analisadas
-                concluido = []
-                analisar = []
 
                 # Buscar todas as produções que começam com o símbolo
                 for producao in self.producoes:
@@ -167,23 +158,29 @@ class Gramatica:
 
             
 
-        def calcular_follow(self) -> dict[str, list[str]]:
-            """Roda algoritmo para criar e retornar Follow. Vai precisar calcular o First antes. Só retornar follow pois não precisamos do First para o sintático.
+        def calcular_conjunto_follow(self) -> dict[str, list[str]]:
+            """Roda algoritmo para criar e retornar o conjunto Follow para toda a gramática. Vai precisar calcular o First antes.
             
             Returns:
                 dict: Conjunto Follow. Chave = Não terminal X. Valor = lista dos não terminais -> follow(X)
             """
 
-            # Reestrutura as produções para  
-
 
             """Regras para o conjunto FOLLOW:
             1. Se S é o símbolo inicial da gramática, adicione $ a FOLLOW(S).
-            2. Se houver uma produção A -> αBβ, então tudo que está em FIRST(β), 
+            2. Se houver uma produção A -> aBb, então tudo que está em FIRST(b), 
                exceto ε, é adicionado a FOLLOW(B).
-            3. Se houver uma produção A -> αB, ou uma produção A -> αBβ 
-               onde FIRST(β) contém ε, então tudo que está em FOLLOW(A) 
+            3. Se houver uma produção A -> aB, ou uma produção A -> aBb 
+               onde FIRST(b) contém ε, então tudo que está em FOLLOW(A) 
                é adicionado a FOLLOW(B)."""
+
+            first = self.calcular_conjunto_first()
+
+            # 1. Se S é o símbolo inicial da gramática, adicione $ a FOLLOW(S).
+
+
+
+
 
             # Calcular Follow
 
@@ -191,4 +188,4 @@ class Gramatica:
             # 
             # follow = {producoes[i] : [a,b,c]}
 
-            return follow
+            return None

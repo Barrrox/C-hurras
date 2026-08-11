@@ -178,7 +178,7 @@ class AutomatoLR0:
         ● Calcular o fechamento deste conjunto de itens
     """
     
-    def desvio(self, I: list[ItemLR], X: str) -> list[ItemLR]:
+    def desvio_estado(self, I: list[ItemLR], X: str) -> list[ItemLR]:
         # Move o ponto dos itens que esperam 'X' e tira o fechamento do resultado
         pass
 
