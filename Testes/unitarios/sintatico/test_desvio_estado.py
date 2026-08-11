@@ -27,7 +27,7 @@ def test_desvio_por_terminal_avanca_ponto(gramatica2: Gramatica):
     automato = AutomatoLR0(gramatica2)
     estado_0 = _estado_0(automato, gramatica2)
 
-    resultado = automato.desvio_estado(estado_0, "id")
+    resultado = automato.desvio_estado(estado_0, "id", gramatica2.producoes)
     itens = _simplificar(resultado)
 
     # Unico item esperado apos desvio: <F> -> id . (item de reducao, ponto no fim)
@@ -41,7 +41,7 @@ def test_desvio_por_terminal_nao_gera_fechamento_adicional(gramatica2: Gramatica
     automato = AutomatoLR0(gramatica2)
     estado_0 = _estado_0(automato, gramatica2)
 
-    resultado = automato.desvio_estado(estado_0, "id")
+    resultado = automato.desvio_estado(estado_0, "id", gramatica2.producoes)
     itens = _simplificar(resultado)
 
     assert len(itens) == 1
@@ -56,7 +56,7 @@ def test_desvio_por_nao_terminal_avanca_ponto(gramatica2: Gramatica):
     automato = AutomatoLR0(gramatica2)
     estado_0 = _estado_0(automato, gramatica2)
 
-    resultado = automato.desvio_estado(estado_0, "<E>")
+    resultado = automato.desvio_estado(estado_0, "<E>", gramatica2.producoes)
     itens = _simplificar(resultado)
 
     assert ("<E>", ("<E>", "+", "<T>"), 1) in itens
@@ -72,7 +72,7 @@ def test_desvio_por_nao_terminal_expande_com_fechamento(gramatica2: Gramatica):
     automato = AutomatoLR0(gramatica2)
     estado_0 = _estado_0(automato, gramatica2)
 
-    resultado = automato.desvio_estado(estado_0, "<T>")
+    resultado = automato.desvio_estado(estado_0, "<T>", gramatica2.producoes)
     itens = _simplificar(resultado)
 
     assert ("<E>", ("<T>",), 1) in itens
@@ -88,7 +88,7 @@ def test_desvio_por_parentese_expande_fechamento(gramatica2: Gramatica):
     automato = AutomatoLR0(gramatica2)
     estado_0 = _estado_0(automato, gramatica2)
 
-    resultado = automato.desvio_estado(estado_0, "(")
+    resultado = automato.desvio_estado(estado_0, "(", gramatica2.producoes)
     itens = _simplificar(resultado)
 
     # Item desviado direto
@@ -115,7 +115,7 @@ def test_desvio_por_simbolo_ausente_retorna_vazio(gramatica2: Gramatica):
     estado_0 = _estado_0(automato, gramatica2)
 
     # '$' nao aparece em nenhum item do estado 0
-    resultado = automato.desvio_estado(estado_0, "$")
+    resultado = automato.desvio_estado(estado_0, "$", gramatica2.producoes)
 
     assert resultado == []
 
@@ -132,7 +132,7 @@ def test_desvio_ignora_itens_sem_simbolo(gramatica1: Gramatica):
     automato = AutomatoLR0(gramatica1)
     estado_0 = _estado_0(automato, gramatica1)
 
-    resultado = automato.desvio_estado(estado_0, "id")
+    resultado = automato.desvio_estado(estado_0, "id", gramatica1.producoes)
     itens = _simplificar(resultado)
 
     assert ("<T>", ("id",), 1) in itens
@@ -150,6 +150,6 @@ def test_desvio_sobre_item_de_reducao_retorna_vazio(gramatica1: Gramatica):
     automato = AutomatoLR0(gramatica1)
     item_reducao = ItemLR("<T>", ("id",), 1)  # ponto no fim
 
-    resultado = automato.desvio_estado([item_reducao], "id")
+    resultado = automato.desvio_estado([item_reducao], "id", gramatica1.producoes)
 
     assert resultado == []

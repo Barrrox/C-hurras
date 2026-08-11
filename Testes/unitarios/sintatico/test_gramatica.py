@@ -25,8 +25,9 @@ def test_get_simbolos():
     assert dicionario_simbolos["<chs>"] == 0
     assert dicionario_simbolos["<churras>"] == 1
     assert dicionario_simbolos["<outro>"] == 2
-    assert dicionario_simbolos["id"] == 3
-    assert dicionario_simbolos["+"] == 4
+    assert dicionario_simbolos["$"] == 3
+    assert dicionario_simbolos["id"] == 4
+    assert dicionario_simbolos["+"] == 5
     
     # 3. Testa se o vazio () não entrou em lugar nenhum, como esperado
     assert "" not in dicionario_simbolos

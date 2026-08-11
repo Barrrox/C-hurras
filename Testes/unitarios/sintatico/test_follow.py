@@ -110,8 +110,8 @@ def test_follow_nao_terminal_intermediario_herda_contexto():
     assert set(follow["<B>"]) == {"b"}
 
 
-def test_follow_nao_contem_epsilon():
-    # epsilon nunca deve aparecer em nenhum conjunto FOLLOW
+def test_follow_nao_contem_vazio():
+    # vazio nunca deve aparecer em nenhum conjunto FOLLOW
     producoes = (
         ("<E>", ("<T>", "<E2>")),
         ("<E2>", ("v", "<T>", "<E2>")),

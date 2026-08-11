@@ -67,6 +67,9 @@ class Gramatica:
                 simbolos[nt] = idx
                 idx += 1
 
+            simbolos["$"] = idx
+            idx += 1
+
             # Adiciona Terminais depois
             for t in terminais:
                 simbolos[t] = idx
@@ -224,18 +227,18 @@ class Gramatica:
                                             break
 
                                 # Adiciona FIRST(b) (sem vazio) em FOLLOW(B)
-                                conjunto_follow_B |= first_b
+                                conjunto_follow[B] |= first_b
 
                                 # Se A -> aBb onde FIRST(b) contém ε, adiciona FOLLOW(A) em FOLLOW(B) 
                                 if deriva_vazio:
-                                    conjunto_follow_B |= conjunto_follow[A]
+                                    conjunto_follow[B] |= conjunto_follow[A]
 
                             else:
                                 # Se A -> aB (ou seja, B é o último símbolo), adiciona FOLLOW(A) em FOLLOW(B)
-                                conjunto_follow_B |= conjunto_follow[A]
+                                conjunto_follow[B] |= conjunto_follow[A]
 
                             # Se o tamanho do conjunto FOLLOW(B) aumentou, precisamos rodar o while mais uma vez
-                            if len(conjunto_follow_B) > tamanho_anterior:
+                            if len(conjunto_follow[B]) > tamanho_anterior:
                                 mudou = True
 
             return {k: list(v) for k, v in conjunto_follow.items()}

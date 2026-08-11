@@ -49,7 +49,7 @@ class AutomatoLR0:
         self.estados : list[Estado] = []    # Lista contendo os conjuntos de Itens LR(0)
         self.transicoes : dict[tuple[int, str], int] = {} # Mapeia: (estado_origem, simbolo) -> estado_destino
 
-        # self.gerar_automato(gramatica) # Gera o automato 
+        self.gerar_automato(gramatica) # Gera o automato 
     
     def get_item_inicial(self, gramatica: Gramatica) -> ItemLR:
         """Pega o item inicial da gramática 
@@ -92,12 +92,12 @@ class AutomatoLR0:
                     realizar fechamento
         """
         id_counter = 0
-        fila_estados = list[Estado(id_counter, self.fechamento([self.get_item_inicial()], gramatica))]
+        fila_estados = [Estado(id_counter, self.fechamento([self.get_item_inicial(gramatica)], gramatica.producoes))]
         
         # Para todos os estados
         while fila_estados:
             estado = fila_estados.pop(0)
-            estados.append(estado)
+            self.estados.append(estado)
             
             # Para cada produção do fechamento do estado
             for item in estado.fechamento:
@@ -105,24 +105,24 @@ class AutomatoLR0:
                 item_desviado = ItemLR(item.esq, item.dir, item.ponto+1)
                 
                 # Checa de produção desviada na existe
-                estado_alvo = achar_producao_no_automato(item_desviado)
+                estado_alvo = self.achar_producao_no_automato(item_desviado)
                 
                 # Se produção existe
                 if estado_alvo >= 0 and ([(estado.id, item.ponto_dir), estado_alvo] not in self.transicoes):
                     # Adicionar ponteiro pro novo estado
-                    self.transicoes.append([(estado.id, item.ponto_dir), estado_alvo])
+                    self.transicoes[(estado.id, item.ponto_dir)] = estado_alvo
 
                 # Se produção não existe, criar estado
                 else:
                     # Calcula desvio_estado
-                    fechamento_estado_novo = desvio_estado(estado.fechamento, item.ponto_dir)
+                    fechamento_estado_novo = self.desvio_estado(estado.fechamento, item.ponto_dir, gramatica.producoes)
                     
                     # Cria estado novo
                     id_counter += 1
                     self.estados.append(Estado(id_counter, fechamento_estado_novo))
                     
                     # Adicionar ponteiro pro novo estado
-                    self.transicoes.append([(estado.id, item.ponto_dir), id_counter])
+                    self.transicoes[(estado.id, item.ponto_dir)] = id_counter
 
         # 2. Criar conjunto de itens inicial da gramatica
 
@@ -221,7 +221,7 @@ class AutomatoLR0:
         ● Calcular o fechamento deste conjunto de itens
     """
     
-    def desvio_estado(self, I: list[ItemLR], X: str) -> list[ItemLR]:
+    def desvio_estado(self, I: list[ItemLR], X: str, producoes) -> list[ItemLR]:
         novo_conjunto_itens = []
 
         # Mover ponto para diereita em todos os itens de I onde o ponto precede X
