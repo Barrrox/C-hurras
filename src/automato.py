@@ -179,8 +179,21 @@ class AutomatoLR0:
     """
     
     def desvio_estado(self, I: list[ItemLR], X: str) -> list[ItemLR]:
-        # Move o ponto dos itens que esperam 'X' e tira o fechamento do resultado
-        pass
+        novo_conjunto_itens = []
+
+        # Mover ponto para diereita em todos os itens de I onde o ponto precede X
+        for item in I:
+            # Verifica se o símbolo logo após o ponto é o símbolo X que estamos lendo
+            if item.ponto_dir == X:
+                # Retorna A → αX•β (cria um novo item com o ponto avançado em 1)
+                novo_item = ItemLR(esquerda_producao=item.esq,
+                                   direita_producao=item.dir,
+                                   ponto=item.ponto + 1)
+
+                novo_conjunto_itens.append(novo_item)
+
+        # Retorna o fechamento deste novo conjunto de itens
+        return self.fechamento(novo_conjunto_itens, producoes)
 
     def exportar_json(self, caminho: str = "automato.json") -> None:
         """Lê os estados e transições e salva o automato em um JSON
