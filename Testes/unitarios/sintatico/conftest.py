@@ -83,11 +83,25 @@ def gramatica4():
 @pytest.fixture
 def gramatica5():
     producoes = (
-        ("S'", ("T",)),
-        ("T", ("F",)),
-        ("T", ("T", "*", "F")),
-        ("F", ("id",)),
-        ("F", ("(", "T", ")"))
+        ("<S'>", ("<T>",)),
+        ("<T>", ("<F>",)),
+        ("<T>", ("<T>", "*", "<F>")),
+        ("<F>", ("id",)),
+        ("<F>", ("(", "<T>", ")"))
+    )
+    g = GramaticaMock(producoes)
+    g.simbolos = g.get_simbolos()
+    g.follow = g.calcular_conjunto_follow()
+    return g
+
+@pytest.fixture
+def gramatica6():
+    producoes = (
+        ("<S'>", ("<S>",)),
+        ("<S>", ("a",)),
+        ("<S>", ("[", "<L>", "]")),
+        ("<L>", ("<L>", ";", "<S>")),
+        ("<L>", ("<S>",))
     )
     g = GramaticaMock(producoes)
     g.simbolos = g.get_simbolos()

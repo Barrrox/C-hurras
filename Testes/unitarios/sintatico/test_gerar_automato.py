@@ -125,57 +125,57 @@ def test_gerar_automato_gramatica5(gramatica5: Gramatica):
     assert len(automato.estados) == 9
     
     assert itens_estado(0) == {
-        ("S'", ("T",), 0), ("T", ("F",), 0),
-        ("T", ("T", "*", "F"), 0), ("F", ("id",), 0),
-        ("F", ("(", "T", ")"), 0)
+        ("<S'>", ("<T>",), 0), ("<T>", ("<F>",), 0),
+        ("<T>", ("<T>", "*", "<F>"), 0), ("<F>", ("id",), 0),
+        ("<F>", ("(", "<T>", ")"), 0)
     }
     
     assert itens_estado(1) == {
-        ("S'", ("T",), 1), ("T", ("T", "*", "F"), 1)
+        ("<S'>", ("<T>",), 1), ("<T>", ("<T>", "*", "<F>"), 1)
     }
     
     assert itens_estado(2) == {
-        ("T", ("F",), 1)
+        ("<T>", ("<F>",), 1)
     }
     
     assert itens_estado(3) == {
-        ("F", ("id",), 1)
+        ("<F>", ("id",), 1)
     }
     
     assert itens_estado(4) == {
-        ("F", ("(", "T", ")"), 1), ("T", ("F",), 0),
-        ("T", ("T", "*", "F"), 0), ("F", ("id",), 0),
-        ("F", ("(", "T", ")"), 0)
+        ("<F>", ("(", "<T>", ")"), 1), ("<T>", ("<F>",), 0),
+        ("<T>", ("<T>", "*", "<F>"), 0), ("<F>", ("id",), 0),
+        ("<F>", ("(", "<T>", ")"), 0)
     }
     
     assert itens_estado(5) == {
-        ("T", ("T", "*", "F"), 2), ("F", ("id",), 0),
-        ("F", ("(", "T", ")"), 0)
+        ("<T>", ("<T>", "*", "<F>"), 2), ("<F>", ("id",), 0),
+        ("<F>", ("(", "<T>", ")"), 0)
     }
     
     assert itens_estado(6) == {
-        ("F", ("(", "T", ")"), 2), ("T", ("T", "*", "F"), 1)
+        ("<F>", ("(", "<T>", ")"), 2), ("<T>", ("<T>", "*", "<F>"), 1)
     }
     
     assert itens_estado(7) == {
-        ("T", ("T", "*", "F"), 3)
+        ("<T>", ("<T>", "*", "<F>"), 3)
     }
 
     assert itens_estado(8) == {
-        ("F", ("(", "T", ")"), 3)
+        ("<F>", ("(", "<T>", ")"), 3)
     }
     
-    assert automato.transicoes[(0, "T")] == 1
-    assert automato.transicoes[(0, "F")] == 2
+    assert automato.transicoes[(0, "<T>")] == 1
+    assert automato.transicoes[(0, "<F>")] == 2
     assert automato.transicoes[(0, "id")] == 3
     assert automato.transicoes[(0, "(")] == 4
     assert automato.transicoes[(1, "*")] == 5
-    assert automato.transicoes[(4, "F")] == 2
+    assert automato.transicoes[(4, "<F>")] == 2
     assert automato.transicoes[(4, "id")] == 3
     assert automato.transicoes[(4, "(")] == 4
-    assert automato.transicoes[(4, "T")] == 6
+    assert automato.transicoes[(4, "<T>")] == 6
     assert automato.transicoes[(5, "id")] == 3
     assert automato.transicoes[(5, "(")] == 4
-    assert automato.transicoes[(5, "F")] == 7
+    assert automato.transicoes[(5, "<F>")] == 7
     assert automato.transicoes[(6, ")")] == 8
     assert automato.transicoes[(6, "*")] == 5
