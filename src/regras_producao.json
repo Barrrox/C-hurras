@@ -1,7 +1,6 @@
 [
     ["<chs>", ["<churras>"]],
     ["<churras>", ["<if>", "<churras>"]],
-    ["<churras>", ["<churras>"]],
     ["<churras>", ["<for>", "<churras>"]],
     ["<churras>", ["<while>", "<churras>"]],
     ["<churras>", ["<declaracao>", "<churras>"]],
