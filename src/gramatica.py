@@ -20,7 +20,7 @@ class Gramatica:
             with open(caminho_completo, "r", encoding="utf-8") as f:
                 dados = json.load(f)
                 # JSON lê como listas. Transforma em tuplas:
-                producoes = tuple(tuple([regra[0], (tuple(dir for dir in regra[1]))]) for regra in dados)
+                producoes = tuple(tuple([regra[0], tuple(dir for dir in regra[1])]) for regra in dados)
 
             self.producoes: tuple[tuple[str, tuple[str, ...]], ...] = producoes
 
@@ -47,6 +47,9 @@ class Gramatica:
 
                 if simb_esq not in nao_terminais:
                     nao_terminais.append(simb_esq) # Pega simbolo da esquerda da produção
+
+                if len(prod_dir) == 0:
+                    continue
 
                 for simbolo in prod_dir: # Pega simbolos da direita da produção
 
