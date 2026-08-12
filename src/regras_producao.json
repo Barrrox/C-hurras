@@ -56,5 +56,6 @@
     ["<unary>", ["<primary>"]],
     ["<primary>", ["id"]],
     ["<primary>", ["int"]],
+    ["<primary>", ["char"]],
     ["<primary>", ["(", "<exp>", ")"]]
 ]
