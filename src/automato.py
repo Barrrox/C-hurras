@@ -13,6 +13,7 @@ class ItemLR:
 
         # Se for uma produção para vazio, ja está finalizada
         if self.dir[0] == "~":
+            self.ponto = 1
             self.ponto_dir = None
         # Deixar alocado o simbolo apos o ponto.
         elif self.ponto < len(self.dir): # Se ponto antes do fim
@@ -324,7 +325,7 @@ class AutomatoLR0:
 
 
 
-mega = Gramatica("regras_producao.json")
+mega = Gramatica("gramatica_teste_manual.json")
 automato = AutomatoLR0(mega.producoes)
 resultado = automato.gerar_automato(mega)
 for estado in automato.estados:
