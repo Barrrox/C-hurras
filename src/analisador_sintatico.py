@@ -51,6 +51,8 @@ class ParserSLR():
 
         ip = 0 # points to current input symbol
 
+        teve_erro = False
+
         while True:
             s = stack[-1] # current state
             a = tokens[ip] # current input symbol
@@ -77,6 +79,7 @@ class ParserSLR():
             
             else:
                 print("ERRO: token não esperado \"", a.texto, "\" na linha", a.linha)
+                teve_erro = True
                 
                 # attempt recovery
                 if act.tipo == 3: # erro de estado vazio
