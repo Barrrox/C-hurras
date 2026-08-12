@@ -24,7 +24,7 @@ class ConstrutorTabelaSLR:
         self.tabelaSLR = {}
         self.regras = {} # Regras de produção da gramática
 
-    def construir_tabelaSLR(self, gramatica, automato) -> None:
+    def construir_tabelaSLR(self, gramatica : Gramatica, automato : AutomatoLR0) -> None:
         """Constrói a tabela SLR
         """
 
@@ -98,6 +98,8 @@ class ConstrutorTabelaSLR:
                     return
         
         self.tabelaSLR = tabelaSLR
+
+        return tabelaSLR
 
     def exportar_json(self, caminho : str = "tabela_slr.json") -> None:
         """Salva a tabela SLR e as regras de produção em formato JSON

@@ -1,6 +1,7 @@
 from Token import Token
 from gramatica import Gramatica
-from construtor_tabelaSLR import SLRcell
+from construtor_tabelaSLR import ConstrutorTabelaSLR, SLRcell
+from automato import AutomatoLR0
 
 
 class ParserSLR():
@@ -9,9 +10,7 @@ class ParserSLR():
         """O ParserSLR tem os métodos para realizar a analise sintática do código.
         """
 
-        gramatica = Gramatica()
-        self.producoes = gramatica.producoes
-        self.simbolos = gramatica.simbolos
+        self.gramatica = Gramatica()
 
     def simbolo(self, term : str) -> int:
         """Retorna o índice numérico de um símbolo da gramática
@@ -22,7 +21,7 @@ class ParserSLR():
         Returns:
             int: Índice do símbolo no dicionário, ou 'ERRO' se não encontrado
         """
-        return self.simbolos.get(term, 'ERRO')
+        return self.gramatica.simbolos.get(term, 'ERRO')
 
     def criar_tabelaSLR(self) -> list[list['SLRcell']]:
         """Carrega ou constrói a tabela SLR para a gramática atual
@@ -31,7 +30,14 @@ class ParserSLR():
             list[list[SLRcell]]: Tabela SLR como matriz bidimensional de SLRcells
         """
 
-        pass
+        automato = AutomatoLR0()
+        automato.gerar_automato(self.gramatica)
+
+        c_tabela = ConstrutorTabelaSLR()
+        tabelaSLR = c_tabela.construir_tabelaSLR(self.gramatica, automato)
+
+
+        return tabelaSLR
 
     def analisar_sintaxe(self, lista_tokens : list[Token]) -> bool:
         """Interface para realizar a analise sintática Bottom-up a partir da lista de tokens. Aceita (True) se o código estiver sintaticamente correto, caso contrário rejeita (False). Quando célula vazia na tabela ACTION, ativa o modo pânico.
@@ -60,7 +66,7 @@ class ParserSLR():
             bool: True se não houve erros, False se algum token ativou o modo pânico.
         """
 
-        producoes = self.producoes 
+        producoes = self.gramatica.producoes 
 
         stack: list[str | int] = ["$", 0]
 
