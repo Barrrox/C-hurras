@@ -83,11 +83,11 @@ class Gramatica:
 
             return simbolos
 
-        def calcular_conjunto_first(self) -> dict[str, list[str | tuple]]:
-            """Calcula o conjunto First para toda a gramática. Retorna em foma de dicionário onde a chave é o não terminal X e o valor é o first(X) em forma de lista. O vazio é representado por "~".
+        def calcular_conjunto_first(self) -> dict[str, list[str]]:
+            """Calcula o conjunto First para toda a gramática. Retorna em forma de dicionário onde a chave é o não terminal X e o valor é o first(X) em forma de lista. O vazio é representado por "~".
 
             Returns:
-                dict[str, list[str]]: _description_
+                dict[str, list[str]]: Dicionário mapeando cada não terminal ao seu conjunto First
             """
 
             # Dicionário onde a chave é o não terminal X e o valor é uma lista onde cada elemento está em first(X)

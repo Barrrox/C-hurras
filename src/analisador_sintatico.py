@@ -1,6 +1,7 @@
 from Token import Token
-from automato import AutomatoLR0
 from gramatica import Gramatica
+from construtor_tabelaSLR import SLRcell
+
 
 class ParserSLR():
 
@@ -13,17 +14,22 @@ class ParserSLR():
         self.simbolos = gramatica.simbolos
 
     def simbolo(self, term : str) -> int:
-        """Pega o símbolo 
+        """Retorna o índice numérico de um símbolo da gramática
 
         Args:
-            term (str): _description_
+            term (str): String do símbolo a ser consultado
 
         Returns:
-            int: _description_
+            int: Índice do símbolo no dicionário, ou 'ERRO' se não encontrado
         """
         return self.simbolos.get(term, 'ERRO')
 
-    def criar_tabelaSLR(self) -> dict:
+    def criar_tabelaSLR(self) -> list[list['SLRcell']]:
+        """Carrega ou constrói a tabela SLR para a gramática atual
+
+        Returns:
+            list[list[SLRcell]]: Tabela SLR como matriz bidimensional de SLRcells
+        """
 
         pass
 
@@ -43,7 +49,16 @@ class ParserSLR():
         return self.analisar_sintaxeAUX(lista_tokens, tabelaSLR)
 
     def analisar_sintaxeAUX(self, tokens : list[Token], 
-                            tabelaSLR : dict[tuple[int | str, int | str], 'Acao']) -> bool:
+                            tabelaSLR : list[list[SLRcell]]) -> bool:
+        """Executa o algoritmo Shift-Reduce usando a pilha de estados e a tabela SLR. Chamado internamente por analisar_sintaxe.
+
+        Args:
+            tokens (list[Token]): Lista de tokens a ser analisada.
+            tabelaSLR (list[list[SLRcell]]): Tabela SLR como matriz bidimensional de SLRcells.
+
+        Returns:
+            bool: True se não houve erros, False se algum token ativou o modo pânico.
+        """
 
         producoes = self.producoes 
 

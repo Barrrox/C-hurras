@@ -4,20 +4,20 @@ from automato import AutomatoLR0
 
 class SLRcell:
     def __init__(self, tipo, valor):
+        """Célula da tabela SLR, representando uma ação ou transição
+
+        Args:
+            tipo (int): Tipo da ação. 0=empilha, 1=reduz, 2=aceita, 3=erro(vazio), 4=erro(reduz), 5=goto
+            valor (int): Valor numérico associado à ação (estado alvo ou índice da produção)
+        """
         self.tipo = tipo   # empilha, reduz, aceita, errovazio, erroreduz, goto -> 0, 1, 2, 3, 4, 5
         self.valor = valor # valor numerico referente a acao
 
 class ConstrutorTabelaSLR:
 
     def __init__(self):
-        """Classe responsável pela construção da tabela SLR a partir da gramática e do automato LR(0)
-
-        Args:
-                gramatica (_type_): Instância da classe Gramatica. Fornece conjuntos FOLLOW e terminais.
-                automato (_type_): Instância da classe AutomatoLR0. Fornece estados e transições.
-
-        Returns:
-                Nada. Salva as tabelas em arquivos estáticos.
+        """Inicializa o ConstrutorTabelaSLR com estruturas de dados vazias.
+        A construção efetiva da tabela é feita chamando construir_tabelaSLR(gramatica, automato).
         """
 
         # Estruturas alvo (vão pro JSON e pro Parser)
@@ -99,12 +99,11 @@ class ConstrutorTabelaSLR:
         
         self.tabelaSLR = tabelaSLR
 
-    def exportar_json(self, caminho="tabela_slr.json") -> None:
-        """
-        O que faz:
-        - Salva self.tabelaSLR e self.regras em formato JSON.
+    def exportar_json(self, caminho : str = "tabela_slr.json") -> None:
+        """Salva a tabela SLR e as regras de produção em formato JSON
 
-        O que retorna: Nada. Gera artefato físico em disco.
+        Args:
+            caminho (str): Caminho do arquivo de saída. Default: 'tabela_slr.json'
         """
         pass
 

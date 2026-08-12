@@ -12,7 +12,12 @@ class Compilador(): # Classe compilador
         self.parser = ParserSLR()
         pass
 
-    def compilar(self, codigo):
+    def compilar(self, codigo : str) -> None:
+        """Executa o pipeline completo de compilação: análise léxica seguida de análise sintática
+
+        Args:
+            codigo (str): Código-fonte da linguagem C-Hurras a ser compilado
+        """
 
         lista_tokens = self.lexer.analisar_lexico(codigo)
 

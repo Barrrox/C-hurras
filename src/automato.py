@@ -6,6 +6,13 @@ from gramatica import Gramatica
 
 class ItemLR:
     def __init__(self, esquerda_producao: str, direita_producao: tuple[str], ponto: int = 0) -> None:
+        """Representa um item LR(0) da forma [A → α•β], onde o ponto indica a posição de leitura
+
+        Args:
+            esquerda_producao (str): Símbolo do lado esquerdo da produção (não terminal A)
+            direita_producao (tuple[str]): Símbolos do lado direito da produção
+            ponto (int): Posição do ponto na produção. Default: 0 (ponto no início)
+        """
         self.esq: str = esquerda_producao
         self.dir: tuple[str] = direita_producao
         self.ponto: int = ponto # Começa em 0
@@ -38,6 +45,8 @@ class ItemLR:
     
     # Método para printar Item no terminal para debug manual
     def imprimir(self) -> None:
+        """Imprime a representação textual do item no terminal para debug
+        """
         print(self.esq, "->", self.dir, "PONTO:", self.ponto)
 
         # Como aloca:
@@ -53,6 +62,12 @@ class Estado:
 
     def __init__(self, id : int,
                  fechamento : list['ItemLR']) -> None:
+        """Representa um estado do autômato LR(0), composto por um identificador e seu fechamento de itens
+
+        Args:
+            id (int): Identificador único do estado
+            fechamento (list[ItemLR]): Conjunto de itens LR(0) que compõem o estado
+        """
         self.id : int = id
         self.fechamento : list['ItemLR'] = fechamento
         
@@ -89,22 +104,10 @@ class AutomatoLR0:
         return ItemLR(producao_incial[0], producao_incial[1], 0)
 
     def gerar_automato(self, gramatica : Gramatica) -> None:
-        """
-        estado inicial
-        realiza fechamento
+        """Constrói o autômato LR(0) completo via BFS a partir do estado inicial. Preenche self.estados e self.transicoes.
 
-        para cada estado ainda não processado:
-            calcular todos os símbolos lidos
-            incluir diferentes produções de mesma leitura no mesmo vetor?
-            para cada leitura:
-                checar em todos os estados do autômato se produção com desvio existe
-                se existir:
-                    criar transição sob símbolo para esse estado
-                caso contrario:
-                    criar estado novo
-                    criar transição sob símbolo para esse novo estado
-                    colocar todas as produções com o símbolo lido
-                    realizar fechamento
+        Args:
+            gramatica (Gramatica): A instância da gramática com as produções a serem processadas
         """
         id_counter = 0
         fila_estados = [Estado(id_counter, self.fechamento([self.get_item_inicial(gramatica)], gramatica.producoes))]
@@ -252,6 +255,16 @@ class AutomatoLR0:
     """
     
     def desvio_estado(self, I: list[ItemLR], X: str, producoes) -> list[ItemLR]:
+        """Calcula o desvio do conjunto de itens I ao ler o símbolo X. Avança o ponto em todos os itens onde o ponto precede X e retorna o fechamento do resultado.
+
+        Args:
+            I (list[ItemLR]): Conjunto de itens do estado atual
+            X (str): Símbolo lido
+            producoes: Produções da gramática, usadas para calcular o fechamento
+
+        Returns:
+            list[ItemLR]: Fechamento do novo conjunto de itens após avançar o ponto
+        """
         novo_conjunto_itens = []
 
         # Mover ponto para diereita em todos os itens de I onde o ponto precede X
@@ -271,7 +284,10 @@ class AutomatoLR0:
 
 
     def exportar_json(self, caminho: str = "automato.json") -> None:
-        """Lê os estados e transições e salva o automato em um JSON
+        """Salva os estados e transições do autômato em formato JSON
+
+        Args:
+            caminho (str): Caminho do arquivo de saída. Default: 'automato.json'
         """
 
         # Estrutura o JSON para salvar os estados e transições do autômato
