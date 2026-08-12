@@ -54,6 +54,16 @@ class Estado:
                  fechamento : list['ItemLR']) -> None:
         self.id : int = id
         self.fechamento : list['ItemLR'] = fechamento
+        
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Estado):
+            return NotImplemented
+        # Estados são iguais se possuem o mesmo conjunto de itens (ordem irrelevante)
+        return frozenset(self.fechamento) == frozenset(other.fechamento)
+
+    def __hash__(self) -> int:
+        # Hash baseado apenas no conjunto de itens (frozenset), ignorando o id
+        return hash(frozenset(self.fechamento))
 
 
 class AutomatoLR0:
@@ -76,17 +86,6 @@ class AutomatoLR0:
         """
         producao_incial = gramatica.producoes[0]
         return ItemLR(producao_incial[0], producao_incial[1], 0)
-    
-    def achar_producao_no_automato(self, item : ItemLR) -> int:
-        """
-            TODO: barros, enfeita esse método bem aqui <--
-        """
-        for i in range(len(self.estados)):
-            estado = self.estados[i]
-            for estit in estado.fechamento:
-                if item == estit:
-                    return estado.id
-        return -1
 
     def gerar_automato(self, gramatica : Gramatica) -> None:
         """
@@ -108,6 +107,8 @@ class AutomatoLR0:
         """
         id_counter = 0
         fila_estados = [Estado(id_counter, self.fechamento([self.get_item_inicial(gramatica)], gramatica.producoes))]
+        self.estados.append(Estado(id_counter, self.fechamento([self.get_item_inicial(gramatica)], gramatica.producoes)))
+        id_counter += 1
         
         # Para todos os estados
         while fila_estados:
@@ -116,41 +117,39 @@ class AutomatoLR0:
             #    print(est.id)
             #print("---------------")
             estado = fila_estados.pop(0)
-            self.estados.append(estado)
             
-            # Para cada produção do fechamento do estado
-            print("Processando estado", estado.id)
+            # Listar todos os simbolos lidos
+            leituras = []
             for item in estado.fechamento:
-                # Se ponto ja está totalmente na direita, pula item, pois ja foi processado
-                if item.ponto_dir == None:
-                    continue
+                if (item.ponto_dir not in leituras) and (item.ponto_dir != None):
+                    leituras.append(item.ponto_dir)
+            
+            # Para cada leitura
+            for leitura in leituras:
                 
-                # Realiza desvio do item
-                item_desviado = ItemLR(item.esq, item.dir, item.ponto+1)
+                # Construir possível estado novo
+                fechamento_estado_novo = self.desvio_estado(estado.fechamento, leitura, gramatica.producoes)
+                estado_novo = Estado(id_counter, fechamento_estado_novo)
+                id_counter += 1
                 
-                # Checa de produção desviada ja existe
-                estado_alvo = self.achar_producao_no_automato(item_desviado)
-                print(estado_alvo)
-                
-                # Se produção existe
+                # Se estado ja existir
+                estado_alvo = -1
+                for i in range(len(self.estados)):
+                    est = self.estados[i]
+                    if estado_novo == est:
+                        estado_alvo = i
                 if estado_alvo >= 0:
-                    # Adiciona a transição apenas se ainda não existir
-                    if (estado.id, item.ponto_dir) not in self.transicoes:
-                        self.transicoes[(estado.id, item.ponto_dir)] = estado_alvo
-
-                # Se produção não existe, criar estado
-                else:
-                    # Calcula desvio_estado
-                    fechamento_estado_novo = self.desvio_estado(estado.fechamento, item.ponto_dir, gramatica.producoes)
+                    self.transicoes[(estado.id, leitura)] = estado_alvo
+                    id_counter -= 1
                     
-                    # Cria estado novo
-                    id_counter += 1
-                    fila_estados.append(Estado(id_counter, fechamento_estado_novo))
+                # Se estado ainda não existir
+                else:
+                    fila_estados.append(estado_novo)
+                    self.estados.append(estado_novo)
                     
                     # Adicionar ponteiro pro novo estado
-                    self.transicoes[(estado.id, item.ponto_dir)] = id_counter
-
-        # 2. Criar conjunto de itens inicial da gramatica
+                    self.transicoes[(estado.id, leitura)] = id_counter
+                
 
 
     """
@@ -325,7 +324,7 @@ class AutomatoLR0:
 
 
 
-mega = Gramatica("gramatica_teste_manual.json")
+mega = Gramatica("regras_producao.json")
 automato = AutomatoLR0(mega.producoes)
 resultado = automato.gerar_automato(mega)
 for estado in automato.estados:
