@@ -54,7 +54,7 @@ class ParserSLR():
         while True:
             s = stack[-1] # current state
             a = tokens[ip] # current input symbol
-            act = tabelaSLR[s, self.simbolo(a.categoria)]
+            act = tabelaSLR[s][self.simbolo(a.categoria)]
             
             if act.tipo == 0: # empilha
                 stack.append(a.categoria) # push the terminal
