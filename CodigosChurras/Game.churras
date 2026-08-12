@@ -54,7 +54,7 @@ rodizio JogoRodando
 	}
 	
 	--<Rendenizar jogo pro terminal>-
-	servir ESC, "_[H", ESC, "_[2J" --<Limpar Tela>-
+	servir ESC, "_[H", ESC, "_[2J"; --<Limpar Tela>-
 	grelhar Linha 20
 	{
 		grelhar Coluna 30
