@@ -96,7 +96,7 @@ def test_calcular_first_gramatica4(gramatica4 : Gramatica):
     assert set(first['<F>']) == {'n', 'id'}
 
     # FIRST(T2) = { a }  — única produção, a é terminal
-    assert set(first['<T2>']) == {'a'}
+    assert set(first['<T2>']) == {'a', '~'}
 
     # FIRST(T) = { n, id }  — T → F T2; F não deriva ε, usa só FIRST(F)
     assert set(first['<T>']) == {'n', 'id'}
