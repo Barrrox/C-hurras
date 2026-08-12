@@ -71,7 +71,7 @@ class ParserSLR():
 
                 s_prime = stack[-1] # exposed state after popping
                 stack.append(producoes[act.valor][0]) # push the nonterminal
-                stack.append(tabelaSLR[s_prime, self.simbolo(producoes[act.valor][0])].valor) # push the new state
+                stack.append(tabelaSLR[s_prime][self.simbolo(producoes[act.valor][0])].valor) # push the new state
             
             elif act.tipo == 2: # aceita
                 print("churras ta no ponto certo")
@@ -92,6 +92,6 @@ class ParserSLR():
 
                     s_prime = stack[-1] # exposed state after popping
                     stack.append(producoes[act.valor][0]) # push the nonterminal
-                    stack.append(tabelaSLR[s_prime, self.simbolo(producoes[act.valor][0])].valor) # push the new state
+                    stack.append(tabelaSLR[s_prime][self.simbolo(producoes[act.valor][0])].valor) # push the new state
 
-        return True
+        return not teve_erro
