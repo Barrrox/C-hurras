@@ -4,7 +4,7 @@ from gramatica import Gramatica
 
 def test_fechamento_deep_closure(gramatica2 : Gramatica):
     # Inicializa o automato com a gramatica injetada pela fixture
-    automato = AutomatoLR0(gramatica2)
+    automato = AutomatoLR0()
     
     # O item semente que dispara o efeito cascata: S' -> • <E>
     I_inicial = automato.get_item_inicial(gramatica2)

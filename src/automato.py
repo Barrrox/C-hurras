@@ -83,13 +83,11 @@ class Estado:
 
 
 class AutomatoLR0:
-    def __init__(self, gramatica: Gramatica) -> None:
+    def __init__(self) -> None:
         """ Recebe a gramatica já lida e processada """
 
         self.estados : list[Estado] = []    # Lista contendo os conjuntos de Itens LR(0)
         self.transicoes : dict[tuple[int, str], int] = {} # Mapeia: (estado_origem, simbolo) -> estado_destino
-
-        #self.gerar_automato(gramatica) # Gera o automato 
     
     def get_item_inicial(self, gramatica: Gramatica) -> ItemLR:
         """Pega o item inicial da gramática 
@@ -342,7 +340,7 @@ class AutomatoLR0:
 
 
 #mega = Gramatica("regras_producao.json")
-#automato = AutomatoLR0(mega.producoes)
+#automato = AutomatoLR0()
 #resultado = automato.gerar_automato(mega)
 #for estado in automato.estados:
 #    print("Estado I -", estado.id)

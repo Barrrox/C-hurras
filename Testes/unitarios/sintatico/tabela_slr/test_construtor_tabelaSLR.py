@@ -4,7 +4,7 @@ from construtor_tabelaSLR import ConstrutorTabelaSLR
 from gramatica import Gramatica
 
 def test_construir_tabelaSLR_gramatica5(gramatica5: Gramatica):
-    automato = AutomatoLR0(gramatica5)
+    automato = AutomatoLR0()
     automato.gerar_automato(gramatica5)
 
     tabelador = ConstrutorTabelaSLR()
@@ -50,7 +50,7 @@ def test_construir_tabelaSLR_gramatica5(gramatica5: Gramatica):
         assert get_acao(8, term).tipo == 1 and get_acao(8, term).valor == 4
 
 def test_construir_tabelaSLR_gramatica6(gramatica6: Gramatica):
-    automato = AutomatoLR0(gramatica6)
+    automato = AutomatoLR0()
     automato.gerar_automato(gramatica6)
 
     tabelador = ConstrutorTabelaSLR()

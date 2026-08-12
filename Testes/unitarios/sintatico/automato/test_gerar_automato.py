@@ -13,7 +13,7 @@ def test_gerar_automato_gramatica1_numero_de_estados(gramatica1: Gramatica):
     # Estado 0: fechamento({<E> -> . <E> + <T>}) -> expande tudo
     # Derivacao gera 6 estados no total
 
-    automato = AutomatoLR0(gramatica1)
+    automato = AutomatoLR0()
     automato.gerar_automato(gramatica1)
 
     assert len(automato.estados) > 0
@@ -23,7 +23,7 @@ def test_gerar_automato_estado_inicial_existe(gramatica2: Gramatica):
     # O automato deve ter pelo menos 1 estado (o estado inicial)
     # e o estado 0 deve ser criado a partir do item inicial da gramatica
 
-    automato = AutomatoLR0(gramatica2)
+    automato = AutomatoLR0()
     automato.gerar_automato(gramatica2)
 
     # Estado 0 deve existir
@@ -39,7 +39,7 @@ def test_gerar_automato_gramatica2_numero_de_estados(gramatica2: Gramatica):
     #
     # O automato LR(0) classico para essa gramatica gera 12 estados
 
-    automato = AutomatoLR0(gramatica2)
+    automato = AutomatoLR0()
     automato.gerar_automato(gramatica2)
 
     assert len(automato.estados) == 12
@@ -49,7 +49,7 @@ def test_gerar_automato_gramatica2_numero_de_transicoes(gramatica2: Gramatica):
     # Gramatica classica: 12 estados geram um numero fixo de transicoes.
     # O automato correto para essa gramatica tem 20 transicoes (leitura dos simbolos).
 
-    automato = AutomatoLR0(gramatica2)
+    automato = AutomatoLR0()
     automato.gerar_automato(gramatica2)
 
     assert len(automato.transicoes) > 0
@@ -58,7 +58,7 @@ def test_gerar_automato_gramatica2_numero_de_transicoes(gramatica2: Gramatica):
 def test_gerar_automato_transicoes_sao_dict(gramatica1: Gramatica):
     # self.transicoes deve ser um dict mapeando (estado_origem, simbolo) -> estado_destino
 
-    automato = AutomatoLR0(gramatica1)
+    automato = AutomatoLR0()
     automato.gerar_automato(gramatica1)
 
     assert isinstance(automato.transicoes, dict)
@@ -76,7 +76,7 @@ def test_gerar_automato_estado_inicial_tem_item_inicial(gramatica2: Gramatica):
     # O estado 0 deve conter o item inicial da gramatica em seu fechamento:
     # <E> -> . <E> + <T>  (ponto na posicao 0)
 
-    automato = AutomatoLR0(gramatica2)
+    automato = AutomatoLR0()
     automato.gerar_automato(gramatica2)
 
     estado_0 = next((e for e in automato.estados if e.id == 0), None)
@@ -89,7 +89,7 @@ def test_gerar_automato_estado_inicial_tem_item_inicial(gramatica2: Gramatica):
 def test_gerar_automato_ids_sao_unicos(gramatica2: Gramatica):
     # Cada estado deve ter um id unico
 
-    automato = AutomatoLR0(gramatica2)
+    automato = AutomatoLR0()
     automato.gerar_automato(gramatica2)
 
     ids = [estado.id for estado in automato.estados]
@@ -99,7 +99,7 @@ def test_gerar_automato_ids_sao_unicos(gramatica2: Gramatica):
 def test_gerar_automato_nenhum_estado_com_fechamento_vazio(gramatica2: Gramatica):
     # Nenhum estado do automato pode ter fechamento vazio
 
-    automato = AutomatoLR0(gramatica2)
+    automato = AutomatoLR0()
     automato.gerar_automato(gramatica2)
 
     for estado in automato.estados:
@@ -107,7 +107,7 @@ def test_gerar_automato_nenhum_estado_com_fechamento_vazio(gramatica2: Gramatica
 
 
 def test_gerar_automato_gramatica5(gramatica5: Gramatica):
-    automato = AutomatoLR0(gramatica5)
+    automato = AutomatoLR0()
     automato.gerar_automato(gramatica5)
 
     def itens_estado(id):
@@ -181,7 +181,7 @@ def test_gerar_automato_gramatica5(gramatica5: Gramatica):
     assert automato.transicoes[(6, "*")] == 5
 
 def test_gerar_automato_gramatica6(gramatica6: Gramatica):
-    automato = AutomatoLR0(gramatica6)
+    automato = AutomatoLR0()
     automato.gerar_automato(gramatica6)
 
     def itens_estado(id):

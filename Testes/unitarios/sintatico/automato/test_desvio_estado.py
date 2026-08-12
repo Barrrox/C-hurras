@@ -24,7 +24,7 @@ def test_desvio_por_terminal_avanca_ponto(gramatica2: Gramatica):
     # Estado 0 contem <F> -> . id
     # Desvio por 'id' deve gerar {<F> -> id .}
 
-    automato = AutomatoLR0(gramatica2)
+    automato = AutomatoLR0()
     estado_0 = _estado_0(automato, gramatica2)
 
     resultado = automato.desvio_estado(estado_0, "id", gramatica2.producoes)
@@ -38,7 +38,7 @@ def test_desvio_por_terminal_nao_gera_fechamento_adicional(gramatica2: Gramatica
     # Desvio por 'id' gera so <F> -> id .
     # Como ponto_dir de <F> -> id . eh None (fim), fechamento nao adiciona nada
 
-    automato = AutomatoLR0(gramatica2)
+    automato = AutomatoLR0()
     estado_0 = _estado_0(automato, gramatica2)
 
     resultado = automato.desvio_estado(estado_0, "id", gramatica2.producoes)
@@ -53,7 +53,7 @@ def test_desvio_por_nao_terminal_avanca_ponto(gramatica2: Gramatica):
     # Estado 0 contem <E> -> . <E> + <T>
     # Apos desvio: <E> -> <E> . + <T>  (ponto na posicao 1)
 
-    automato = AutomatoLR0(gramatica2)
+    automato = AutomatoLR0()
     estado_0 = _estado_0(automato, gramatica2)
 
     resultado = automato.desvio_estado(estado_0, "<E>", gramatica2.producoes)
@@ -69,7 +69,7 @@ def test_desvio_por_nao_terminal_expande_com_fechamento(gramatica2: Gramatica):
     #   <T> -> . <T> * <F> => apos desvio: <T> -> <T> . * <F>
     # Fechamento nao adiciona nada (ponto_dir e terminal ou None)
 
-    automato = AutomatoLR0(gramatica2)
+    automato = AutomatoLR0()
     estado_0 = _estado_0(automato, gramatica2)
 
     resultado = automato.desvio_estado(estado_0, "<T>", gramatica2.producoes)
@@ -85,7 +85,7 @@ def test_desvio_por_parentese_expande_fechamento(gramatica2: Gramatica):
     # Apos desvio: <F> -> ( . <E> )
     # ponto_dir = <E> => fechamento adiciona todas as producoes de <E>, <T>, <F>
 
-    automato = AutomatoLR0(gramatica2)
+    automato = AutomatoLR0()
     estado_0 = _estado_0(automato, gramatica2)
 
     resultado = automato.desvio_estado(estado_0, "(", gramatica2.producoes)
@@ -111,7 +111,7 @@ def test_desvio_por_simbolo_ausente_retorna_vazio(gramatica2: Gramatica):
     # Se nenhum item do conjunto I tem o simbolo X apos o ponto,
     # o desvio deve retornar lista vazia
 
-    automato = AutomatoLR0(gramatica2)
+    automato = AutomatoLR0()
     estado_0 = _estado_0(automato, gramatica2)
 
     # '$' nao aparece em nenhum item do estado 0
@@ -129,7 +129,7 @@ def test_desvio_ignora_itens_sem_simbolo(gramatica1: Gramatica):
     # Desvio por 'id' so deve avancar <T> -> . id
     # <E>->.<E>+<T> e <E>->.<T> nao tem 'id' apos o ponto => ignorados
 
-    automato = AutomatoLR0(gramatica1)
+    automato = AutomatoLR0()
     estado_0 = _estado_0(automato, gramatica1)
 
     resultado = automato.desvio_estado(estado_0, "id", gramatica1.producoes)
@@ -147,7 +147,7 @@ def test_desvio_sobre_item_de_reducao_retorna_vazio(gramatica1: Gramatica):
     # Conjunto I com apenas um item de reducao deve sempre gerar desvio vazio.
     # <T> -> id . (ponto = 1 = len(dir))
 
-    automato = AutomatoLR0(gramatica1)
+    automato = AutomatoLR0()
     item_reducao = ItemLR("<T>", ("id",), 1)  # ponto no fim
 
     resultado = automato.desvio_estado([item_reducao], "id", gramatica1.producoes)

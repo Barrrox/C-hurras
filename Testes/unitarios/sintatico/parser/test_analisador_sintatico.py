@@ -26,7 +26,7 @@ def criar_tokens(lista_str):
     return tokens
 
 def test_parser_gramatica5_aceita_valido(gramatica5: Gramatica):
-    automato = AutomatoLR0(gramatica5)
+    automato = AutomatoLR0()
     automato.gerar_automato(gramatica5)
     parser = ParserMock(gramatica5, automato)
     
@@ -36,7 +36,7 @@ def test_parser_gramatica5_aceita_valido(gramatica5: Gramatica):
     assert resultado is True
 
 def test_parser_gramatica5_recupera_erro_parentese(gramatica5: Gramatica):
-    automato = AutomatoLR0(gramatica5)
+    automato = AutomatoLR0()
     automato.gerar_automato(gramatica5)
     parser = ParserMock(gramatica5, automato)
     
@@ -46,7 +46,7 @@ def test_parser_gramatica5_recupera_erro_parentese(gramatica5: Gramatica):
     assert resultado is False
 
 def test_parser_gramatica5_recupera_erro_parentese_fechando(gramatica5: Gramatica):
-    automato = AutomatoLR0(gramatica5)
+    automato = AutomatoLR0()
     automato.gerar_automato(gramatica5)
     parser = ParserMock(gramatica5, automato)
     
@@ -56,7 +56,7 @@ def test_parser_gramatica5_recupera_erro_parentese_fechando(gramatica5: Gramatic
     assert resultado is False
 
 def test_parser_gramatica6_aceita_valido(gramatica6: Gramatica):
-    automato = AutomatoLR0(gramatica6)
+    automato = AutomatoLR0()
     automato.gerar_automato(gramatica6)
     parser = ParserMock(gramatica6, automato)
     
@@ -66,7 +66,7 @@ def test_parser_gramatica6_aceita_valido(gramatica6: Gramatica):
     assert resultado is True
 
 def test_parser_gramatica6_recupera_erro_incompleto(gramatica6: Gramatica):
-    automato = AutomatoLR0(gramatica6)
+    automato = AutomatoLR0()
     automato.gerar_automato(gramatica6)
     parser = ParserMock(gramatica6, automato)
     

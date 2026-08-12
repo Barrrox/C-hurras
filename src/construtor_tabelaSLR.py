@@ -117,7 +117,7 @@ class ConstrutorTabelaSLR:
 #     }
 
 #     mega = Gramatica("gramatica_teste_manual.json")
-#     automato = AutomatoLR0(mega)
+#     automato = AutomatoLR0()
 #     resultado = automato.gerar_automato(mega)
 #     tabelador = ConstrutorTabelaSLR()
 #     tabelador.construir_tabelaSLR(mega, automato)
