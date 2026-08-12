@@ -21,7 +21,13 @@ class Compilador(): # Classe compilador
 
         lista_tokens = self.lexer.analisar_lexico(codigo)
 
-        self.parser.analisar_sintaxe(lista_tokens)
+        aceitou = self.parser.analisar_sintaxe(lista_tokens)
+
+        if aceitou:
+            print("\n🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩")
+            print(" 🥩🥩🥩🥩🥩 churras ta no ponto certo 🥩🥩🥩🥩🥩")
+            print("🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩")
+
 
     
 
