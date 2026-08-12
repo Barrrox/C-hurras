@@ -1,0 +1,71 @@
+--<< Teste completo das primitivas da linguagem Churras >-
+
+--< Declarações >-
+vaca a;
+vaca b;
+frango c;
+porco flag;
+
+--< Atribuições com literais >-
+a = 1;
+b = 2;
+c = 'z';
+flag = ponto_certo;
+
+--< Entrada >-
+espetar a;
+
+--< Saída com todos os tipos de <out> >-
+servir "Teste de string", c, a, servido, (a + b), 'q';
+
+--< Teste da primária servido em expressão >-
+flag = servido;
+
+--< Loop while >-
+rodizio a < b + 1 {
+    a = a + 1;
+    servir a;
+}
+
+--< Loop for >-
+grelhar i 10 {
+    servir i, ", ";
+}
+servir servido;
+
+--< If com else >-
+ta_no_ponto? a == b && !(c != 'z') || a >= b {
+    a = a + 1;
+}
+queimou {
+    b = b - 1;
+}
+
+--< If sem else >-
+ta_no_ponto? flag {
+    servir "flag verdadeira";
+}
+
+--< Teste dos operadores <= e >= >-
+ta_no_ponto? a <= b {
+    a = a + 1;
+}
+queimou {
+    a = a - 1;
+}
+
+ta_no_ponto? a >= b {
+    servir "a maior ou igual";
+}
+
+--< Teste dos operadores aritméticos e lógicos >-
+b = a * 2 + a * 3 / 2 - b % 3;
+flag = !(a > b) && (b < a || c != 'x');
+a = -a;
+
+--< Teste de while e for com corpo vazio >-
+flag = queimado;
+rodizio flag {
+}
+grelhar j 0 {
+}
