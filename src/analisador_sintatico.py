@@ -54,6 +54,10 @@ class ParserSLR():
         teve_erro = False
 
         while True:
+
+            if ip >= len(tokens): 
+                break
+
             s = stack[-1] # current state
             a = tokens[ip] # current input symbol
             act = tabelaSLR[s][self.simbolo(a.categoria)]
