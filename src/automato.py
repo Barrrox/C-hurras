@@ -9,10 +9,13 @@ class ItemLR:
         self.esq: str = esquerda_producao
         self.dir: tuple[str] = direita_producao
         self.ponto: int = ponto # Começa em 0
+        
 
-
+        # Se for uma produção para vazio, ja está finalizada
+        if self.dir[0] == "~":
+            self.ponto_dir = None
         # Deixar alocado o simbolo apos o ponto.
-        if self.ponto < len(self.dir): # Se ponto antes do fim
+        elif self.ponto < len(self.dir): # Se ponto antes do fim
             self.ponto_dir = self.dir[self.ponto]
 
         elif self.ponto == len(self.dir): # Se ponto no fim ou self.dir = [], não há nada depois do ponto
@@ -101,10 +104,15 @@ class AutomatoLR0:
             
             # Para cada produção do fechamento do estado
             for item in estado.fechamento:
+                # Se ponto ja está totalmente na direita, pula item, pois ja foi processado
+                if item.ponto_dir == None:
+                    continue
+                
                 # Realiza desvio do item
                 item_desviado = ItemLR(item.esq, item.dir, item.ponto+1)
                 
-                # Checa de produção desviada na existe
+                
+                # Checa de produção desviada ja existe
                 estado_alvo = self.achar_producao_no_automato(item_desviado)
                 
                 # Se produção existe
