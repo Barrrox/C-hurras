@@ -57,5 +57,7 @@
     ["<primary>", ["id"]],
     ["<primary>", ["int"]],
     ["<primary>", ["char"]],
+    ["<primary>", ["ponto_certo"]],
+    ["<primary>", ["queimado"]],
     ["<primary>", ["(", "<exp>", ")"]]
 ]
