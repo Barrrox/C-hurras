@@ -81,9 +81,11 @@ class AutomatoLR0:
         """
             TODO: barros, enfeita esse método bem aqui <--
         """
-        for estado in self.estados:
-            if item in estado.fechamento:
-                return estado.id
+        for i in range(len(self.estados)):
+            estado = self.estados[i]
+            for estit in estado.fechamento:
+                if item == estit:
+                    return estado.id
         return -1
 
     def gerar_automato(self, gramatica : Gramatica) -> None:
@@ -109,10 +111,15 @@ class AutomatoLR0:
         
         # Para todos os estados
         while fila_estados:
+            #print("Fila de estados:")
+            #for est in fila_estados:
+            #    print(est.id)
+            #print("---------------")
             estado = fila_estados.pop(0)
             self.estados.append(estado)
             
             # Para cada produção do fechamento do estado
+            print("Processando estado", estado.id)
             for item in estado.fechamento:
                 # Se ponto ja está totalmente na direita, pula item, pois ja foi processado
                 if item.ponto_dir == None:
@@ -123,6 +130,7 @@ class AutomatoLR0:
                 
                 # Checa de produção desviada ja existe
                 estado_alvo = self.achar_producao_no_automato(item_desviado)
+                print(estado_alvo)
                 
                 # Se produção existe
                 if estado_alvo >= 0:
@@ -137,7 +145,7 @@ class AutomatoLR0:
                     
                     # Cria estado novo
                     id_counter += 1
-                    self.estados.append(Estado(id_counter, fechamento_estado_novo))
+                    fila_estados.append(Estado(id_counter, fechamento_estado_novo))
                     
                     # Adicionar ponteiro pro novo estado
                     self.transicoes[(estado.id, item.ponto_dir)] = id_counter
