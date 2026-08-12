@@ -79,3 +79,17 @@ def gramatica4():
     g.nao_terminais = ['<E>', '<E2>', '<T>', '<T2>', '<F>']
     g.terminais     = ['v', 'a', 'n', 'id']
     return g
+
+@pytest.fixture
+def gramatica5():
+    producoes = (
+        ("S'", ("T",)),
+        ("T", ("F",)),
+        ("T", ("T", "*", "F")),
+        ("F", ("id",)),
+        ("F", ("(", "T", ")"))
+    )
+    g = GramaticaMock(producoes)
+    g.simbolos = g.get_simbolos()
+    g.follow = g.calcular_conjunto_follow()
+    return g
