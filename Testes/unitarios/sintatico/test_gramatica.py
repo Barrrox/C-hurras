@@ -9,7 +9,7 @@ def test_get_simbolos():
         ("<chs>", ("<churras>", "id")),
         ("<churras>", ("+", "<outro>")),
         ("<churras>", ("<", "id", ">", "<outro>")),
-        ("<outro>", (())) # Simula uma produção vazia
+        ("<outro>", ("~",)) # Simula uma produção vazia
     )
     
     gramatica = GramaticaMock(producoes_mock)
@@ -29,9 +29,8 @@ def test_get_simbolos():
     assert dicionario_simbolos["id"] == 4
     assert dicionario_simbolos["+"] == 5
     
-    # 3. Testa se o vazio () não entrou em lugar nenhum, como esperado
-    assert "" not in dicionario_simbolos
-    assert () not in dicionario_simbolos
+    # 3. Testa se o vazio não entrou em lugar nenhum, como esperado
+    assert "~" not in dicionario_simbolos
 
 
 def test_calcular_first_gramatica1(gramatica1 : Gramatica):
@@ -68,12 +67,12 @@ def test_calcular_first_gramatica3(gramatica3 : Gramatica):
     # Gramática:
     # E → T | T a | b | ε | F
     # F → ε
-    # ε é representado como () (tupla vazia)
+    # ε é representado como "~"
 
     first = gramatica3.calcular_conjunto_first()
 
     # FIRST(F) = { ε }  — única produção é F → ε
-    assert set(first['<F>']) == {()}
+    assert set(first['<F>']) == {"~"}
 
     # FIRST(E) = { T, b, ε }
     #   E → T     → T é terminal → T entra
@@ -81,7 +80,7 @@ def test_calcular_first_gramatica3(gramatica3 : Gramatica):
     #   E → b     → b entra
     #   E → ε     → ε entra
     #   E → F     → FIRST(F)-{ε} = {} → nada entra; F deriva ε e é último símbolo → ε entra (já está)
-    assert set(first['<E>']) == {'<T>', 'b', ()}
+    assert set(first['<E>']) == {'<T>', 'b', "~"}
 
 def test_calcular_first_gramatica4(gramatica4 : Gramatica):
     # Gramática:
@@ -105,7 +104,7 @@ def test_calcular_first_gramatica4(gramatica4 : Gramatica):
     # FIRST(E2) = { v, ε }
     #   E2 → v T E2 → v é terminal → v entra
     #   E2 → ε      → ε entra
-    assert set(first['<E2>']) == {'v', ()}
+    assert set(first['<E2>']) == {'v', "~"}
 
     # FIRST(E) = { n, id }  — E → T E2; T não deriva ε, usa só FIRST(T)
     assert set(first['<E>']) == {'n', 'id'}

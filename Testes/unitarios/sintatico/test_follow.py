@@ -115,7 +115,7 @@ def test_follow_nao_contem_vazio():
     producoes = (
         ("<E>", ("<T>", "<E2>")),
         ("<E2>", ("v", "<T>", "<E2>")),
-        ("<E2>", ((),)),
+        ("<E2>", ("~",)),
         ("<T>", ("id",)),
     )
     g = GramaticaMock(producoes)
@@ -124,4 +124,4 @@ def test_follow_nao_contem_vazio():
     follow = g.calcular_conjunto_follow()
 
     for nao_terminal, conjunto in follow.items():
-        assert () not in conjunto, f"epsilon nao deve estar em FOLLOW({nao_terminal})"
+        assert "~" not in conjunto, f"vazio nao deve estar em FOLLOW({nao_terminal})"

@@ -48,7 +48,7 @@ class Gramatica:
                 if simb_esq not in nao_terminais:
                     nao_terminais.append(simb_esq) # Pega simbolo da esquerda da produção
 
-                if len(prod_dir) == 0:
+                if prod_dir[0] == "~":
                     continue
 
                 for simbolo in prod_dir: # Pega simbolos da direita da produção
@@ -84,7 +84,7 @@ class Gramatica:
             return simbolos
 
         def calcular_conjunto_first(self) -> dict[str, list[str | tuple]]:
-            """Calcula o conjunto First para toda a gramática. Retorna em foma de dicionário onde a chave é o não terminal X e o valor é o first(X) em forma de lista. O vazio é representado por uma tupla vazia ().
+            """Calcula o conjunto First para toda a gramática. Retorna em foma de dicionário onde a chave é o não terminal X e o valor é o first(X) em forma de lista. O vazio é representado por "~".
 
             Returns:
                 dict[str, list[str]]: _description_
@@ -124,8 +124,8 @@ class Gramatica:
                         continue
 
                     # 2. Se X for uma produção do tipo X -> ε, adicione ε a FIRST(X) e vai para a próxima produção
-                    if len(dir_prod) == 1 and dir_prod[0] == (): # produção só tem 1 elemento e é uma Tupla vazia = ε
-                        firstX.add(()) # sim, isso realmente adiciona a tupla vazia no conjunto, eu testei
+                    if len(dir_prod) == 1 and dir_prod[0] == "~": # produção só tem 1 elemento e é uma Tupla vazia = ε
+                        firstX.add("~") # sim, isso realmente adiciona a tupla vazia no conjunto, eu testei
                         continue
 
                     # 3. Se X for uma produção do tipo X -> Y1Y2...Yk, coloque em FIRST(X) todos os terminais de FIRST(Y1), exceto ε. Adicione também os de FIRST(Y2), exceto ε, se Y1 derivar ε, e assim sucessivamente até Yk ou até que algum Yi não derive ε.
@@ -139,7 +139,7 @@ class Gramatica:
                             break
 
                         firstY = first(Y) # Pode dar loop infinito se first(Y) contém first(X) (Y -> X)
-                        firstYsemVazio = firstY - {()}
+                        firstYsemVazio = firstY - {"~"}
 
                         # Adiciona em first(Y) - {ε} em first(X)
                         firstX |= firstYsemVazio # a |= b -> a = a | b (insira caveira emoji). 
@@ -148,12 +148,12 @@ class Gramatica:
                         conjunto_first[X] |= firstX 
 
                         # Se não há vazio em first(Y), não pode prosseguir para o próximo simbolo da produção
-                        if () not in firstY: 
+                        if "~" not in firstY: 
                             break
                         else: # Se há vazio, prossegue.
                             # Situação X -> YZW: Se estamos na última produção e há vazio em W, adiciona o vazio a first(X)
                             if i == len(dir_prod) - 1: 
-                                conjunto_first[X].add(())
+                                conjunto_first[X].add("~")
 
                 return firstX
 
@@ -223,9 +223,9 @@ class Gramatica:
                                         break
                                     else:
                                         # É não-terminal, pega o first dele tirando vazio
-                                        first_b |= (first[simb_b] - {()})
+                                        first_b |= (first[simb_b] - {"~"})
                                         # Se não tem vazio, a sequência para por aqui
-                                        if () not in first[simb_b]:
+                                        if "~" not in first[simb_b]:
                                             deriva_vazio = False
                                             break
 
