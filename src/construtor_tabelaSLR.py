@@ -108,36 +108,37 @@ class ConstrutorTabelaSLR:
         """
         pass
 
-ntop = {
-    0: 'E',
-    1: 'R',
-    2: 'A',
-    5: 'G',
-    3: '~'
-}
+# if __name__ == "__main__":
+#     ntop = {
+#         0: 'E',
+#         1: 'R',
+#         2: 'A',
+#         5: 'G',
+#         3: '~'
+#     }
 
-mega = Gramatica("gramatica_teste_manual.json")
-automato = AutomatoLR0(mega)
-resultado = automato.gerar_automato(mega)
-tabelador = ConstrutorTabelaSLR()
-tabelador.construir_tabelaSLR(mega, automato)
-tabela = tabelador.tabelaSLR
+#     mega = Gramatica("gramatica_teste_manual.json")
+#     automato = AutomatoLR0(mega)
+#     resultado = automato.gerar_automato(mega)
+#     tabelador = ConstrutorTabelaSLR()
+#     tabelador.construir_tabelaSLR(mega, automato)
+#     tabela = tabelador.tabelaSLR
 
-for estado in automato.estados:
-    print("Estado I -", estado.id)
-    print("PRODUÇÕES:")
-    for i in estado.fechamento:
-        i.imprimir()
-    print()
-    print("---------------------------------")
-    print()
+#     for estado in automato.estados:
+#         print("Estado I -", estado.id)
+#         print("PRODUÇÕES:")
+#         for i in estado.fechamento:
+#             i.imprimir()
+#         print()
+#         print("---------------------------------")
+#         print()
 
 
-simbolos_inv = {v: k for k, v in mega.simbolos.items()}
-for col in range(len(tabela[0])):
-    print(simbolos_inv[col], ", ", end="")
-print()
-for lin in range(len(tabela)):
-    for col in range(len(tabela[0])):
-        print(ntop[tabela[lin][col].tipo], tabela[lin][col].valor, ", ", end="")
-    print()
+#     simbolos_inv = {v: k for k, v in mega.simbolos.items()}
+#     for col in range(len(tabela[0])):
+#         print(simbolos_inv[col], ", ", end="")
+#     print()
+#     for lin in range(len(tabela)):
+#         for col in range(len(tabela[0])):
+#             print(ntop[tabela[lin][col].tipo], tabela[lin][col].valor, ", ", end="")
+#         print()
