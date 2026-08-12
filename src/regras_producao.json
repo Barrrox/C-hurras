@@ -59,5 +59,6 @@
     ["<primary>", ["char"]],
     ["<primary>", ["ponto_certo"]],
     ["<primary>", ["queimado"]],
+    ["<primary>", ["servido"]],
     ["<primary>", ["(", "<exp>", ")"]]
 ]
