@@ -23,10 +23,21 @@ class ItemLR:
         else:
             print("Erro em ItemLR: a posição do ponto ultrapassa o index da parte direita do item")
             exit()
-        
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, ItemLR):
+            return NotImplemented
+        return (self.esq == other.esq and
+                self.dir == other.dir and
+                self.ponto == other.ponto)
+
+    def __hash__(self) -> int:
+        # Necessário apenas se for usar conjuntos ou dicionários com ItemLR como chave
+        return hash((self.esq, self.dir, self.ponto))
+    
     # Método para printar Item no terminal para debug manual
     def imprimir(self) -> None:
-        print(self.esq, "->", self.dir)
+        print(self.esq, "->", self.dir, "PONTO:", self.ponto)
 
         # Como aloca:
             #  T → • T * F: ItemLR(esquerda, direita, 0)
@@ -52,7 +63,7 @@ class AutomatoLR0:
         self.estados : list[Estado] = []    # Lista contendo os conjuntos de Itens LR(0)
         self.transicoes : dict[tuple[int, str], int] = {} # Mapeia: (estado_origem, simbolo) -> estado_destino
 
-        self.gerar_automato(gramatica) # Gera o automato 
+        #self.gerar_automato(gramatica) # Gera o automato 
     
     def get_item_inicial(self, gramatica: Gramatica) -> ItemLR:
         """Pega o item inicial da gramática 
@@ -71,9 +82,8 @@ class AutomatoLR0:
             TODO: barros, enfeita esse método bem aqui <--
         """
         for estado in self.estados:
-            for item_do_estado in estado.fechamento:
-                if item == item_do_estado:
-                    return estado.id
+            if item in estado.fechamento:
+                return estado.id
         return -1
 
     def gerar_automato(self, gramatica : Gramatica) -> None:
@@ -111,14 +121,14 @@ class AutomatoLR0:
                 # Realiza desvio do item
                 item_desviado = ItemLR(item.esq, item.dir, item.ponto+1)
                 
-                
                 # Checa de produção desviada ja existe
                 estado_alvo = self.achar_producao_no_automato(item_desviado)
                 
                 # Se produção existe
-                if estado_alvo >= 0 and ([(estado.id, item.ponto_dir), estado_alvo] not in self.transicoes):
-                    # Adicionar ponteiro pro novo estado
-                    self.transicoes[(estado.id, item.ponto_dir)] = estado_alvo
+                if estado_alvo >= 0:
+                    # Adiciona a transição apenas se ainda não existir
+                    if (estado.id, item.ponto_dir) not in self.transicoes:
+                        self.transicoes[(estado.id, item.ponto_dir)] = estado_alvo
 
                 # Se produção não existe, criar estado
                 else:
@@ -179,27 +189,17 @@ class AutomatoLR0:
         # 1) Cada item em I é adicionado ao fechamento(I)
         # Uso um while aqui pois I vai crescer (for não funciona) e vou retirar os itens já verificados de I
         # enquanto adiciono novos itens a serem verificados. Quanto I acabar, todos os itens já foram verificados
-        simb_adicionados_I = [] # Lista com símbolos de produções que já foram adicionados à I
-        # procurar na gramática o index de todas as produções de I
-        for i in range(len(I)):
-            item = I[i]
-            for j in range(len(producoes)):
-                prod = producoes[j]
-                if item.esq == prod[0] and item.dir == prod[1]:
-                    simb_adicionados_I.append(j)
+        prod_adicionados_I : list[ItemLR] = I.copy() # Lista com símbolos de produções que já foram adicionados à I
+        #print("PROCESSANDO ESTADO:")
+        #for i in I:
+        #    i.imprimir()
 
         while I:
             item = I.pop(0) # Começo da fila
             fechamento.append(item)
-            #print(simb_adicionados_I)
-            #print()
-            #print()
 
             # 2) Se A → a•Bb estiver em fechamento(I) e B → c for uma produção de I, adicionar o item B → •c ao conjunto I
             for i in range(len(producoes)): # Loop para procurar produção B → c na gramática -> O(n^2), talvez precise otimizar aqui
-                
-                if i in simb_adicionados_I: # SE simbolo já foi analisado completamente
-                    continue
                 
                 producao = producoes[i]
                 
@@ -207,13 +207,27 @@ class AutomatoLR0:
                 prod_item = ItemLR(esquerda_producao=producao[0], 
                                    direita_producao=producao[1], 
                                    ponto=0)
+                
+                #print("-----------------------------------------")
+                #print("COMPARANDO:")
+                #prod_item.imprimir()
+                #print("ESTA EM:")
+                #for j in prod_adicionados_I:
+                #    j.imprimir()
+                #print("-----------------------------------------\n")
+                
+                if prod_item in prod_adicionados_I: # SE produção já foi adicionada completamente
+                    continue
             
                 # se (o simbolo a direita do ponto de item) é (o primeiro de alguma produção da gramática) então (adiciona à I)
                 if item.ponto_dir == producao[0]: # 
                     I.append(prod_item)
-                    simb_adicionados_I.append(i)
+                    prod_adicionados_I.append(prod_item)
 
-
+        #print("ESTADO PROCESSADO:")
+        #for i in fechamento:
+        #    i.imprimir()
+        #print("---------------------")
         return fechamento
 
 
@@ -299,3 +313,18 @@ class AutomatoLR0:
             
         except Exception as e:
             print(f"ERRO ao salvar o automato: {e}")
+
+
+
+
+mega = Gramatica("gramatica_teste_manual.json")
+automato = AutomatoLR0(mega.producoes)
+resultado = automato.gerar_automato(mega)
+for estado in automato.estados:
+    print("Estado I -", estado.id)
+    print("PRODUÇÕES:")
+    for i in estado.fechamento:
+        i.imprimir()
+    print()
+    print("---------------------------------")
+    print()
