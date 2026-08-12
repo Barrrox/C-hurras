@@ -9,7 +9,7 @@ def test_get_simbolos():
         ("<chs>", ("<churras>", "id")),
         ("<churras>", ("+", "<outro>")),
         ("<churras>", ("<", "id", ">", "<outro>")),
-        ("<outro>", ()) # Simula uma produção vazia
+        ("<outro>", (())) # Simula uma produção vazia
     )
     
     gramatica = GramaticaMock(producoes_mock)
