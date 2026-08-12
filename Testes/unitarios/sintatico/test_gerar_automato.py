@@ -179,3 +179,73 @@ def test_gerar_automato_gramatica5(gramatica5: Gramatica):
     assert automato.transicoes[(5, "<F>")] == 7
     assert automato.transicoes[(6, ")")] == 8
     assert automato.transicoes[(6, "*")] == 5
+
+def test_gerar_automato_gramatica6(gramatica6: Gramatica):
+    automato = AutomatoLR0(gramatica6)
+    automato.gerar_automato(gramatica6)
+
+    def itens_estado(id):
+        for e in automato.estados:
+            if e.id == id:
+                return set((i.esq, i.dir, i.ponto) for i in e.fechamento)
+        return set()
+
+    assert len(automato.estados) == 9
+    
+    assert itens_estado(0) == {
+        ("<S'>", ("<S>",), 0),
+        ("<S>", ("a",), 0),
+        ("<S>", ("[", "<L>", "]"), 0)
+    }
+    
+    assert itens_estado(1) == {
+        ("<S'>", ("<S>",), 1)
+    }
+    
+    assert itens_estado(2) == {
+        ("<S>", ("a",), 1)
+    }
+    
+    assert itens_estado(3) == {
+        ("<S>", ("[", "<L>", "]"), 1),
+        ("<L>", ("<L>", ";", "<S>"), 0),
+        ("<L>", ("<S>",), 0),
+        ("<S>", ("a",), 0),
+        ("<S>", ("[", "<L>", "]"), 0)
+    }
+    
+    assert itens_estado(4) == {
+        ("<S>", ("[", "<L>", "]"), 2),
+        ("<L>", ("<L>", ";", "<S>"), 1)
+    }
+    
+    assert itens_estado(5) == {
+        ("<L>", ("<S>",), 1)
+    }
+    
+    assert itens_estado(6) == {
+        ("<S>", ("[", "<L>", "]"), 3)
+    }
+    
+    assert itens_estado(7) == {
+        ("<L>", ("<L>", ";", "<S>"), 2),
+        ("<S>", ("a",), 0),
+        ("<S>", ("[", "<L>", "]"), 0)
+    }
+    
+    assert itens_estado(8) == {
+        ("<L>", ("<L>", ";", "<S>"), 3)
+    }
+    
+    assert automato.transicoes[(0, "<S>")] == 1
+    assert automato.transicoes[(0, "a")] == 2
+    assert automato.transicoes[(0, "[")] == 3
+    assert automato.transicoes[(3, "a")] == 2
+    assert automato.transicoes[(3, "[")] == 3
+    assert automato.transicoes[(3, "<L>")] == 4
+    assert automato.transicoes[(3, "<S>")] == 5
+    assert automato.transicoes[(4, "]")] == 6
+    assert automato.transicoes[(4, ";")] == 7
+    assert automato.transicoes[(7, "<S>")] == 8
+    assert automato.transicoes[(7, "[")] == 3
+    assert automato.transicoes[(7, "a")] == 2
