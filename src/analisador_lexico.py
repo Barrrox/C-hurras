@@ -49,7 +49,7 @@ class Lexer():
         """
 
         lista_tokens = self.analisar_lexico_aux(codigo)
-        self.print_tokens()
+        # self.print_tokens()
         self.salvar_tokens()
 
         return lista_tokens
@@ -216,7 +216,7 @@ class Lexer():
                     if char_atual == "<":
                         estado = LENDO_COMENTARIO
                     else:
-                        self._erro_lexico("ERRO:\n\tComentário mal aberto na linha " + str(linha_atual) + ". Você quis dizer:\n\t\t--<")
+                        self._erro_lexico("ERRO LÉXICO:\n\tComentário mal aberto na linha " + str(linha_atual) + ". Você quis dizer:\n\t\t--<")
                 case "LENDO_COMENTARIO":
                     if char_atual == ">":
                         estado = LEU_FECHA_COMENTARIO
@@ -239,11 +239,11 @@ class Lexer():
                     else:
                         estado = LENDO_CARACTERE
                 case "ERRO_CARACTERE_VAZIO":
-                    self._erro_lexico("ERRO: caractere vazio na linha " + str(linha_atual))
+                    self._erro_lexico("ERRO LÉXICO: caractere vazio na linha " + str(linha_atual))
                 case "LENDO_CARACTERE":
                     if not char_atual == '\'':
                         token_atual = token_atual[:-1]
-                        self._erro_lexico("ERRO: caractere não fechado na linha " + str(linha_atual) + ". Você quis dizer:\n\t" + str(token_atual) + "\'")
+                        self._erro_lexico("ERRO LÉXICO: caractere não fechado na linha " + str(linha_atual) + ". Você quis dizer:\n\t" + str(token_atual) + "\'")
                     else:
                         estado = ACEITA_CARACTERE
                 case "ACEITA_CARACTERE":
@@ -262,7 +262,7 @@ class Lexer():
                     else:
                         estado = LENDO_STRING
                 case "ERRO_STRING_VAZIA":
-                    self._erro_lexico("ERRO: string vazia ou inválida na linha " + str(linha_atual))
+                    self._erro_lexico("ERRO LÉXICO: string vazia ou inválida na linha " + str(linha_atual))
                 case "LENDO_STRING":
                     if char_atual == '\"':
                         estado = ACEITA_STRING
@@ -280,13 +280,13 @@ class Lexer():
                     if char_atual == '&':
                         estado = ACEITA_OPERADOR
                     else:
-                        self._erro_lexico("ERRO: Operador AND é: && na linha " + str(linha_atual))
+                        self._erro_lexico("ERRO LÉXICO: Operador AND é: && na linha " + str(linha_atual))
                 # Operador "||"
                 case "LEU_BARRA_VERTICAL":
                     if char_atual == '|':
                         estado = ACEITA_OPERADOR
                     else:
-                        self._erro_lexico("ERRO: Operador OR é: || na linha " + str(linha_atual))
+                        self._erro_lexico("ERRO LÉXICO: Operador OR é: || na linha " + str(linha_atual))
 
                 # Lógica de Atribuição e Operadores Relacionais (==, !=, <, >, <=, >=)
                 case "LEU_OP_SIMPLES":
@@ -358,11 +358,11 @@ class Lexer():
 
                 # Erro: Caractere Inválido
                 case "ERRO_CARACTERE_INV":
-                    self._erro_lexico("ERRO: caractere inválido '" + char_atual + "' na linha " + str(linha_atual))
+                    self._erro_lexico("ERRO LÉXICO: caractere inválido '" + char_atual + "' na linha " + str(linha_atual))
 
                 # Estado Desconhecido: se chegou aqui é porque deu muuuuito ruim
                 case _:
-                    self._erro_lexico("ERRO: meu amigo, tem alguma coisa de errado aqui")
+                    self._erro_lexico("ERRO LÉXICO: meu amigo, tem alguma coisa de errado aqui")
 
             # Incrementa o ponteiro
             self.pc += 1
@@ -381,7 +381,7 @@ class Lexer():
             with open(caminho_saida, "w") as f:
                 for tk in self.tokens:
                     f.write(f"token: {tk.texto} | categoria: {tk.categoria} | linha: {tk.linha}\n")
-            print(f"Tokens salvos com sucesso em: {caminho_saida}")
+            # print(f"Tokens salvos com sucesso em: {caminho_saida}")
         except Exception as e:
             print(f"ERRO ao salvar tokens: {e}")
 

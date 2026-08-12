@@ -85,21 +85,14 @@ class ParserSLR():
 
             act : SLRcell= tabelaSLR[s][self.simbolo(a.categoria)]
 
-            print(f"\n[PILHA] {stack}")
-            print(f"[INPUT] {[t.categoria for t in tokens[ip:]]}")  # mostra os próximos 5 tokens
-            print(f"[ESTADO] s={s}  token='{a.categoria}'  simbolo_id={self.simbolo(a.categoria)}")
-            
             if act.tipo == 0: # empilha
-
-                print(f"[AÇÃO] EMPILHA '{a.categoria}' -> estado {act.valor}")
 
                 stack.append(a.categoria) # push the terminal
                 stack.append(act.valor) # push the new state
                 ip += 1
             
             elif act.tipo == 1: # reduz
-                prod = self.gramatica.producoes[act.valor]
-                print(f"[AÇÃO] REDUZ {prod[0]} -> {list(prod[1])}") 
+
                 # redução: ['T', ['T', '*', 'F']]
                 prod_dir = producoes[act.valor][1]
                 if prod_dir != ('~',):
@@ -115,9 +108,9 @@ class ParserSLR():
                 break
             
             else:
-                print(f"[PÂNICO] tipo={act.tipo}  act.valor={act.valor}")
-                print("ERRO: token não esperado \"", a.texto, "\" na linha", a.linha)
                 teve_erro = True
+
+                print("ERRO SINTÁTICO: token não esperado \"", a.texto, "\" na linha", a.linha)
                 
                 # attempt recovery
                 if act.tipo == 3: # erro de estado vazio
@@ -132,6 +125,6 @@ class ParserSLR():
                     stack.append(producoes[act.valor][0]) # push the nonterminal
                     stack.append(tabelaSLR[s_prime][self.simbolo(producoes[act.valor][0])].valor) # push the new state
 
-            input("\nPressione Qualquer tecla para continuar\n")
+            # input("\nPressione Qualquer tecla para continuar\n")
 
         return not teve_erro

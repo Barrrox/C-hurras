@@ -24,9 +24,9 @@ class Compilador(): # Classe compilador
         aceitou = self.parser.analisar_sintaxe(lista_tokens)
 
         if aceitou:
-            print("\n🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩")
-            print(" 🥩🥩🥩🥩🥩 churras ta no ponto certo 🥩🥩🥩🥩🥩")
-            print("🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩🥩")
+            print("Compilação foi um sucesso!")
+            print("Churras no ponto")
+
 
 
     

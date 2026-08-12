@@ -331,7 +331,7 @@ class AutomatoLR0:
             with open(caminho, "w", encoding="utf-8") as f:
                 json.dump(dados_automato, f, indent=4, ensure_ascii=False)
                 
-            print(f"Automato salvo com sucesso em: {caminho}")
+            #  print(f"Automato salvo com sucesso em: {caminho}")
             
         except Exception as e:
             print(f"ERRO ao salvar o automato: {e}")
