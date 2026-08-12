@@ -1,3 +1,7 @@
+import numpy as np
+from gramatica import Gramatica
+from automato import AutomatoLR0
+
 class SLRcell:
     def __init__(self, tipo, valor):
         self.tipo = tipo   # empilha, reduz, aceita, errovazio, erroreduz, goto -> 0, 1, 2, 3, 4, 5
@@ -50,7 +54,7 @@ class ConstrutorTabelaSLR:
         """
 
         # Inicializar tabela SLR com N linhas (N estados do automato) e com T + A colunas (T terminais + A não terminais -> Seguindo regra 4 dos slides na construção da tabela)
-        tabelaSLR = {}
+        tabelaSLR = [[SLRcell(3, 0) for _ in range(len(gramatica.simbolos))] for _ in range(len(automato.estados))]
         
         
         # Para cada estado
@@ -64,12 +68,12 @@ class ConstrutorTabelaSLR:
                 # Se lê um terminal
                 if simbolo_lido in gramatica.terminais:
                     # Coloca em tabela[estado, terminal] um empilhar estado_alvo
-                    tabelaSLR[estado.id, gramatica.simbolos(simbolo_lido)] = SLRcell(0, automato.transicoes((estado.id, simbolo_lido)))
+                    tabelaSLR[estado.id][gramatica.simbolos[simbolo_lido]] = SLRcell(0, automato.transicoes[(estado.id, simbolo_lido)])
                     
                 # Se o ponto_dir == None e também é a produção 0 da gramatica
                 elif (simbolo_lido == None) and (producao == gramatica.producoes[0]):
                     # Coloca em tabela[estado, $] o aceita
-                    tabelaSLR[estado.id, gramatica.simbolos['$']] = SLRcell(2, -1)
+                    tabelaSLR[estado.id][gramatica.simbolos['$']] = SLRcell(2, -1)
                     
                 # Se o ponto_dir == None
                 elif (simbolo_lido == None):
@@ -80,19 +84,20 @@ class ConstrutorTabelaSLR:
                         if prod == producao:
                             producao_index = i
                             break
-                    for flw in gramatica.follow[simbolo_lido]:
-                        tabelaSLR[estado.id, gramatica.simbolos(flw)] = SLRcell(1, producao_index)
+                    for flw in gramatica.follow[item.esq]:
+                        tabelaSLR[estado.id][gramatica.simbolos[flw]] = SLRcell(1, producao_index)
                     
                 # Se lê um não-terminal
                 elif simbolo_lido in gramatica.nao_terminais:
                     # Coloca em tabela[estado, não-terminal] o goto estado_alvo
-                    tabelaSLR[estado.id, gramatica.simbolos(simbolo_lido)] = SLRcell(5, automato.transicoes((estado.id, simbolo_lido)))
+                    tabelaSLR[estado.id][gramatica.simbolos[simbolo_lido]] = SLRcell(5, automato.transicoes[(estado.id, simbolo_lido)])
                 
                 # Se isso rodar, algo deu errado
                 else:
                     print("a tabela não ta indo, ta lendo coisa que não devia, suspeito...")
                     return
         
+        self.tabelaSLR = tabelaSLR
 
     def exportar_json(self, caminho="tabela_slr.json") -> None:
         """
@@ -102,3 +107,37 @@ class ConstrutorTabelaSLR:
         O que retorna: Nada. Gera artefato físico em disco.
         """
         pass
+
+ntop = {
+    0: 'E',
+    1: 'R',
+    2: 'A',
+    5: 'G',
+    3: '~'
+}
+
+mega = Gramatica("gramatica_teste_manual.json")
+automato = AutomatoLR0(mega)
+resultado = automato.gerar_automato(mega)
+tabelador = ConstrutorTabelaSLR()
+tabelador.construir_tabelaSLR(mega, automato)
+tabela = tabelador.tabelaSLR
+
+for estado in automato.estados:
+    print("Estado I -", estado.id)
+    print("PRODUÇÕES:")
+    for i in estado.fechamento:
+        i.imprimir()
+    print()
+    print("---------------------------------")
+    print()
+
+
+simbolos_inv = {v: k for k, v in mega.simbolos.items()}
+for col in range(len(tabela[0])):
+    print(simbolos_inv[col], ", ", end="")
+print()
+for lin in range(len(tabela)):
+    for col in range(len(tabela[0])):
+        print(ntop[tabela[lin][col].tipo], tabela[lin][col].valor, ", ", end="")
+    print()

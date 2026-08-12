@@ -149,7 +149,7 @@ class AutomatoLR0:
                     self.estados.append(estado_novo)
                     
                     # Adicionar ponteiro pro novo estado
-                    self.transicoes[(estado.id, leitura)] = id_counter
+                    self.transicoes[(estado.id, leitura)] = estado_novo.id
                 
 
 
@@ -325,14 +325,14 @@ class AutomatoLR0:
 
 
 
-mega = Gramatica("gramatica_teste_manual.json")
-automato = AutomatoLR0(mega.producoes)
-resultado = automato.gerar_automato(mega)
-for estado in automato.estados:
-    print("Estado I -", estado.id)
-    print("PRODUÇÕES:")
-    for i in estado.fechamento:
-        i.imprimir()
-    print()
-    print("---------------------------------")
-    print()
+#mega = Gramatica("regras_producao.json")
+#automato = AutomatoLR0(mega.producoes)
+#resultado = automato.gerar_automato(mega)
+#for estado in automato.estados:
+#    print("Estado I -", estado.id)
+#    print("PRODUÇÕES:")
+#    for i in estado.fechamento:
+#        i.imprimir()
+#    print()
+#    print("---------------------------------")
+#    print()
