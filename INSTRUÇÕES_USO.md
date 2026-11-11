@@ -6,6 +6,8 @@
 
 Rode o comando ```python main.py <arquivo_codigo>```, em que arquivo_codigo é um arquivo de texto formatado em UTF-8. 
 
+A pasta `CodigosChurras` contém uma série de códigos corretos implementados na linguagem, incluindo um nomedo `TestaTudo.churras` que testa o analisador sintático em sua completude, altere o código em diferentes partes para induzir os erros específicos
+
 Em caso de uma leitura léxica bem-sucedida, a saída será mostrada no terminal como no exemplo a seguir:
 
 ```terminal 
