@@ -42,14 +42,14 @@ class ParserSLR():
 
         return tabelaSLR
 
-    def analisar_sintaxe(self, lista_tokens : list[Token]) -> bool:
-        """Interface para realizar a analise sintática Bottom-up a partir da lista de tokens. Aceita (True) se o código estiver sintaticamente correto, caso contrário rejeita (False). Quando célula vazia na tabela ACTION, ativa o modo pânico.
+    def analisar_sintaxe(self, lista_tokens : list[Token]) -> noAST:
+        """Interface para realizar a analise sintática Bottom-up a partir da lista de tokens. Aceita (Retorna a AST) se o código estiver sintaticamente correto, caso contrário rejeita (Retorna None). Quando célula vazia na tabela ACTION, ativa o modo pânico.
 
         Args:
             lista_tokens (list[Token]): Lista de tokens vinda do analisador léxico.
 
         Returns:
-            bool: True se aceitou, False se encontrou erros sintáticos, mesmo que recupere no modo pânico.
+            noAST: Retorna a Árvore Sintática Abstrata se aceitou, senão retorna None pois algum token ativou o modo pânico.
         """
 
         tabelaSLR = self.criar_tabelaSLR()
@@ -57,7 +57,7 @@ class ParserSLR():
         return self.analisar_sintaxeAUX(lista_tokens, tabelaSLR)
 
     def analisar_sintaxeAUX(self, tokens : list[Token], 
-                            tabelaSLR : list[list[SLRcell]]) -> bool:
+                            tabelaSLR : list[list[SLRcell]]) -> noAST:
         """Executa o algoritmo Shift-Reduce usando a pilha de estados e a tabela SLR. Chamado internamente por analisar_sintaxe.
 
         Args:
@@ -65,7 +65,7 @@ class ParserSLR():
             tabelaSLR (list[list[SLRcell]]): Tabela SLR como matriz bidimensional de SLRcells.
 
         Returns:
-            bool: True se não houve erros, False se algum token ativou o modo pânico.
+            noAST: Retorna a Árvore Sintática Abstrata se aceitou, senão retorna None pois algum token ativou o modo pânico.
         """
 
         producoes = self.gramatica.producoes 
@@ -142,4 +142,8 @@ class ParserSLR():
                     stack.append(producoes[act.valor][0]) # push the nonterminal
                     stack.append(tabelaSLR[s_prime][self.simbolo(producoes[act.valor][0])].valor) # push the new state
 
-        return not teve_erro
+        if not teve_erro:
+            return self.AST
+        else:
+            return None
+        

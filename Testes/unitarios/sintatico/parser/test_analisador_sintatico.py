@@ -33,17 +33,17 @@ def test_parser_gramatica5_aceita_valido(gramatica5: Gramatica):
     # (id)*id = aceita
     tokens = criar_tokens(["(", "id", ")", "*", "id"])
     resultado = parser.analisar_sintaxe(tokens)
-    assert resultado is True
+    assert resultado is not None
 
 def test_parser_gramatica5_recupera_erro_parentese(gramatica5: Gramatica):
     automato = AutomatoLR0()
     automato.gerar_automato(gramatica5)
     parser = ParserMock(gramatica5, automato)
     
-    # (id*id = rejeita mas passa pelo modo pânico (retorna False por ter erros)
+    # (id*id = rejeita mas passa pelo modo pânico (retorna None por ter erros)
     tokens = criar_tokens(["(", "id", "*", "id"])
     resultado = parser.analisar_sintaxe(tokens)
-    assert resultado is False
+    assert resultado is None
 
 def test_parser_gramatica5_recupera_erro_parentese_fechando(gramatica5: Gramatica):
     automato = AutomatoLR0()
@@ -53,7 +53,7 @@ def test_parser_gramatica5_recupera_erro_parentese_fechando(gramatica5: Gramatic
     # id)**id = rejeita mas passa pelo modo pânico
     tokens = criar_tokens(["id", ")", "*", "*", "id"])
     resultado = parser.analisar_sintaxe(tokens)
-    assert resultado is False
+    assert resultado is None
 
 def test_parser_gramatica6_aceita_valido(gramatica6: Gramatica):
     automato = AutomatoLR0()
@@ -63,7 +63,7 @@ def test_parser_gramatica6_aceita_valido(gramatica6: Gramatica):
     # [[a;a]] = aceita
     tokens = criar_tokens(["[", "[", "a", ";", "a", "]", "]"])
     resultado = parser.analisar_sintaxe(tokens)
-    assert resultado is True
+    assert resultado is not None
 
 def test_parser_gramatica6_recupera_erro_incompleto(gramatica6: Gramatica):
     automato = AutomatoLR0()
@@ -73,4 +73,4 @@ def test_parser_gramatica6_recupera_erro_incompleto(gramatica6: Gramatica):
     # [a;] = rejeita mas passa pelo modo pânico
     tokens = criar_tokens(["[", "a", ";", "]"])
     resultado = parser.analisar_sintaxe(tokens)
-    assert resultado is False
+    assert resultado is None

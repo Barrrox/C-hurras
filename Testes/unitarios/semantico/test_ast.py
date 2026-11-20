@@ -17,10 +17,9 @@ _TABELA_SLR = _PARSER.criar_tabelaSLR()
 def gerar_ast(codigo: str) -> noAST:
     lexer = Lexer()
     tokens = lexer.analisar_lexico(codigo)
-    aceitou = _PARSER.analisar_sintaxeAUX(tokens, _TABELA_SLR)
-    assert aceitou is True, f"Falha sintática inesperada ao gerar AST para: {codigo}"
-    assert _PARSER.AST is not None
-    return _PARSER.AST
+    ast = _PARSER.analisar_sintaxeAUX(tokens, _TABELA_SLR)
+    assert ast is not None, f"Falha sintática inesperada ao gerar AST para: {codigo}"
+    return ast
 
 
 # =====================================================================
