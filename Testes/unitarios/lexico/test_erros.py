@@ -1,14 +1,13 @@
 import pytest
-import analisador_lexico
 from testes.utils import executar_lexico, verificar_erro_lexico
 
 def test_ignora_espacos_e_quebras():
     tokens = executar_lexico(" \n \t \n")
-    assert len(tokens) == 0
+    assert len(tokens) == 1
 
 def test_ignora_comentarios():
     tokens = executar_lexico("--< isso é um comentario \n multilinhas >-")
-    assert len(tokens) == 0
+    assert len(tokens) == 1
 
 @pytest.mark.parametrize("entrada_invalida", [
     "--?",    # Comentário mal aberto

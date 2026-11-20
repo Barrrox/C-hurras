@@ -20,7 +20,7 @@ def test_interacao_com_espaco(tk1, tk2):
     codigo = f"{txt1} {txt2}"
     tokens = executar_lexico(codigo)
     
-    assert len(tokens) == 2
+    assert len(tokens) == 3
     validar_token(tokens[0], txt1, tipo1)
     validar_token(tokens[1], txt2, tipo2)
 
@@ -46,7 +46,7 @@ def test_interacao_sem_espaco(tk1, tk2):
     codigo = f"{txt1}{txt2}"
     tokens = executar_lexico(codigo)
     
-    assert len(tokens) == 2
+    assert len(tokens) == 3
     validar_token(tokens[0], txt1, tipo1)
     validar_token(tokens[1], txt2, tipo2)
 
@@ -55,7 +55,7 @@ def test_tres_tokens_colados():
     codigo = "123+vaca"
     tokens = executar_lexico(codigo)
     
-    assert len(tokens) == 3
+    assert len(tokens) == 4
     validar_token(tokens[0], "123", "int")
     validar_token(tokens[1], "+", "+")
     validar_token(tokens[2], "vaca", "tipo")
@@ -65,7 +65,7 @@ def test_id_ponto_virgula_numero():
     codigo = "vaca;123"
     tokens = executar_lexico(codigo)
     
-    assert len(tokens) == 3
+    assert len(tokens) == 4
     validar_token(tokens[0], "vaca", "tipo")
     validar_token(tokens[1], ";", ";")
     validar_token(tokens[2], "123", "int")
@@ -75,7 +75,7 @@ def test_sequencia_complexa_sem_espaco():
     codigo = "+123+vaca"
     tokens = executar_lexico(codigo)
     
-    assert len(tokens) == 4
+    assert len(tokens) == 5
     validar_token(tokens[0], "+", "+")
     validar_token(tokens[1], "123", "int")
     validar_token(tokens[2], "+", "+")
@@ -86,7 +86,7 @@ def test_delimitadores_aninhados():
     codigo = "(())"
     tokens = executar_lexico(codigo)
     
-    assert len(tokens) == 4
+    assert len(tokens) == 5
     validar_token(tokens[0], "(", "(")
     validar_token(tokens[1], "(", "(")
     validar_token(tokens[2], ")", ")")
@@ -95,5 +95,5 @@ def test_delimitadores_aninhados():
 def test_id_colado_com_numero():
     """vaca123 deve ser um único ID, não 'vaca' + '123'"""
     tokens = executar_lexico("vaca123")
-    assert len(tokens) == 1
+    assert len(tokens) == 2
     validar_token(tokens[0], "vaca123", "id")

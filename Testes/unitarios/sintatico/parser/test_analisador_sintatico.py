@@ -21,8 +21,8 @@ class ParserMock(ParserSLR):
 def criar_tokens(lista_str):
     tokens = []
     for s in lista_str:
-        tokens.append(Token(texto=s, categoria=s, linha=1))
-    tokens.append(Token(texto="$", categoria="$", linha=1))
+        tokens.append(Token(texto=s, categoria=s, linha=0))
+    tokens.append(Token(texto="$", categoria="$", linha=0))
     return tokens
 
 def test_parser_gramatica5_aceita_valido(gramatica5: Gramatica):

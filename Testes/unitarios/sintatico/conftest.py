@@ -9,6 +9,7 @@ class GramaticaMock(Gramatica):
         self.producoes = producoes_tupla
         self.terminais = set()
         self.nao_terminais = set()
+        self.regras_semanticas = ()
 
 @pytest.fixture
 def gramatica1():
