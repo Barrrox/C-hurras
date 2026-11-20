@@ -20,10 +20,28 @@ class Compilador(): # Classe compilador
         # Analise léxica
         lista_tokens = self.lexer.analisar_lexico(codigo)
 
-        # Análise Sintática
+        # ------ Colinha para a AST ---------
+        # Análise Sintática -> retorna a raiz da AST (ou None se erro sintático)
+        # Estrutura de cada nó (noAST):
+        # =============================================================
+        # noAST.tipo   : categoria do nó:
+        #                  - Blocos/Comandos: "churras", "declaracao", "if", "else", "while", "for", "entrada", "saida"
+        #                  - Operações: "operacao" ("=", "+", "-", "*", "/", "%", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "!")
+        #                  - Folhas: "tipo", "id", "int", "char", "string", "ponto_certo", "queimado", "servido"
+        # noAST.valor  : 
+        #                  - se tipo é folha, valor é o lexema (ex: "vaca", "x", "10")
+        #                  - se tipo é operador, valor é o operador (ex: "+", "<=")
+        #                  - se tipo é comando, valor = None
+        # noAST.filhos : lista de noAST filhos na ordem lógica: (Aqui foi bem fé se vai dar certo na análise semântica, há de se ver)
+        #                  - "declaracao" : [tipo, id]
+        #                  - "operacao"   : [esq, dir] (binária/atribuição) ou [operando] (unária "-" e "!")
+        #                  - "if"         : [condicao, churras] ou [condicao, churras, else]
+        #                  - "while"      : [condicao, churras]
+        #                  - "for"        : [id, limite_exp, churras]
+        #                  - "entrada"    : [id]
+        #                  - "saida"      : [item1, item2, ...]
+        # noAST.linha  : número da linha no código-fonte
         noAST = self.parser.analisar_sintaxe(lista_tokens)
-
-        # Análise semântica
 
         if noAST is not None:
             print("Compilação foi um sucesso!")

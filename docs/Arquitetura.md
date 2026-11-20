@@ -36,17 +36,17 @@ Responsável por processar a gramática, construir o autômato LR(0) e montar a 
 *   **`Lexer`** (em `src/analisador_lexico.py`):
     *   **Responsabilidade**: Fazer a varredura de caracteres do código-fonte por meio de um DFA e gerar a fita de tokens.
     *   **Métodos Principais**: `__init__()`, `analisar_lexico(codigo)`.
-*   **`NoAST`** (em `src/arvore_ast.py`):
-    *   **Responsabilidade**: Estrutura de nó genérico único da Árvore Sintática Abstrata. Guarda o tipo/rótulo do nó, token/valor associado, tipo de dado inferido, linha e lista de nós `filhos`.
-    *   **Funções Auxiliares**: `criar_no()` (descarta tokens de pontuação/escopo `;`, `,`, `{`, `}`, `(`, `)` e vazios `~`, e nas expressões com cauda pendura o operando esquerdo no operador da cauda para deixar a árvore abstrata).
+*   **`noAST`** (em `src/arvore_ast.py`):
+    *   **Responsabilidade**: Estrutura de nó genérico único da Árvore Sintática Abstrata. Guarda `tipo` (rótulo do nó, ex: `"declaracao"`, `"operacao"`, `"if"`), `valor` (lexema ou operador), `linha` e lista de nós `filhos`.
+    *   **Métodos e Funções Auxiliares**: `imprimir()`, `token_para_no()` e `criar_no()` (descarta tokens de pontuação/escopo `;`, `,`, `{`, `}`, `(`, `)`, palavras-chave redundantes e vazios `~`, achata listas `<churras>` e `<saida_comp>`, unifica operações sob `tipo="operacao"` e pendura o operando esquerdo no operador da cauda para deixar a árvore abstrata).
 *   **`ParserSLR`** (em `src/analisador_sintatico.py`):
-    *   **Responsabilidade**: O núcleo da Fase 2 integrado à construção da AST. Máquina Shift-Reduce orientada a pilha de estados e tabela SLR que executa `criar_no` a cada redução (`act.tipo == 1`).
+    *   **Responsabilidade**: O núcleo da Fase 2 integrado à construção da AST. Máquina Shift-Reduce orientada a pilha de estados (`stack`) e pilha paralela da árvore (`stack_ast`) que executa `criar_no` a cada redução (`act.tipo == 1`).
     *   **Métodos Principais**: 
-        *   `__init__()`: Inicializa carregando a instância de `Gramatica`.
+        *   `__init__()`: Inicializa carregando a instância de `Gramatica` e `self.AST = None`.
         *   `simbolo(term)`: Consulta o índice numérico de um símbolo na gramática.
         *   `criar_tabelaSLR()`: Instancia `AutomatoLR0` e `ConstrutorTabelaSLR`, gerando a matriz `tabelaSLR` (e exportando `automato.json`).
-        *   `analisar_sintaxe(lista_tokens)`: Método de entrada que constrói a tabela SLR e chama `analisar_sintaxeAUX()`.
-        *   `analisar_sintaxeAUX(tokens, tabelaSLR)`: Executa o loop Shift-Reduce, constrói a AST em paralelo na pilha e retorna o status sintático e a raiz da `AST` (`NoAST`).
+        *   `analisar_sintaxe(lista_tokens)`: Método de entrada que constrói a tabela SLR e retorna o resultado de `analisar_sintaxeAUX()`.
+        *   `analisar_sintaxeAUX(tokens, tabelaSLR)`: Executa o loop Shift-Reduce, constrói a AST em paralelo em `stack_ast` e retorna a raiz `self.AST` (`noAST`) se aceitou sem erros, ou `None` caso algum token tenha ativado o modo pânico.
 *   **`TabelaDeSimbolos`** (em `src/tabela_simbolos.py`):
     *   **Responsabilidade**: Gerenciar escopos e armazenar identificadores declarados e seus tipos.
 *   **`AnalisadorSemantico`** (em `src/analisador_semantico.py`):
@@ -71,21 +71,22 @@ O fluxo de dados ao compilar um código fonte (ex: `codigo.churras`):
     *   Chama `lista_tokens = lexer.analisar_lexico(codigo)`.
     *   O retorno é uma lista de objetos `Token` (finalizada pelo token `$`). Erros léxicos são reportados nessa etapa.
 4.  **Chamada Sintática e Construção da Tabela**:
-    *   Inicia a análise passando a fita léxica: `parser.analisar_sintaxe(lista_tokens)`.
+    *   Inicia a análise passando a fita léxica: `noAST = parser.analisar_sintaxe(lista_tokens)`.
     *   O parser chama `criar_tabelaSLR()`, que gera o `AutomatoLR0` e constrói a matriz `tabelaSLR` via `ConstrutorTabelaSLR.construir_tabelaSLR(gramatica, automato)`.
     *   Em seguida, invoca `analisar_sintaxeAUX(lista_tokens, tabelaSLR)`.
 5.  **Loop Shift-Reduce e Construção da AST (`analisar_sintaxeAUX()`)**:
-    *   O Parser inicia a pilha intercalando símbolos/nós e estados: `stack = ["$", 0]` e ponteiro de entrada `ip = 0`.
+    *   O Parser inicia a pilha de estados `stack = ["$", 0]`, a pilha paralela da árvore `stack_ast = []` e o ponteiro de entrada `ip = 0`.
     *   Enquanto `ip < len(tokens)`:
         *   Obtém o estado no topo `s = stack[-1]` e o token atual `a = tokens[ip]`.
         *   Consulta a célula na tabela: `act = tabelaSLR[s][simbolo(a.categoria)]`.
-        *   Se `act.tipo == 0` (**Empilha / Shift**): Empilha o token (ou nó folha) e o novo estado `act.valor`. Avança `ip += 1`.
-        *   Se `act.tipo == 1` (**Reduz / Reduce**): Para a regra `producoes[act.valor]`, desempilha os símbolos/nós e estados do lado direito. Executa a regra semântica de construção (`criar_no`), que filtra tokens de pontuação/escopo, ajusta caudas de expressões binárias e monta o `NoAST` resultante. Consulta o estado exposto `s_prime = stack[-1]`, empilha o não-terminal/nó reduzido e o estado de desvio. *O ponteiro `ip` **não** avança nesta operação.*
-        *   Se `act.tipo == 2` (**Aceita / Accept**): Sucesso! Extrai a raiz da `AST` da pilha. Fim do laço de análise.
-        *   Caso contrário (**Erro / Modo Pânico**): Marca `teve_erro = True`, exibe mensagem de erro sintático indicando o token e a linha, e tenta recuperar descartando token (`act.tipo == 3`) ou reduzindo (`act.tipo == 4`).
+        *   Se `act.tipo == 0` (**Empilha / Shift**): Empilha `a.categoria` e `act.valor` em `stack`, e empilha o objeto `Token` `a` em `stack_ast`. Avança `ip += 1`.
+        *   Se `act.tipo == 1` (**Reduz / Reduce**): Para a regra `producoes[act.valor]`, desempilha símbolos e estados de `stack` e os elementos correspondentes de `stack_ast`. Executa `criar_no(regra_sem, simb_esq, elementos_desempilhados)` e empilha o `noAST` resultante em `stack_ast`. Consulta o estado exposto `s_prime = stack[-1]`, empilha o não-terminal e o estado de desvio em `stack`. *O ponteiro `ip` **não** avança nesta operação.*
+        *   Se `act.tipo == 2` (**Aceita / Accept**): Sucesso! Salva a raiz da árvore `self.AST = stack_ast[-1]`. Fim do laço de análise.
+        *   Caso contrário (**Erro / Modo Pânico**): Marca `teve_erro = True`, exibe mensagem de erro sintático indicando o token e a linha, e tenta recuperar descartando token (`act.tipo == 3`) ou reduzindo e mantendo `stack_ast` sincronizada (`act.tipo == 4`).
+    *   Ao final do laço, retorna `self.AST` se `not teve_erro`, ou `None` caso tenha ocorrido erro sintático.
 6.  **Análise Semântica (`AnalisadorSemantico`)**:
-    *   Se a análise sintática aceitou sem erros (`not teve_erro`), o `Compilador` passa a raiz da `AST` para `semantico.analisar(ast)`.
-    *   O analisador percorre a `AST`, registra e consulta variáveis na `TabelaDeSimbolos` e anota tipos nos nós.
+    *   Se `noAST is not None`, o `Compilador` passa a árvore para `semantico.analisar(noAST)`.
+    *   O analisador percorre a `AST`, registra e consulta variáveis na `TabelaDeSimbolos` e valida tipos e escopos.
 7.  **Geração de Código Intermediário (`GeradorTAC`)**:
-    *   Se não houver erros semânticos, o `Compilador` passa a `AST` validada para `gerador_tac.gerar(ast)`, produzindo o Código de Três Endereços (TAC).
+    *   Se não houver erros semânticos, o `Compilador` passa a `AST` validada para `gerador_tac.gerar(noAST)`, produzindo o Código de Três Endereços (TAC).
 8.  **Fim do Programa**: Exibe ou salva o código de três endereços gerado e imprime a mensagem de sucesso.
