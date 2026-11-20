@@ -24,6 +24,10 @@ class Gramatica:
 
             self.producoes: tuple[tuple[str, tuple[str, ...]], ...] = producoes
 
+            self.regras_semanticas: tuple[list | None, ...] = tuple(
+                    regra[2] if len(regra) > 2 else None for regra in dados
+                )
+            
             self.terminais: list[str] = []
             self.nao_terminais: list[str] = []
             

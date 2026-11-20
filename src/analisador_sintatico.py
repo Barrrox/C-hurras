@@ -2,6 +2,7 @@ from Token import Token
 from gramatica import Gramatica
 from construtor_tabelaSLR import ConstrutorTabelaSLR, SLRcell
 from automato import AutomatoLR0
+from arvore_ast import noAST, criar_no
 
 
 class ParserSLR():
@@ -11,6 +12,7 @@ class ParserSLR():
         """
 
         self.gramatica = Gramatica()
+        self.AST: noAST | None = None
 
     def simbolo(self, term : str) -> int:
         """Retorna o índice numérico de um símbolo da gramática
@@ -50,7 +52,6 @@ class ParserSLR():
             bool: True se aceitou, False se encontrou erros sintáticos, mesmo que recupere no modo pânico.
         """
 
-        # FAZER: Verificar se tabelaSLR existe no disco e gramática não foi alterada, se não criar tabelaSLR do zero
         tabelaSLR = self.criar_tabelaSLR()
 
         return self.analisar_sintaxeAUX(lista_tokens, tabelaSLR)
@@ -68,8 +69,11 @@ class ParserSLR():
         """
 
         producoes = self.gramatica.producoes 
+        regras_semanticas = self.gramatica.regras_semanticas
 
         stack: list[str | int] = ["$", 0]
+        stack_ast: list[Token | noAST | None] = [] # Serve para guardar os nós da AST junto do stack normal. Assim, quando empiliar em um empilha no outro. Quando reduzir, forma-se um nó de nível mais alto na árvore.
+        self.AST = None
 
         ip = 0 # points to current input symbol
 
@@ -83,35 +87,45 @@ class ParserSLR():
             s = stack[-1] # current state
             a = tokens[ip] # current input symbol
 
-            act : SLRcell= tabelaSLR[s][self.simbolo(a.categoria)]
+            act : SLRcell = tabelaSLR[s][self.simbolo(a.categoria)]
 
             if act.tipo == 0: # empilha
 
                 stack.append(a.categoria) # push the terminal
                 stack.append(act.valor) # push the new state
+                stack_ast.append(a)
                 ip += 1
             
             elif act.tipo == 1: # reduz
 
                 # redução: ['T', ['T', '*', 'F']]
+                simb_esq = producoes[act.valor][0]
                 prod_dir = producoes[act.valor][1]
+                elementos_desempilhados = []
+
                 if prod_dir != ('~',):
-                    for i in producoes[act.valor][1]:
+                    for i in prod_dir:
                         stack.pop()
                         stack.pop()
-                
+                        elementos_desempilhados.append(stack_ast.pop())
+                    elementos_desempilhados.reverse()
+
+                regra_sem = regras_semanticas[act.valor] if act.valor < len(regras_semanticas) else None
+                novo_no = criar_no(regra_sem, simb_esq, elementos_desempilhados)
+                stack_ast.append(novo_no)
+
                 s_prime = stack[-1] # exposed state after popping
-                stack.append(producoes[act.valor][0]) # push the nonterminal
-                stack.append(tabelaSLR[s_prime][self.simbolo(producoes[act.valor][0])].valor) # push the new state
-            
+                stack.append(simb_esq) # push the nonterminal
+                stack.append(tabelaSLR[s_prime][self.simbolo(simb_esq)].valor) # push the new state
             elif act.tipo == 2: # aceita
+                self.AST = stack_ast[-1] if stack_ast else None
                 break
             
             else:
                 teve_erro = True
 
                 print("ERRO SINTÁTICO: token não esperado \"", a.texto, "\" na linha", a.linha)
-                
+
                 # attempt recovery
                 if act.tipo == 3: # erro de estado vazio
                     ip += 1
@@ -120,11 +134,12 @@ class ParserSLR():
                     for i in producoes[act.valor][1]:
                         stack.pop()
                         stack.pop()
+                        if stack_ast:
+                            stack_ast.pop()
+                    stack_ast.append(None)
 
                     s_prime = stack[-1] # exposed state after popping
                     stack.append(producoes[act.valor][0]) # push the nonterminal
                     stack.append(tabelaSLR[s_prime][self.simbolo(producoes[act.valor][0])].valor) # push the new state
-
-            # input("\nPressione Qualquer tecla para continuar\n")
 
         return not teve_erro

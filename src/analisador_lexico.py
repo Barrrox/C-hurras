@@ -368,6 +368,8 @@ class Lexer():
             self.pc += 1
 
         # encerrou analise de forma correta, retornar tokens
+        linha_fim = self.tokens[-1].linha if self.tokens else 1
+        self.tokens.append(Token("$", "$", linha_fim))
         return self.tokens
 
     def print_tokens(self) -> None:
